@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:lms_core_frontend/common/components/left_sidebar_component.dart';
+import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
+import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -21,16 +25,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
     return Scaffold(
       body: Row(
         children: [
           LeftSidebarComponent(
             selectedIndex: _selectedIndex,
+            isAuthenticated: auth.isAuthenticated,
+            userName: auth.userName,
+            userRole: auth.userRole,
             onItemSelected: (index) {
               setState(() => _selectedIndex = index);
             },
             onLogout: () {
-              debugPrint('Logout tapped');
+              context.read<AuthProvider>().logout();
+            },
+            onSignIn: () {
+              context.goNamed(ViewIdentifiers.login.name);
             },
           ),
 

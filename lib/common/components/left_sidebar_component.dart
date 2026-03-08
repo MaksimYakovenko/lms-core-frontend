@@ -5,12 +5,20 @@ class LeftSidebarComponent extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int>? onItemSelected;
   final VoidCallback? onLogout;
+  final VoidCallback? onSignIn;
+  final bool isAuthenticated;
+  final String? userName;
+  final String? userRole;
 
   const LeftSidebarComponent({
     super.key,
     this.selectedIndex = 0,
     this.onItemSelected,
     this.onLogout,
+    this.onSignIn,
+    this.isAuthenticated = false,
+    this.userName,
+    this.userRole,
   });
 
   @override
@@ -130,83 +138,102 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
             ),
           ),
 
-          // ── User Profile & Logout ─────────────────────────────────
           Container(
             padding: const EdgeInsets.all(16), // p-4
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(color: _borderColor, width: 1), // border-t border-slate-700
+                top: BorderSide(color: _borderColor, width: 1),
               ),
             ),
             child: Column(
               children: [
-                // Profile row
-                Row(
-                  children: [
-                    // Avatar circle — slate-700
-                    Container(
-                      width: 40,  // w-10
-                      height: 40, // h-10
-                      decoration: const BoxDecoration(
-                        color: _borderColor, // bg-slate-700
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'JA',
-                          style: TextStyle(
-                            color: _textColor,
-                            fontSize: 14,          // text-sm
-                            fontWeight: FontWeight.w600, // font-semibold
+
+                if (widget.isAuthenticated) ...[
+                  Row(
+                    children: [
+                      // Avatar circle
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: _borderColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            _getInitials(widget.userName),
+                            style: const TextStyle(
+                              color: _textColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12), // gap-3
-                    Expanded( // flex-1 min-w-0
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'John Adebayo',
-                            overflow: TextOverflow.ellipsis, // truncate
-                            style: TextStyle(
-                              color: _textColor,
-                              fontSize: 14,           // text-sm
-                              fontWeight: FontWeight.w500, // font-medium
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.userName ?? 'User',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: _textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Teacher',
-                            style: TextStyle(
-                              color: _subtitleColor, // text-slate-400
-                              fontSize: 12,          // text-xs
+                            Text(
+                              widget.userRole ?? '',
+                              style: const TextStyle(
+                                color: _subtitleColor,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16), // mb-4
-
-                // Logout button — same style as nav items
-                _NavTile(
-                  icon: LucideIcons.logOut,
-                  label: 'Logout',
-                  isActive: false,
-                  activeColor: _activeColor,
-                  textColor: _textColor,
-                  textMutedColor: _textMutedColor,
-                  onTap: widget.onLogout ?? () {},
-                ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Logout button
+                  _NavTile(
+                    icon: LucideIcons.logOut,
+                    label: 'Logout',
+                    isActive: false,
+                    activeColor: _activeColor,
+                    textColor: _textColor,
+                    textMutedColor: _textMutedColor,
+                    onTap: widget.onLogout ?? () {},
+                  ),
+                ] else ...[
+                  // Sign In button — для неавторизованих
+                  _NavTile(
+                    icon: LucideIcons.logIn,
+                    label: 'Sign In',
+                    isActive: false,
+                    activeColor: _activeColor,
+                    textColor: _textColor,
+                    textMutedColor: _textMutedColor,
+                    onTap: widget.onSignIn ?? () {},
+                  ),
+                ],
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _getInitials(String? name) {
+    if (name == null || name.isEmpty) return '?';
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
   }
 }
 
