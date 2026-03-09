@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/common/components/left_sidebar_component.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
@@ -38,8 +39,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onItemSelected: (index) {
               setState(() => _selectedIndex = index);
             },
-            onLogout: () {
-              context.read<AuthProvider>().logout();
+            onLogout: () async {
+              await context.read<AuthProvider>().logout();
+              if (context.mounted) {
+                AppToast.info(
+                  context,
+                  title: 'Signed out',
+                  description: 'You have been successfully signed out.',
+                  alignment: Alignment.topRight,
+                );
+              }
             },
             onSignIn: () {
               context.goNamed(ViewIdentifiers.login.name);

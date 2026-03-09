@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 import 'package:lms_core_frontend/config/routers/dashboard_routers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 import 'package:lms_core_frontend/features/not_found_page/not_found_page_screen.dart';
@@ -27,12 +28,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'LMS',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        title: 'LMS',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        routerConfig: _router,
       ),
-      routerConfig: _router,
     );
   }
 }

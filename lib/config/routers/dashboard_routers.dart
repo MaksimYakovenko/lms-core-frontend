@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 import 'package:lms_core_frontend/features/auth/login_screen.dart';
@@ -38,6 +39,11 @@ class _LoginScreen extends StatelessWidget {
                 password: password,
               );
               if (success && context.mounted) {
+                AppToast.success(
+                  context,
+                  title: 'Welcome back!',
+                  description: 'You have successfully signed in.',
+                );
                 context.goNamed(ViewIdentifiers.home.name);
               }
             },
