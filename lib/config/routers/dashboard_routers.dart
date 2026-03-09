@@ -26,16 +26,24 @@ class _LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.read<AuthProvider>();
     return Scaffold(
-      body: LoginForm(
-        onLogin: (email, password) async {
-          await auth.login(token: 'mock_token', name: email, role: 'student');
-          if (context.mounted) context.goNamed(ViewIdentifiers.home.name);
+      body: Consumer<AuthProvider>(
+        builder: (context, auth, _) {
+          return LoginForm(
+            isLoading: auth.isLoading,
+            error: auth.error,
+            onLogin: (email, password) async {
+              final success = await auth.login(
+                email: email,
+                password: password,
+              );
+              if (success && context.mounted) {
+                context.goNamed(ViewIdentifiers.home.name);
+              }
+            },
+          );
         },
       ),
     );
   }
 }
-
-

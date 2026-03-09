@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:lms_core_frontend/config/routers/dashboard_routers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
+import 'package:lms_core_frontend/features/not_found_page/not_found_page_screen.dart';
 
 final _router = GoRouter(
   routes: dashboardRoutes,
+  errorBuilder: (context, state) => const NotFoundPageScreen(),
 );
 
 void main() async {

@@ -5,16 +5,19 @@ class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   bool _isAuthenticated = false;
+  bool _isLoading = false;
+  String? _error;
   String? _userName;
   String? _userRole;
   String? _token;
 
   bool get isAuthenticated => _isAuthenticated;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
   String? get userName => _userName;
   String? get userRole => _userRole;
   String? get token => _token;
 
-  /// Ініціалізація при старті — перевіряємо збережений токен
   Future<void> checkAuth() async {
     final authenticated = await _authService.isAuthenticated();
     if (authenticated) {
@@ -31,29 +34,43 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Виклик після успішного логіну — зберігаємо токен та дані юзера
-  Future<void> login({
-    required String token,
-    required String name,
-    required String role,
+  Future<bool> login({
+    required String email,
+    required String password,
   }) async {
-    await _authService.saveToken(token);
-    await _authService.saveUserInfo(name: name, role: role);
-    _token = token;
-    _userName = name;
-    _userRole = role;
-    _isAuthenticated = true;
+    _isLoading = true;
+    _error = null;
     notifyListeners();
+
+    try {
+      final result = await _authService.signIn(email: email, password: password);
+
+      await _authService.saveToken(result.accessToken);
+      await _authService.saveUserInfo(name: email, role: 'teacher');
+
+      _token = result.accessToken;
+      _userName = email;
+      _userRole = 'teacher';
+      _isAuthenticated = true;
+      _error = null;
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceFirst('Exception: ', '');
+      _isAuthenticated = false;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  /// Логаут — чистимо токен і стан
   Future<void> logout() async {
     await _authService.deleteToken();
     _token = null;
     _userName = null;
     _userRole = null;
     _isAuthenticated = false;
+    _error = null;
     notifyListeners();
   }
 }
-
