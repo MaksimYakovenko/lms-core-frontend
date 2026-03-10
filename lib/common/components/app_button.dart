@@ -22,58 +22,68 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final bool disabled;
 
-  // ── розміри ────────────────────────────────────────────────────────────────
+  // ── розміри (h-8 → 32, h-9 → 36, h-10 → 40, size-9 → 36) ─────────────────
   double get _height => switch (size) {
-        ButtonSize.sm => 32,
-        ButtonSize.lg => 40,
-        ButtonSize.icon => 36,
-        ButtonSize.defaultSize => 36,
+        ButtonSize.sm          => 32, // h-8
+        ButtonSize.defaultSize => 36, // h-9
+        ButtonSize.lg          => 40, // h-10
+        ButtonSize.icon        => 36, // size-9
       };
 
+  // sm: px-3 gap-1.5 | default: px-4 py-2 | lg: px-6 | icon: no padding
   EdgeInsets get _padding => switch (size) {
-        ButtonSize.sm => const EdgeInsets.symmetric(horizontal: 12),
-        ButtonSize.lg => const EdgeInsets.symmetric(horizontal: 24),
-        ButtonSize.icon => EdgeInsets.zero,
+        ButtonSize.sm          => const EdgeInsets.symmetric(horizontal: 12),
+        ButtonSize.lg          => const EdgeInsets.symmetric(horizontal: 24),
+        ButtonSize.icon        => EdgeInsets.zero,
         ButtonSize.defaultSize => const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       };
 
-  double get _borderRadius => switch (size) {
-        ButtonSize.icon => 8,
-        _ => 6,
+  // gap між дочірніми елементами (gap-2 / gap-1.5)
+  double get _gap => switch (size) {
+        ButtonSize.sm => 6,  // gap-1.5
+        _             => 8,  // gap-2
       };
 
-  // ── кольори ────────────────────────────────────────────────────────────────
+  // rounded-md = 6
+  static const double _kRadius = 6.0;
+
+  // ── кольори відповідно до React variants ───────────────────────────────────
+
+  // bg-primary = #16A34A, bg-destructive = #DC2626
+  // bg-secondary = #F3F4F6, outline/ghost/link = transparent
   Color? get _bgColor => switch (variant) {
-        ButtonVariant.primary => const Color(0xFF16A34A),
+        ButtonVariant.primary     => const Color(0xFF16A34A),
         ButtonVariant.destructive => const Color(0xFFDC2626),
-        ButtonVariant.secondary => const Color(0xFFF3F4F6),
+        ButtonVariant.secondary   => const Color(0xFFF3F4F6),
         ButtonVariant.outline ||
-        ButtonVariant.ghost ||
-        ButtonVariant.link =>
-          Colors.transparent,
+        ButtonVariant.ghost  ||
+        ButtonVariant.link        => Colors.transparent,
       };
 
+  // text-primary-foreground / white / secondary-foreground / foreground
   Color get _fgColor => switch (variant) {
-        ButtonVariant.primary => Colors.white,
+        ButtonVariant.primary     => Colors.white,
         ButtonVariant.destructive => Colors.white,
-        ButtonVariant.secondary => const Color(0xFF111827),
-        ButtonVariant.outline => const Color(0xFF111827),
-        ButtonVariant.ghost => const Color(0xFF111827),
-        ButtonVariant.link => const Color(0xFF16A34A),
+        ButtonVariant.secondary   => const Color(0xFF111827),
+        ButtonVariant.outline     => const Color(0xFF111827),
+        ButtonVariant.ghost       => const Color(0xFF111827),
+        ButtonVariant.link        => const Color(0xFF16A34A),
       };
 
+  // outline: border bg-background
   Color? get _borderColor => switch (variant) {
         ButtonVariant.outline => const Color(0xFFE5E7EB),
-        _ => null,
+        _                     => null,
       };
 
+  // hover: bg-primary/90, bg-destructive/90, bg-secondary/80, bg-accent, bg-accent/50
   Color get _hoverBg => switch (variant) {
-        ButtonVariant.primary => const Color(0xFF15803D),
-        ButtonVariant.destructive => const Color(0xFFB91C1C),
-        ButtonVariant.secondary => const Color(0xFFE5E7EB),
-        ButtonVariant.outline => const Color(0xFFF9FAFB),
-        ButtonVariant.ghost => const Color(0xFFF3F4F6),
-        ButtonVariant.link => Colors.transparent,
+        ButtonVariant.primary     => const Color(0xFF15803D), // /90
+        ButtonVariant.destructive => const Color(0xFFB91C1C), // /90
+        ButtonVariant.secondary   => const Color(0xFFE5E7EB), // /80
+        ButtonVariant.outline     => const Color(0xFFF3F4F6), // hover:bg-accent
+        ButtonVariant.ghost       => const Color(0xFFF3F4F6), // hover:bg-accent
+        ButtonVariant.link        => Colors.transparent,
       };
 
   @override
@@ -82,9 +92,10 @@ class AppButton extends StatelessWidget {
     final effectiveOnPressed = isDisabled ? null : onPressed;
 
     final style = ButtonStyle(
+      // transition-all + disabled:opacity-50
       backgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return (_bgColor ?? Colors.transparent).withAlpha(128);
+          return (_bgColor ?? Colors.transparent).withAlpha(128); // opacity-50
         }
         if (states.contains(WidgetState.hovered) ||
             states.contains(WidgetState.pressed)) {
@@ -94,24 +105,31 @@ class AppButton extends StatelessWidget {
       }),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return _fgColor.withAlpha(128);
+          return _fgColor.withAlpha(128); // opacity-50
         }
         return _fgColor;
       }),
+      // focus-visible:ring-[3px] focus-visible:ring-ring/50
       overlayColor: WidgetStateProperty.all(Colors.transparent),
-      side: _borderColor != null
-          ? WidgetStateProperty.all(BorderSide(color: _borderColor!))
-          : WidgetStateProperty.all(BorderSide.none),
+      side: WidgetStateProperty.resolveWith((states) {
+        if (_borderColor == null) return BorderSide.none;
+        // focus-visible:border-ring
+        if (states.contains(WidgetState.focused)) {
+          return const BorderSide(color: Color(0xFF6B7280), width: 1);
+        }
+        return BorderSide(color: _borderColor!);
+      }),
       shape: WidgetStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_borderRadius),
-        ),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(_kRadius)),
       ),
       padding: WidgetStateProperty.all(_padding),
       minimumSize: WidgetStateProperty.all(
-        size == ButtonSize.icon ? Size(_height, _height) : Size(0, _height),
+        size == ButtonSize.icon
+            ? Size(_height, _height)
+            : Size(0, _height),
       ),
       elevation: WidgetStateProperty.all(0),
+      // text-sm font-medium
       textStyle: WidgetStateProperty.all(
         const TextStyle(
           fontSize: 14,
@@ -119,9 +137,12 @@ class AppButton extends StatelessWidget {
           letterSpacing: 0,
         ),
       ),
+      // animationDuration для transition-all
+      animationDuration: const Duration(milliseconds: 150),
     );
 
-    final content = isLoading
+    // Обгортаємо child у Row з gap, щоб іконки та текст мали правильний відступ
+    final inner = isLoading
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -133,33 +154,18 @@ class AppButton extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(_fgColor),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: _gap),
               child,
             ],
           )
         : child;
 
     if (variant == ButtonVariant.link) {
-      return TextButton(
-        onPressed: effectiveOnPressed,
-        style: style,
-        child: content,
-      );
+      return TextButton(onPressed: effectiveOnPressed, style: style, child: inner);
     }
-
     if (variant == ButtonVariant.outline) {
-      return OutlinedButton(
-        onPressed: effectiveOnPressed,
-        style: style,
-        child: content,
-      );
+      return OutlinedButton(onPressed: effectiveOnPressed, style: style, child: inner);
     }
-
-    return ElevatedButton(
-      onPressed: effectiveOnPressed,
-      style: style,
-      child: content,
-    );
+    return ElevatedButton(onPressed: effectiveOnPressed, style: style, child: inner);
   }
 }
-

@@ -19,5 +19,13 @@ abstract final class AppColors {
 
   // ── Divider / Border ──────────────────────────────────────────────────────
   static const divider = Color(0xFFE5E7EB);
+
+  // ── Sidebar ───────────────────────────────────────────────────────────────
+  static const sidebarBg       = Color(0xFF0F172A);
+  static const sidebarActive   = Color(0xFF1E293B);
+  static const sidebarBorder   = Color(0xFF334155);
+  static const sidebarText     = Colors.white;
+  static const sidebarTextMuted = Color(0xFFCBD5E1);
+  static const sidebarSubtitle = Color(0xFF94A3B8);
 }
 

@@ -6,38 +6,68 @@ import 'package:lms_core_frontend/common/components/left_sidebar_component.dart'
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+const _studentPathToIndex = {
+  '/dashboard': 0,
+  '/results': 1,
+  '/tests': 2,
+  '/resources': 3,
+  '/payment': 4,
+};
 
-  @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
+const _adminPathToIndex = {
+  '/teachers': 0,
+  '/admins': 1,
+  '/students': 2,
+  '/groups': 3,
+};
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex = 0;
+class DashboardScreen extends StatelessWidget {
+  final Widget child;
 
-  final List<Widget> _pages = const [
-    _PagePlaceholder(title: 'Home'),
-    _PagePlaceholder(title: 'Results'),
-    _PagePlaceholder(title: 'Tests'),
-    _PagePlaceholder(title: 'Resources'),
-    _PagePlaceholder(title: 'Payment'),
+  const DashboardScreen({super.key, required this.child});
+
+  // index → route name для навігації
+  static const _studentIndexToRoute = [
+    'student-home',
+    'results',
+    'tests',
+    'resources',
+    'payment',
+  ];
+
+  static const _adminIndexToRoute = [
+    'teachers',
+    'admins',
+    'students',
+    'groups',
   ];
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final isAdmin = auth.userRole?.toLowerCase() == 'admin';
+
+    final pathToIndex = isAdmin ? _adminPathToIndex : _studentPathToIndex;
+    final indexToRoute = isAdmin ? _adminIndexToRoute : _studentIndexToRoute;
+
+    // Визначаємо активний індекс за поточним location
+    final location = GoRouterState.of(context).uri.path;
+    final selectedIndex = pathToIndex[location] ?? 0;
+
+    // Для auth-сторінок (login/registry) — показуємо тільки child без сайдбара
+    final isAuthPage = location == '/login' || location == '/registry';
+    if (isAuthPage) return child;
 
     return Scaffold(
       body: Row(
         children: [
           LeftSidebarComponent(
-            selectedIndex: _selectedIndex,
+            selectedIndex: selectedIndex,
             isAuthenticated: auth.isAuthenticated,
             userName: auth.userName,
             userRole: auth.userRole,
             onItemSelected: (index) {
-              setState(() => _selectedIndex = index);
+              context.goNamed(indexToRoute[index]);
             },
             onLogout: () async {
               await context.read<AuthProvider>().logout();
@@ -48,34 +78,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   description: 'You have been successfully signed out.',
                   alignment: Alignment.topRight,
                 );
+                context.goNamed(ViewIdentifiers.login.name);
               }
             },
             onSignIn: () {
               context.goNamed(ViewIdentifiers.login.name);
             },
           ),
-
-          Expanded(
-            child: _pages[_selectedIndex],
-          ),
+          Expanded(child: child),
         ],
       ),
     );
   }
 }
 
-class _PagePlaceholder extends StatelessWidget {
-  final String title;
-  const _PagePlaceholder({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:lms_core_frontend/common/constants/colors.dart';
 
 class LeftSidebarComponent extends StatefulWidget {
   final int selectedIndex;
@@ -26,34 +27,37 @@ class LeftSidebarComponent extends StatefulWidget {
 }
 
 class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
-  late int _selectedIndex;
 
-  static const _bgColor = Color(0xFF0F172A);
-  static const _activeColor = Color(0xFF1E293B);
-  static const _borderColor = Color(0xFF334155);
-  static const _textColor = Colors.white;
-  static const _textMutedColor = Color(0xFFCBD5E1);
-  static const _subtitleColor = Color(0xFF94A3B8);
 
-  final List<_NavItem> _navItems = [
-    const _NavItem(icon: LucideIcons.house, label: 'Home'),
-    const _NavItem(icon: LucideIcons.fileText, label: 'Results'),
-    const _NavItem(icon: LucideIcons.clipboardList, label: 'Tests'),
-    const _NavItem(icon: LucideIcons.bookOpen, label: 'Resources'),
-    const _NavItem(icon: LucideIcons.creditCard, label: 'Payment'),
+  static const List<_NavItem> _studentNavItems = [
+    _NavItem(icon: LucideIcons.house, label: 'Home'),
+    _NavItem(icon: LucideIcons.fileText, label: 'Results'),
+    _NavItem(icon: LucideIcons.clipboardList, label: 'Tests'),
+    _NavItem(icon: LucideIcons.bookOpen, label: 'Resources'),
+    _NavItem(icon: LucideIcons.creditCard, label: 'Payment'),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex = widget.selectedIndex;
+  static const List<_NavItem> _adminNavItems = [
+    _NavItem(icon: LucideIcons.graduationCap, label: 'Teachers'),
+    _NavItem(icon: LucideIcons.shieldCheck, label: 'Admins'),
+    _NavItem(icon: LucideIcons.users, label: 'Students'),
+    _NavItem(icon: LucideIcons.layoutList, label: 'Groups'),
+  ];
+
+  List<_NavItem> get _navItems {
+    if (widget.userRole?.toLowerCase() == 'admin') {
+      return _adminNavItems;
+    }
+    return _studentNavItems;
   }
+
+  @override
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 256,
-      color: _bgColor,
+      color: AppColors.sidebarBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -61,7 +65,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
             padding: const EdgeInsets.all(24), // p-6
             decoration: const BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: _borderColor, width: 1), // border-b border-slate-700
+                bottom: BorderSide(color: AppColors.sidebarBorder, width: 1),
               ),
             ),
             child: Row(
@@ -75,9 +79,9 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: Icon(
+                      child: const Icon(
                       LucideIcons.monitor,
-                      color: _bgColor, // text-slate-900
+                      color: AppColors.sidebarBg,
                       size: 16,        // w-4 h-4
                     ),
                   ),
@@ -89,7 +93,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     Text(
                       'EduPortal',
                       style: TextStyle(
-                        color: _textColor,
+                        color: AppColors.sidebarText,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.2,
@@ -99,8 +103,8 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     Text(
                       'Teacher Dashboard',
                       style: TextStyle(
-                        color: _subtitleColor, // text-slate-400
-                        fontSize: 14,          // text-sm
+                        color: AppColors.sidebarSubtitle,
+                        fontSize: 14,
                       ),
                     ),
                   ],
@@ -115,18 +119,17 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
               child: Column(
                 children: List.generate(_navItems.length, (index) {
                   final item = _navItems[index];
-                  final isActive = _selectedIndex == index;
+                  final isActive = widget.selectedIndex == index;
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 8), // space-y-2
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: _NavTile(
                       icon: item.icon,
                       label: item.label,
                       isActive: isActive,
-                      activeColor: _activeColor,
-                      textColor: _textColor,
-                      textMutedColor: _textMutedColor,
+                      activeColor: AppColors.sidebarActive,
+                      textColor: AppColors.sidebarText,
+                      textMutedColor: AppColors.sidebarTextMuted,
                       onTap: () {
-                        setState(() => _selectedIndex = index);
                         widget.onItemSelected?.call(index);
                       },
                     ),
@@ -140,7 +143,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
             padding: const EdgeInsets.all(16), // p-4
             decoration: const BoxDecoration(
               border: Border(
-                top: BorderSide(color: _borderColor, width: 1),
+                top: BorderSide(color: AppColors.sidebarBorder, width: 1),
               ),
             ),
             child: Column(
@@ -154,14 +157,14 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                         width: 40,
                         height: 40,
                         decoration: const BoxDecoration(
-                          color: _borderColor,
+                          color: AppColors.sidebarBorder,
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Text(
                             _getInitials(widget.userName),
                             style: const TextStyle(
-                              color: _textColor,
+                              color: AppColors.sidebarText,
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
@@ -177,7 +180,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                               widget.userName ?? 'User',
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                color: _textColor,
+                                color: AppColors.sidebarText,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -185,7 +188,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                             Text(
                               widget.userRole ?? '',
                               style: const TextStyle(
-                                color: _subtitleColor,
+                                color: AppColors.sidebarSubtitle,
                                 fontSize: 12,
                               ),
                             ),
@@ -200,9 +203,9 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     icon: LucideIcons.logOut,
                     label: 'Logout',
                     isActive: false,
-                    activeColor: _activeColor,
-                    textColor: _textColor,
-                    textMutedColor: _textMutedColor,
+                    activeColor: AppColors.sidebarActive,
+                    textColor: AppColors.sidebarText,
+                    textMutedColor: AppColors.sidebarTextMuted,
                     onTap: widget.onLogout ?? () {},
                   ),
                 ] else ...[
@@ -210,9 +213,9 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     icon: LucideIcons.logIn,
                     label: 'Sign In',
                     isActive: false,
-                    activeColor: _activeColor,
-                    textColor: _textColor,
-                    textMutedColor: _textMutedColor,
+                    activeColor: AppColors.sidebarActive,
+                    textColor: AppColors.sidebarText,
+                    textMutedColor: AppColors.sidebarTextMuted,
                     onTap: widget.onSignIn ?? () {},
                   ),
                 ],
