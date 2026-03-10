@@ -45,12 +45,14 @@ class AuthProvider extends ChangeNotifier {
     try {
       final result = await _authService.signIn(email: email, password: password);
 
+      final user = await _authService.getMe(result.accessToken);
+
       await _authService.saveToken(result.accessToken);
-      await _authService.saveUserInfo(name: email, role: 'teacher');
+      await _authService.saveUserInfo(name: user.fullName, role: user.roleFormatted);
 
       _token = result.accessToken;
-      _userName = email;
-      _userRole = 'teacher';
+      _userName = user.fullName;
+      _userRole = user.roleFormatted;
       _isAuthenticated = true;
       _error = null;
       return true;

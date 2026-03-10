@@ -17,4 +17,6 @@ class ViewIdentifiers {
 
 // ---------------------------------- AUTH -----------------------------------//
   static RouteDescriptor login = const RouteDescriptor('login', path: 'login');
+  static RouteDescriptor registry =
+      const RouteDescriptor('registry', path: 'registry');
 }

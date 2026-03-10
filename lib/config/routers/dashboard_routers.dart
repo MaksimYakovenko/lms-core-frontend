@@ -5,6 +5,7 @@ import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 import 'package:lms_core_frontend/features/auth/login_screen.dart';
+import 'package:lms_core_frontend/features/auth/registry_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
 
 final dashboardRoutes = [
@@ -17,6 +18,11 @@ final dashboardRoutes = [
         path: ViewIdentifiers.login.path,
         name: ViewIdentifiers.login.name,
         builder: (context, state) => const _LoginScreen(),
+      ),
+      GoRoute(
+        path: ViewIdentifiers.registry.path,
+        name: ViewIdentifiers.registry.name,
+        builder: (context, state) => const RegistryScreen(),
       ),
     ],
   ),

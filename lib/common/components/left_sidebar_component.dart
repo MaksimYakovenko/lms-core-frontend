@@ -57,7 +57,6 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Logo / Brand ─────────────────────────────────────────
           Container(
             padding: const EdgeInsets.all(24), // p-6
             decoration: const BoxDecoration(
@@ -110,7 +109,6 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
             ),
           ),
 
-          // ── Navigation ────────────────────────────────────────────
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16), // p-4
@@ -208,7 +206,6 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                     onTap: widget.onLogout ?? () {},
                   ),
                 ] else ...[
-                  // Sign In button — для неавторизованих
                   _NavTile(
                     icon: LucideIcons.logIn,
                     label: 'Sign In',
