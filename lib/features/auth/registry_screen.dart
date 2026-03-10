@@ -9,6 +9,8 @@ import 'package:lms_core_frontend/common/components/app_input.dart';
 import 'package:lms_core_frontend/common/components/app_label.dart';
 import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/common/components/left_branding_section.dart';
+import 'package:lms_core_frontend/common/constants/colors.dart';
+import 'package:lms_core_frontend/common/constants/validation_patterns.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -80,66 +82,69 @@ class _RegistryScreenState extends State<RegistryScreen> {
     super.dispose();
   }
 
+  void _setError(void Function(String) setter, String msg) =>
+      setState(() => setter(msg));
+
   bool _validateEmail(String value) {
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (value.isEmpty) {
-      setState(() => _emailError = 'Email is required');
+      _setError((v) => _emailError = v, 'Email is required');
       return false;
     }
-    if (!emailRegex.hasMatch(value)) {
-      setState(() => _emailError = 'Please enter a valid email address');
+    if (!ValidationPatterns.emailRegex.hasMatch(value)) {
+      _setError((v) => _emailError = v, 'Please enter a valid email address');
       return false;
     }
-    setState(() => _emailError = '');
+    _setError((v) => _emailError = v, '');
     return true;
   }
 
   bool _validateFirstName(String value) {
     if (value.trim().isEmpty) {
-      setState(() => _firstNameError = 'First name is required');
+      _setError((v) => _firstNameError = v, 'First name is required');
       return false;
     }
-    setState(() => _firstNameError = '');
+    _setError((v) => _firstNameError = v, '');
     return true;
   }
 
   bool _validateLastName(String value) {
     if (value.trim().isEmpty) {
-      setState(() => _lastNameError = 'Last name is required');
+      _setError((v) => _lastNameError = v, 'Last name is required');
       return false;
     }
-    setState(() => _lastNameError = '');
+    _setError((v) => _lastNameError = v, '');
     return true;
   }
 
   bool _validatePassword(String value) {
     if (value.isEmpty) {
-      setState(() => _passwordError = 'Password is required');
+      _setError((v) => _passwordError = v, 'Password is required');
       return false;
     }
-    if (value.length < 6) {
-      setState(() => _passwordError = 'Password must be at least 6 characters');
+    if (value.length < ValidationPatterns.minPasswordLength) {
+      _setError((v) => _passwordError = v,
+          'Password must be at least ${ValidationPatterns.minPasswordLength} characters');
       return false;
     }
-    setState(() => _passwordError = '');
+    _setError((v) => _passwordError = v, '');
     return true;
   }
 
   bool _validateBirthday() {
     if (_birthday == null) {
-      setState(() => _birthdayError = 'Birthday is required');
+      _setError((v) => _birthdayError = v, 'Birthday is required');
       return false;
     }
-    setState(() => _birthdayError = '');
+    _setError((v) => _birthdayError = v, '');
     return true;
   }
 
   bool _validateCaptcha(String value) {
     if (value.trim().isEmpty) {
-      setState(() => _captchaError = 'Captcha is required');
+      _setError((v) => _captchaError = v, 'Captcha is required');
       return false;
     }
-    setState(() => _captchaError = '');
+    _setError((v) => _captchaError = v, '');
     return true;
   }
 
@@ -170,33 +175,32 @@ class _RegistryScreenState extends State<RegistryScreen> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFD1D5DB),
                       borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
+                    ),                  ),
                   const Text(
                     'Select Birthday',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF111827),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 12),
                   CalendarDatePicker2(
                     config: CalendarDatePicker2Config(
                       calendarType: CalendarDatePicker2Type.single,
-                      selectedDayHighlightColor: const Color(0xFF16A34A),
+                      selectedDayHighlightColor: AppColors.accent,
                       weekdayLabelTextStyle: const TextStyle(
-                        color: Color(0xFF6B7280),
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
                       controlsTextStyle: const TextStyle(
-                        color: Color(0xFF111827),
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                       ),
                       dayTextStyle: const TextStyle(
-                        color: Color(0xFF111827),
+                        color: AppColors.textPrimary,
                         fontSize: 14,
                       ),
                       selectedDayTextStyle: const TextStyle(
@@ -205,7 +209,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                         fontSize: 14,
                       ),
                       todayTextStyle: const TextStyle(
-                        color: Color(0xFF16A34A),
+                        color: AppColors.accent,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
@@ -223,14 +227,6 @@ class _RegistryScreenState extends State<RegistryScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF16A34A),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
                       onPressed: () {
                         if (selected != null) {
                           setState(() {
@@ -240,6 +236,14 @@ class _RegistryScreenState extends State<RegistryScreen> {
                         }
                         Navigator.of(ctx).pop();
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.accent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                       child: const Text(
                         'Confirm',
                         style: TextStyle(fontWeight: FontWeight.w600),
@@ -257,60 +261,67 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   String get _birthdayDisplayText {
     if (_birthday == null) return '';
-    final d = _birthday!;
-    return '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
+    return _formatDate(_birthday!, separator: '.');
+  }
+
+  static String _formatDate(DateTime d, {String separator = '-'}) {
+    final y = d.year;
+    final m = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return separator == '.'
+        ? '$day$separator$m$separator$y'
+        : '$y$separator$m$separator$day';
   }
 
   Future<void> _handleSubmit() async {
-    final isEmailValid = _validateEmail(_emailController.text.trim());
-    final isFirstNameValid = _validateFirstName(_firstNameController.text);
-    final isLastNameValid = _validateLastName(_lastNameController.text);
-    final isPasswordValid = _validatePassword(_passwordController.text);
-    final isBirthdayValid = _validateBirthday();
-    final isCaptchaValid = _validateCaptcha(_captchaController.text);
+    final allValid = [
+      _validateEmail(_emailController.text.trim()),
+      _validateFirstName(_firstNameController.text),
+      _validateLastName(_lastNameController.text),
+      _validatePassword(_passwordController.text),
+      _validateBirthday(),
+      _validateCaptcha(_captchaController.text),
+    ].every((v) => v);
 
-    if (isEmailValid && isFirstNameValid && isLastNameValid && isPasswordValid && isBirthdayValid && isCaptchaValid) {
-      if (_captchaId == null) {
+    if (!allValid) return;
+
+    if (_captchaId == null) {
+      AppToast.error(
+        context,
+        title: 'Captcha not loaded',
+        description: 'Please refresh the captcha and try again.',
+      );
+      return;
+    }
+
+    try {
+      await _authService.signUp(
+        email: _emailController.text.trim(),
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        password: _passwordController.text,
+        birthday: _formatDate(_birthday!),
+        captchaId: _captchaId!,
+        captchaAnswer: _captchaController.text.trim(),
+      );
+
+      if (mounted) {
+        AppToast.success(
+          context,
+          title: 'Registration successful!',
+          description: 'Please sign in to continue.',
+        );
+        context.goNamed(ViewIdentifiers.login.name);
+      }
+    } catch (e) {
+      if (mounted) {
         AppToast.error(
           context,
-          title: 'Captcha not loaded',
-          description: 'Please refresh the captcha and try again.',
+          title: 'Registration failed',
+          description: e.toString().replaceFirst('Exception: ', ''),
         );
-        return;
-      }
-
-      final birthdayFormatted = '${_birthday!.year}-${_birthday!.month.toString().padLeft(2, '0')}-${_birthday!.day.toString().padLeft(2, '0')}';
-
-      try {
-        await _authService.signUp(
-          email: _emailController.text.trim(),
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          password: _passwordController.text,
-          birthday: birthdayFormatted,
-          captchaId: _captchaId!,
-          captchaAnswer: _captchaController.text.trim(),
-        );
-
-        if (mounted) {
-          AppToast.success(
-            context,
-            title: 'Registration successful!',
-            description: 'Please sign in to continue.',
-          );
-          context.goNamed(ViewIdentifiers.login.name);
-        }
-      } catch (e) {
-        if (mounted) {
-          AppToast.error(
-            context,
-            title: 'Registration failed',
-            description: e.toString().replaceFirst('Exception: ', ''),
-          );
-          // Перезавантажити капчу після невдалої спроби
-          _loadCaptcha();
-          _captchaController.clear();
-        }
+        _loadCaptcha();
+        _captchaController.clear();
       }
     }
   }
@@ -321,17 +332,13 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFEFF6FF),
-              Colors.white,
-              Color(0xFFF0FDF4),
-            ],
-          ),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.background1, Colors.white, AppColors.background2],
         ),
+      ),
         child: Row(
           children: [
             if (isDesktop) const LeftBrandingSection(),
@@ -478,7 +485,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
             onPressed: () => setState(() => _showPassword = !_showPassword),
             icon: Icon(
               _showPassword ? LucideIcons.eyeOff : LucideIcons.eye,
-              color: const Color(0xFF6B7280),
+              color: AppColors.textSecondary,
             ),
           ),
         ),
@@ -501,7 +508,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
               errorText: _birthdayError.isEmpty ? null : _birthdayError,
               suffixIcon: const Icon(
                 LucideIcons.calendarDays,
-                color: Color(0xFF6B7280),
+                color: AppColors.textSecondary,
               ),
             ),
           ),
@@ -520,14 +527,14 @@ class _RegistryScreenState extends State<RegistryScreen> {
           Row(
             children: [
               _isLoadingCaptcha
-                  ? SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(
-                      color: Color(0xFF16A34A),
-                      strokeWidth: 2,
-                    ),
-                  )
+                  ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        color: AppColors.accent,
+                        strokeWidth: 2,
+                      ),
+                    )
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: Image.memory(
@@ -539,7 +546,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                             child: Text(
                               'Failed to load captcha image',
                               style: TextStyle(
-                                color: Color(0xFF6B7280),
+                                color: AppColors.textSecondary,
                                 fontSize: 12,
                               ),
                             ),
@@ -556,7 +563,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  foregroundColor: const Color(0xFF111827),
+                  foregroundColor: AppColors.textPrimary,
                   backgroundColor: Colors.white,
                 ),
                 icon: const Icon(
@@ -606,13 +613,13 @@ class _RegistryScreenState extends State<RegistryScreen> {
       children: [
         const Text(
           'Already have an account?',
-          style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
         TextButton(
           onPressed: () => context.goNamed(ViewIdentifiers.login.name),
           child: const Text(
             'Sign In',
-            style: TextStyle(fontSize: 13, color: Color(0xFF16A34A)),
+            style: TextStyle(fontSize: 13, color: AppColors.accent),
           ),
         ),
       ],

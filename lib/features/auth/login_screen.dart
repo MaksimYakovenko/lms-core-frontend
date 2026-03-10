@@ -8,8 +8,42 @@ import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/common/components/left_branding_section.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:lms_core_frontend/common/constants/colors.dart';
+import 'package:lms_core_frontend/common/constants/validation_patterns.dart';
+import 'package:provider/provider.dart';
+import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Consumer<AuthProvider>(
+        builder: (context, auth, _) {
+          return LoginForm(
+            isLoading: auth.isLoading,
+            error: auth.error,
+            onLogin: (email, password) async {
+              final success = await auth.login(
+                email: email,
+                password: password,
+              );
+              if (success && context.mounted) {
+                AppToast.success(
+                  context,
+                  title: 'Welcome back!',
+                  description: 'You have successfully signed in.',
+                );
+                context.goNamed(ViewIdentifiers.home.name);
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+}
 
 class LoginForm extends StatefulWidget {
   final void Function(String email, String password) onLogin;
@@ -60,47 +94,32 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _setEmailError(String msg) => setState(() => _emailError = msg);
+  void _setPasswordError(String msg) => setState(() => _passwordError = msg);
+
   bool validateEmail(String email) {
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-
     if (email.isEmpty) {
-      setState(() {
-        _emailError = 'Email is required';
-      });
+      _setEmailError('Email is required');
       return false;
     }
-
-    if (!emailRegex.hasMatch(email)) {
-      setState(() {
-        _emailError = 'Please enter a valid email address';
-      });
+    if (!ValidationPatterns.emailRegex.hasMatch(email)) {
+      _setEmailError('Please enter a valid email address');
       return false;
     }
-
-    setState(() {
-      _emailError = '';
-    });
+    _setEmailError('');
     return true;
   }
 
   bool validatePassword(String password) {
     if (password.isEmpty) {
-      setState(() {
-        _passwordError = 'Password is required';
-      });
+      _setPasswordError('Password is required');
       return false;
     }
-
-    if (password.length < 6) {
-      setState(() {
-        _passwordError = 'Password must be at least 6 characters';
-      });
+    if (password.length < ValidationPatterns.minPasswordLength) {
+      _setPasswordError('Password must be at least ${ValidationPatterns.minPasswordLength} characters');
       return false;
     }
-
-    setState(() {
-      _passwordError = '';
-    });
+    _setPasswordError('');
     return true;
   }
 
@@ -125,11 +144,7 @@ class _LoginFormState extends State<LoginForm> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFEFF6FF),
-            Colors.white,
-            Color(0xFFF0FDF4),
-          ],
+          colors: [AppColors.background1, Colors.white, AppColors.background2],
         ),
       ),
       child: Row(
@@ -147,7 +162,7 @@ class _LoginFormState extends State<LoginForm> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (!isDesktop) _buildMobileLogo(),
+                      if (!isDesktop) const _MobileLogo(),
                       _buildLoginCard(),
                       const SizedBox(height: 24),
                       const Text(
@@ -155,7 +170,7 @@ class _LoginFormState extends State<LoginForm> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF6B7280),
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -169,51 +184,6 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-
-  Widget _buildMobileLogo() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 32),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFF16A34A),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.school,
-              color: Colors.white,
-              size: 26,
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'EduPortal',
-                style: TextStyle(
-                  color: Color(0xFF111827),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'Teacher Portal',
-                style: TextStyle(
-                  color: Color(0xFF6B7280),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildLoginCard() {
     return AppCard(
@@ -235,11 +205,11 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: 24),
               _buildSignInButton(),
               const SizedBox(height: 24),
-              _buildDivider(),
+              const _OrDivider(),
               const SizedBox(height: 24),
               _buildDemoButton(),
               const SizedBox(height: 24),
-              _buildInfoBox(),
+              const _InfoBox(),
             ],
           ),
         ),
@@ -252,10 +222,7 @@ class _LoginFormState extends State<LoginForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppLabel(
-          text: 'Email Address',
-          disabled: widget.isLoading,
-        ),
+        AppLabel(text: 'Email Address', disabled: widget.isLoading),
         const SizedBox(height: 8),
         AppInput(
           controller: _emailController,
@@ -263,18 +230,13 @@ class _LoginFormState extends State<LoginForm> {
           errorText: _emailError.isEmpty ? null : _emailError,
           enabled: !widget.isLoading,
           keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            if (_emailError.isNotEmpty) validateEmail(value);
-          },
+          onChanged: (v) { if (_emailError.isNotEmpty) validateEmail(v); },
           onEditingComplete: () => validateEmail(_emailController.text.trim()),
         ),
         const SizedBox(height: 6),
         const Text(
           'Use your school email address (.edu.ng)',
-          style: TextStyle(
-            fontSize: 12,
-            color: Color(0xFF6B7280),
-          ),
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
     );
@@ -286,29 +248,13 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         Row(
           children: [
-            AppLabel(
-              text: 'Password',
-              disabled: widget.isLoading,
-            ),
+            AppLabel(text: 'Password', disabled: widget.isLoading),
             const Spacer(),
             TextButton(
-              onPressed: widget.isLoading
-                  ? null
-                  : () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Please contact your school administrator to reset your password.',
-                    ),
-                  ),
-                );
-              },
+              onPressed: widget.isLoading ? null : _showForgotPasswordSnackBar,
               child: const Text(
                 'Forgot password?',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF16A34A),
-                ),
+                style: TextStyle(fontSize: 12, color: AppColors.accent),
               ),
             ),
           ],
@@ -320,9 +266,7 @@ class _LoginFormState extends State<LoginForm> {
           errorText: _passwordError.isEmpty ? null : _passwordError,
           enabled: !widget.isLoading,
           obscureText: !_showPassword,
-          onChanged: (value) {
-            if (_passwordError.isNotEmpty) validatePassword(value);
-          },
+          onChanged: (v) { if (_passwordError.isNotEmpty) validatePassword(v); },
           onEditingComplete: () => validatePassword(_passwordController.text),
           suffixIcon: IconButton(
             onPressed: widget.isLoading
@@ -330,11 +274,21 @@ class _LoginFormState extends State<LoginForm> {
                 : () => setState(() => _showPassword = !_showPassword),
             icon: Icon(
               _showPassword ? LucideIcons.eyeOff : LucideIcons.eye,
-              color: const Color(0xFF6B7280),
+              color: AppColors.textSecondary,
             ),
           ),
         ),
       ],
+    );
+  }
+
+  void _showForgotPasswordSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Please contact your school administrator to reset your password.',
+        ),
+      ),
     );
   }
 
@@ -348,35 +302,6 @@ class _LoginFormState extends State<LoginForm> {
         isLoading: widget.isLoading,
         child: const Text('Sign In'),
       ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Row(
-      children: [
-        const Expanded(
-          child: Divider(
-            color: Color(0xFFE5E7EB),
-            thickness: 1,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12),
-          child: const Text(
-            'Don\'t have an account?',
-            style: TextStyle(
-              fontSize: 12,
-              color: Color(0xFF6B7280),
-            ),
-          ),
-        ),
-        const Expanded(
-          child: Divider(
-            color: Color(0xFFE5E7EB),
-            thickness: 1,
-          ),
-        ),
-      ],
     );
   }
 
@@ -399,36 +324,101 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
+}
 
-  Widget _buildInfoBox() {
+// ── Приватні stateless-підвіджети ─────────────────────────────────────────────
+
+class _MobileLogo extends StatelessWidget {
+  const _MobileLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.accent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.school, color: Colors.white, size: 26),
+          ),
+          const SizedBox(width: 12),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'EduPortal',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Teacher Portal',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrDivider extends StatelessWidget {
+  const _OrDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            "Don't have an account?",
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
+        ),
+        Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
+      ],
+    );
+  }
+}
+
+class _InfoBox extends StatelessWidget {
+  const _InfoBox();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
+        color: AppColors.infoBg,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFFDBEAFE),
-        ),
+        border: Border.all(color: AppColors.infoBorder),
       ),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-            fontSize: 12,
-            color: Color(0xFF4B5563),
-            height: 1.5,
-          ),
+      child: const Text.rich(
+        TextSpan(
+          style: TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.5),
           children: [
             TextSpan(
               text: 'For Teachers: ',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF111827),
+                color: AppColors.textPrimary,
               ),
             ),
             TextSpan(
-              text:
-              'Use your school-issued email to sign in. Contact your administrator if you need assistance.',
+              text: 'Use your school-issued email to sign in. '
+                  'Contact your administrator if you need assistance.',
             ),
           ],
         ),
