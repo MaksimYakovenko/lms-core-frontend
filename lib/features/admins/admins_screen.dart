@@ -4,14 +4,9 @@ import 'package:lms_core_frontend/common/components/app_card.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_dialog.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
+import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/features/admins/admins_service.dart';
 
-const _kGray200 = Color(0xFFE5E7EB);
-const _kGray400 = Color(0xFF9CA3AF);
-const _kGray700 = Color(0xFF374151);
-const _kGray900 = Color(0xFF111827);
-const _kGreen700 = Color(0xFF15803D);
-const _kRed600 = Color(0xFFDC2626);
 
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
@@ -98,19 +93,19 @@ class _AdminsScreenState extends State<AdminsScreen> {
               [
                     Text(
                       '${a.id}',
-                      style: const TextStyle(fontSize: 14, color: _kGray900),
+                      style: const TextStyle(fontSize: 14, color: AppColors.gray900),
                     ),
                     Text(
                       a.name.isEmpty ? '—' : a.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: _kGray900,
+                        color: AppColors.gray900,
                       ),
                     ),
                     Text(
                       a.email,
-                      style: const TextStyle(fontSize: 14, color: _kGray700),
+                      style: const TextStyle(fontSize: 14, color: AppColors.gray700),
                     ),
                     _RoleBadge(role: a.role),
                     _LastLoginCell(lastLogin: a.lastLogin),
@@ -183,7 +178,7 @@ class _AdminsScreenState extends State<AdminsScreen> {
                     apiError!,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFFDC2626),
+                      color: AppColors.red600,
                     ),
                   ),
                 ],
@@ -234,7 +229,7 @@ class _AdminsScreenState extends State<AdminsScreen> {
                       children: [
                         Icon(
                             LucideIcons.userRoundPlus, size: 20,
-                          color: _kGray900,
+                          color: AppColors.gray900,
                         ),
                         SizedBox(width: 6),
                         Text('Create Admin'),
@@ -277,8 +272,8 @@ class _RoleBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFEFF6FF),
-        border: Border.all(color: const Color(0xFFBFDBFE)),
+        color: AppColors.roleBadgeBg,
+        border: Border.all(color: AppColors.roleBadgeBorder),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -286,7 +281,7 @@ class _RoleBadge extends StatelessWidget {
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF1D4ED8),
+          color: AppColors.roleBadgeText,
         ),
       ),
     );
@@ -320,14 +315,14 @@ class _LastLoginCell extends StatelessWidget {
         Icon(
           isNever ? LucideIcons.circleMinus : LucideIcons.clock,
           size: 14,
-          color: isNever ? _kGray400 : _kGreen700,
+          color: isNever ? AppColors.gray400 : AppColors.green700,
         ),
         const SizedBox(width: 5),
         Text(
           _formatted,
           style: TextStyle(
             fontSize: 13,
-            color: isNever ? _kGray400 : _kGray700,
+            color: isNever ? AppColors.gray400 : AppColors.gray700,
           ),
         ),
       ],
@@ -347,13 +342,13 @@ class _AdminActionsMenu extends StatelessWidget {
       icon: const Icon(
         LucideIcons.ellipsisVertical,
         size: 16,
-        color: _kGray700,
+        color: AppColors.gray700,
       ),
       iconSize: 16,
       padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: _kGray200),
+        side: const BorderSide(color: AppColors.gray200),
       ),
       elevation: 4,
       onSelected: (action) => _onAction(context, action),
@@ -372,7 +367,7 @@ class _AdminActionsMenu extends StatelessWidget {
               child: _MenuItem(
                 icon: LucideIcons.trash2,
                 label: 'Delete',
-                color: _kRed600,
+                color: AppColors.red600,
               ),
             ),
           ],
@@ -399,7 +394,7 @@ class _MenuItem extends StatelessWidget {
   const _MenuItem({
     required this.icon,
     required this.label,
-    this.color = _kGray900,
+    this.color = AppColors.gray900,
   });
 
   final IconData icon;
@@ -432,10 +427,10 @@ class _SearchField extends StatelessWidget {
         TextField(
           controller: controller,
           onChanged: onChanged,
-          style: const TextStyle(fontSize: 14, color: _kGray900),
+          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
           decoration: InputDecoration(
             hintText: 'Search by name or ID...',
-            hintStyle: const TextStyle(fontSize: 14, color: _kGray400),
+            hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
             contentPadding: const EdgeInsets.only(
               left: 40,
               right: 12,
@@ -446,16 +441,16 @@ class _SearchField extends StatelessWidget {
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kGray200),
+              borderSide: const BorderSide(color: AppColors.gray200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kGray200),
+              borderSide: const BorderSide(color: AppColors.gray200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
               borderSide: const BorderSide(
-                color: Color(0xFF93C5FD),
+                color: AppColors.inputFocusBorder,
                 width: 1.5,
               ),
             ),
@@ -463,7 +458,7 @@ class _SearchField extends StatelessWidget {
         ),
         const Padding(
           padding: EdgeInsets.only(left: 12),
-          child: Icon(LucideIcons.search, size: 16, color: _kGray400),
+          child: Icon(LucideIcons.search, size: 16, color: AppColors.gray400),
         ),
       ],
     );
@@ -483,12 +478,12 @@ class _ErrorBody extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(LucideIcons.circleAlert, size: 32, color: _kRed600),
+          const Icon(LucideIcons.circleAlert, size: 32, color: AppColors.red600),
           const SizedBox(height: 12),
           Text(
             error,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: _kRed600),
+            style: const TextStyle(fontSize: 14, color: AppColors.red600),
           ),
           const SizedBox(height: 16),
           TextButton.icon(

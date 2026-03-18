@@ -27,5 +27,23 @@ abstract final class AppColors {
   static const sidebarText     = Colors.white;
   static const sidebarTextMuted = Color(0xFFCBD5E1);
   static const sidebarSubtitle = Color(0xFF94A3B8);
+
+  // ── Gray palette ──────────────────────────────────────────────────────────
+  static const gray200 = Color(0xFFE5E7EB);
+  static const gray400 = Color(0xFF9CA3AF);
+  static const gray700 = Color(0xFF374151);
+  static const gray900 = Color(0xFF111827);
+
+  // ── Status ────────────────────────────────────────────────────────────────
+  static const green700 = Color(0xFF15803D);
+  static const red600   = Color(0xFFDC2626);
+
+  // ── Role badge ────────────────────────────────────────────────────────────
+  static const roleBadgeBg     = Color(0xFFEFF6FF);
+  static const roleBadgeBorder = Color(0xFFBFDBFE);
+  static const roleBadgeText   = Color(0xFF1D4ED8);
+
+  // ── Input focus border ────────────────────────────────────────────────────
+  static const inputFocusBorder = Color(0xFF93C5FD);
 }
 

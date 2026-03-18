@@ -2,27 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 
-// ── Токени ────────────────────────────────────────────────────────────────────
-
 const _kGray200 = Color(0xFFE5E7EB);
 const _kGray400 = Color(0xFF9CA3AF);
 const _kGray700 = Color(0xFF374151);
 const _kGray900 = Color(0xFF111827);
 const _kRed600  = Color(0xFFDC2626);
 
-// ── AppDialog ─────────────────────────────────────────────────────────────────
 
-/// Універсальне діалогове вікно — аналог React <Dialog> + <DialogContent>.
-///
-/// [title]        — DialogTitle
-/// [description]  — DialogDescription (необов'язковий)
-/// [content]      — довільний контент між header та footer
-/// [actions]      — кнопки у футері (праворуч); якщо null — стандартні Cancel/Confirm
-/// [onConfirm]    — callback для стандартної кнопки Confirm
-/// [confirmLabel] — текст стандартної кнопки (default: 'Confirm')
-/// [confirmIcon]  — іконка стандартної кнопки (необов'язкова)
-/// [isLoading]    — spinner на кнопці Confirm
-/// [width]        — ширина діалогу (default: 480)
 class AppDialog extends StatelessWidget {
   const AppDialog({
     super.key,
