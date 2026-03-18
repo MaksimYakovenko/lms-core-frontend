@@ -141,8 +141,7 @@ class _AdminsScreenState extends State<TeachersScreen> {
                 apiError = null;
               });
               try {
-                // TODO: виклик API для створення адміна
-                await Future.delayed(const Duration(milliseconds: 500));
+                await _service.createTeacher(emailController.text.trim());
                 if (ctx.mounted) {
                   Navigator.of(ctx).pop();
                   _load();
@@ -193,7 +192,7 @@ class _AdminsScreenState extends State<TeachersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: AppCard(
         children: [

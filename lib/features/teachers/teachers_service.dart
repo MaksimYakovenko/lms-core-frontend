@@ -55,5 +55,26 @@ class TeachersService {
 
     throw Exception('Failed to fetch teachers (${response.statusCode})');
   }
+
+  Future<void> createTeacher(String email) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$_baseUrl/teachers/create_teacher');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'email': email, 'role': 'TEACHER'}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to create teacher (${response.statusCode})';
+    throw Exception(detail);
+  }
 }
 

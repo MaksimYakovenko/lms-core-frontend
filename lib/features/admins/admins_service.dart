@@ -55,5 +55,26 @@ class AdminsService {
 
     throw Exception('Failed to fetch admins (${response.statusCode})');
   }
+
+  Future<void> createAdmin(String email) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$_baseUrl/admins/create_admin');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'email': email, 'role': 'ADMIN'}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to create admin (${response.statusCode})';
+    throw Exception(detail);
+  }
 }
 

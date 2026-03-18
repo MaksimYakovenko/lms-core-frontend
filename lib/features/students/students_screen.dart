@@ -129,9 +129,9 @@ class _AdminsScreenState extends State<StudentsScreen> {
         builder: (ctx, setDialogState) => Form(
           key: formKey,
           child: AppDialog(
-            title: 'Create Teacher',
-            description: 'Enter the email address of the new teacher.',
-            confirmLabel: 'Create Teacher',
+            title: 'Create Student',
+            description: 'Enter the email address of the new student.',
+            confirmLabel: 'Create Student',
             confirmIcon: LucideIcons.circleCheck,
             isLoading: isLoading,
             onConfirm: () async {
@@ -141,8 +141,7 @@ class _AdminsScreenState extends State<StudentsScreen> {
                 apiError = null;
               });
               try {
-                // TODO: виклик API для створення адміна
-                await Future.delayed(const Duration(milliseconds: 500));
+                await _service.createStudent(emailController.text.trim());
                 if (ctx.mounted) {
                   Navigator.of(ctx).pop();
                   _load();
@@ -161,7 +160,7 @@ class _AdminsScreenState extends State<StudentsScreen> {
                 AppDialogField(
                   label: 'Email',
                   controller: emailController,
-                  hintText: 'teacher@example.com',
+                  hintText: 'student@example.com',
                   keyboardType: TextInputType.emailAddress,
                   validator: (val) {
                     if (val == null || val.trim().isEmpty) {
