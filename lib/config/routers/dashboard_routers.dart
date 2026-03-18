@@ -5,6 +5,7 @@ import 'package:lms_core_frontend/features/auth/login_screen.dart';
 import 'package:lms_core_frontend/features/auth/registry_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
+import 'package:lms_core_frontend/features/news/news_screen.dart';
 import 'package:lms_core_frontend/features/payment/payment_screen.dart';
 import 'package:lms_core_frontend/features/resources/resources_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
@@ -80,6 +81,11 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.groups.path}',
         name: ViewIdentifiers.groups.name,
         builder: (context, state) => const GroupsScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.news.path}',
+        name: ViewIdentifiers.news.name,
+        builder: (context, state) => const NewsScreen(),
       ),
     ],
   ),

@@ -12,6 +12,7 @@ const _studentPathToIndex = {
   '/tests': 2,
   '/resources': 3,
   '/payment': 4,
+  '/news': 5,
 };
 
 const _adminPathToIndex = {
@@ -19,6 +20,7 @@ const _adminPathToIndex = {
   '/admins': 1,
   '/students': 2,
   '/groups': 3,
+  '/news': 4,
 };
 
 class DashboardScreen extends StatelessWidget {
@@ -33,6 +35,7 @@ class DashboardScreen extends StatelessWidget {
     'tests',
     'resources',
     'payment',
+    'news',
   ];
 
   static const _adminIndexToRoute = [
@@ -40,6 +43,7 @@ class DashboardScreen extends StatelessWidget {
     'admins',
     'students',
     'groups',
+    'news',
   ];
 
   @override
@@ -49,12 +53,8 @@ class DashboardScreen extends StatelessWidget {
 
     final pathToIndex = isAdmin ? _adminPathToIndex : _studentPathToIndex;
     final indexToRoute = isAdmin ? _adminIndexToRoute : _studentIndexToRoute;
-
-    // Визначаємо активний індекс за поточним location
     final location = GoRouterState.of(context).uri.path;
     final selectedIndex = pathToIndex[location] ?? 0;
-
-    // Для auth-сторінок (login/registry) — показуємо тільки child без сайдбара
     final isAuthPage = location == '/login' || location == '/registry';
     if (isAuthPage) return child;
 

@@ -41,4 +41,6 @@ class ViewIdentifiers {
       const RouteDescriptor('students', path: 'students');
   static RouteDescriptor groups =
       const RouteDescriptor('groups', path: 'groups');
+  static RouteDescriptor news =
+      const RouteDescriptor('news', path: 'news');
 }

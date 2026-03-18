@@ -35,6 +35,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.clipboardList, label: 'Tests'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Resources'),
     _NavItem(icon: LucideIcons.creditCard, label: 'Payment'),
+    _NavItem(icon: LucideIcons.newspaper, label: 'News'),
   ];
 
   static const List<_NavItem> _adminNavItems = [
@@ -42,6 +43,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.shieldCheck, label: 'Admins'),
     _NavItem(icon: LucideIcons.users, label: 'Students'),
     _NavItem(icon: LucideIcons.layoutList, label: 'Groups'),
+    _NavItem(icon: LucideIcons.newspaper, label: 'News'),
   ];
 
   List<_NavItem> get _navItems {
