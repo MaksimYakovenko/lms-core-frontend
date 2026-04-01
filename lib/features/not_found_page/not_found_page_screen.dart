@@ -24,7 +24,7 @@ class NotFoundPageScreen extends StatelessWidget {
                         size: 20, color: Color(0xFFDC2626)),
                     SizedBox(width: 8),
                     Text(
-                      '404 — Page Not Found',
+                      '404 — Сторінку не знайдено',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -36,7 +36,7 @@ class NotFoundPageScreen extends StatelessWidget {
                 ),
                 description: const AppCardDescription(
                   text:
-                      "The page you're looking for doesn't exist or has been moved.",
+                      'Сторінка, яку ви шукаєте, не існує або була переміщена.',
                 ),
               ),
               AppCardContent(
@@ -68,7 +68,7 @@ class NotFoundPageScreen extends StatelessWidget {
                         children: const [
                           Icon(LucideIcons.house, size: 16),
                           SizedBox(width: 8),
-                          Text('Go to Home'),
+                          Text('На головну'),
                         ],
                       ),
                     ),
@@ -84,7 +84,7 @@ class NotFoundPageScreen extends StatelessWidget {
                         children: const [
                           Icon(LucideIcons.arrowLeft, size: 16),
                           SizedBox(width: 8),
-                          Text('Go Back'),
+                          Text('Назад'),
                         ],
                       ),
                     ),
@@ -98,4 +98,3 @@ class NotFoundPageScreen extends StatelessWidget {
     );
   }
 }
-

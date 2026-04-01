@@ -74,8 +74,8 @@ class DashboardScreen extends StatelessWidget {
               if (context.mounted) {
                 AppToast.info(
                   context,
-                  title: 'Signed out',
-                  description: 'You have been successfully signed out.',
+                  title: 'Вийшли із системи',
+                  description: 'Ви успішно вийшли з системи.',
                   alignment: Alignment.topRight,
                 );
                 context.goNamed(ViewIdentifiers.login.name);
@@ -91,5 +91,4 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
-
 

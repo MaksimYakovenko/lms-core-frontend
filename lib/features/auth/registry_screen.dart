@@ -65,7 +65,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
       if (mounted) {
         AppToast.error(
           context,
-          title: 'Failed to load captcha',
+          title: 'Помилка завантаження капчі',
           description: e.toString(),
         );
       }
@@ -87,11 +87,11 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validateEmail(String value) {
     if (value.isEmpty) {
-      _setError((v) => _emailError = v, 'Email is required');
+      _setError((v) => _emailError = v, 'Email є обов\'язковим');
       return false;
     }
     if (!ValidationPatterns.emailRegex.hasMatch(value)) {
-      _setError((v) => _emailError = v, 'Please enter a valid email address');
+      _setError((v) => _emailError = v, 'Введіть коректну email-адресу');
       return false;
     }
     _setError((v) => _emailError = v, '');
@@ -100,7 +100,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validateFirstName(String value) {
     if (value.trim().isEmpty) {
-      _setError((v) => _firstNameError = v, 'First name is required');
+      _setError((v) => _firstNameError = v, 'Ім\'я є обов\'язковим');
       return false;
     }
     _setError((v) => _firstNameError = v, '');
@@ -109,7 +109,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validateLastName(String value) {
     if (value.trim().isEmpty) {
-      _setError((v) => _lastNameError = v, 'Last name is required');
+      _setError((v) => _lastNameError = v, 'Прізвище є обов\'язковим');
       return false;
     }
     _setError((v) => _lastNameError = v, '');
@@ -118,12 +118,12 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validatePassword(String value) {
     if (value.isEmpty) {
-      _setError((v) => _passwordError = v, 'Password is required');
+      _setError((v) => _passwordError = v, 'Пароль є обов\'язковим');
       return false;
     }
     if (value.length < ValidationPatterns.minPasswordLength) {
       _setError((v) => _passwordError = v,
-          'Password must be at least ${ValidationPatterns.minPasswordLength} characters');
+          'Пароль має містити щонайменше ${ValidationPatterns.minPasswordLength} символів');
       return false;
     }
     _setError((v) => _passwordError = v, '');
@@ -132,7 +132,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validateBirthday() {
     if (_birthday == null) {
-      _setError((v) => _birthdayError = v, 'Birthday is required');
+      _setError((v) => _birthdayError = v, 'Дата народження є обов\'язковою');
       return false;
     }
     _setError((v) => _birthdayError = v, '');
@@ -141,7 +141,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
 
   bool _validateCaptcha(String value) {
     if (value.trim().isEmpty) {
-      _setError((v) => _captchaError = v, 'Captcha is required');
+      _setError((v) => _captchaError = v, 'Captcha є обов\'язковою');
       return false;
     }
     _setError((v) => _captchaError = v, '');
@@ -177,7 +177,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                       borderRadius: BorderRadius.circular(2),
                     ),                  ),
                   const Text(
-                    'Select Birthday',
+                    'Оберіть дату народження',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -245,7 +245,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                         ),
                       ),
                       child: const Text(
-                        'Confirm',
+                        'Підтвердити',
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -288,8 +288,8 @@ class _RegistryScreenState extends State<RegistryScreen> {
     if (_captchaId == null) {
       AppToast.error(
         context,
-        title: 'Captcha not loaded',
-        description: 'Please refresh the captcha and try again.',
+        title: 'Капча не завантажена',
+        description: 'Будь ласка, оновіть капчу та спробуйте ще раз.',
       );
       return;
     }
@@ -308,8 +308,8 @@ class _RegistryScreenState extends State<RegistryScreen> {
       if (mounted) {
         AppToast.success(
           context,
-          title: 'Registration successful!',
-          description: 'Please sign in to continue.',
+          title: 'Реєстрація успішна!',
+          description: 'Будь ласка, увійдіть у систему, щоб продовжити.',
         );
         context.goNamed(ViewIdentifiers.login.name);
       }
@@ -317,7 +317,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
       if (mounted) {
         AppToast.error(
           context,
-          title: 'Registration failed',
+          title: 'Помилка реєстрації',
           description: e.toString().replaceFirst('Exception: ', ''),
         );
         _loadCaptcha();
@@ -371,9 +371,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return AppCard(
       children: [
         AppCardHeader(
-          title: const AppCardTitle(text: 'Create account'),
+          title: const AppCardTitle(text: 'Створити акаунт'),
           description: const AppCardDescription(
-            text: 'Sign up to get started with EduPortal',
+            text: 'Зареєструйтесь, щоб почати роботу з EduPortal',
           ),
         ),
         AppCardContent(
@@ -412,11 +412,11 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppLabel(text: 'Email Address'),
+        const AppLabel(text: 'Електронна пошта'),
         const SizedBox(height: 8),
         AppInput(
           controller: _emailController,
-          hintText: 'teacher@school.edu.ng',
+          hintText: 'user@knu.ua',
           errorText: _emailError.isEmpty ? null : _emailError,
           keyboardType: TextInputType.emailAddress,
           onChanged: (v) {
@@ -432,11 +432,11 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppLabel(text: 'First Name'),
+        const AppLabel(text: 'Ім\'я'),
         const SizedBox(height: 8),
         AppInput(
           controller: _firstNameController,
-          hintText: 'John',
+          hintText: 'Іван',
           errorText: _firstNameError.isEmpty ? null : _firstNameError,
           onChanged: (v) {
             if (_firstNameError.isNotEmpty) _validateFirstName(v);
@@ -451,11 +451,11 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppLabel(text: 'Last Name'),
+        const AppLabel(text: 'Прізвище'),
         const SizedBox(height: 8),
         AppInput(
           controller: _lastNameController,
-          hintText: 'Adebayo',
+          hintText: 'Петренко',
           errorText: _lastNameError.isEmpty ? null : _lastNameError,
           onChanged: (v) {
             if (_lastNameError.isNotEmpty) _validateLastName(v);
@@ -470,11 +470,11 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppLabel(text: 'Password'),
+        const AppLabel(text: 'Пароль'),
         const SizedBox(height: 8),
         AppInput(
           controller: _passwordController,
-          hintText: 'Enter your password',
+          hintText: 'Введіть ваш пароль',
           errorText: _passwordError.isEmpty ? null : _passwordError,
           obscureText: !_showPassword,
           onChanged: (v) {
@@ -497,7 +497,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppLabel(text: 'Birthday'),
+        const AppLabel(text: 'Дата народження'),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: _pickBirthday,
@@ -544,7 +544,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                         errorBuilder: (context, error, stackTrace) {
                           return const Center(
                             child: Text(
-                              'Failed to load captcha image',
+                              'Не вдалося завантажити зображення капчі',
                               style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 12,
@@ -571,7 +571,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
                   size: 24,
                 ),
                 label: const Text(
-                  'Refresh',
+                  'Оновити',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -584,7 +584,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
         ],
         AppInput(
           controller: _captchaController,
-          hintText: 'Enter captcha text',
+          hintText: 'Введіть текст капчі',
           errorText: _captchaError.isEmpty ? null : _captchaError,
           onChanged: (v) {
             if (_captchaError.isNotEmpty) _validateCaptcha(v);
@@ -602,7 +602,7 @@ class _RegistryScreenState extends State<RegistryScreen> {
         onPressed: _handleSubmit,
         variant: ButtonVariant.primary,
         size: ButtonSize.lg,
-        child: const Text('Sign Up'),
+        child: const Text('Зареєструватись'),
       ),
     );
   }
@@ -612,13 +612,13 @@ class _RegistryScreenState extends State<RegistryScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Already have an account?',
+          'Вже маєте акаунт?',
           style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
         TextButton(
           onPressed: () => context.goNamed(ViewIdentifiers.login.name),
           child: const Text(
-            'Sign In',
+            'Увійти',
             style: TextStyle(fontSize: 13, color: AppColors.accent),
           ),
         ),

@@ -32,8 +32,8 @@ class LoginScreen extends StatelessWidget {
               if (success && context.mounted) {
                 AppToast.success(
                   context,
-                  title: 'Welcome back!',
-                  description: 'You have successfully signed in.',
+                  title: 'Ласкаво просимо!',
+                  description: 'Ви успішно увійшли в систему.',
                 );
                 context.goNamed(ViewIdentifiers.home.name);
               }
@@ -79,7 +79,7 @@ class _LoginFormState extends State<LoginForm> {
         if (mounted) {
           AppToast.error(
             context,
-            title: 'Sign in failed',
+            title: 'Помилка входу',
             description: widget.error,
           );
         }
@@ -99,11 +99,11 @@ class _LoginFormState extends State<LoginForm> {
 
   bool validateEmail(String email) {
     if (email.isEmpty) {
-      _setEmailError('Email is required');
+      _setEmailError('Email є обов\'язковим');
       return false;
     }
     if (!ValidationPatterns.emailRegex.hasMatch(email)) {
-      _setEmailError('Please enter a valid email address');
+      _setEmailError('Введіть коректну email-адресу');
       return false;
     }
     _setEmailError('');
@@ -112,11 +112,11 @@ class _LoginFormState extends State<LoginForm> {
 
   bool validatePassword(String password) {
     if (password.isEmpty) {
-      _setPasswordError('Password is required');
+      _setPasswordError('Пароль є обов\'язковим');
       return false;
     }
     if (password.length < ValidationPatterns.minPasswordLength) {
-      _setPasswordError('Password must be at least ${ValidationPatterns.minPasswordLength} characters');
+      _setPasswordError('Пароль має містити щонайменше ${ValidationPatterns.minPasswordLength} символів');
       return false;
     }
     _setPasswordError('');
@@ -166,7 +166,7 @@ class _LoginFormState extends State<LoginForm> {
                       _buildLoginCard(),
                       const SizedBox(height: 24),
                       const Text(
-                        '© 2026 EduPortal. Designed for Nigerian Secondary Schools',
+                        '© 2026 EduPortal. Розроблено для навчальних закладів',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
@@ -189,9 +189,9 @@ class _LoginFormState extends State<LoginForm> {
     return AppCard(
       children: [
         AppCardHeader(
-          title: const AppCardTitle(text: 'Welcome back'),
+          title: const AppCardTitle(text: 'Ласкаво просимо'),
           description: const AppCardDescription(
-            text: 'Sign in to your teacher account to continue',
+            text: 'Увійдіть, використовуючи свій шкільний email та пароль',
           ),
         ),
         AppCardContent(
@@ -222,11 +222,11 @@ class _LoginFormState extends State<LoginForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppLabel(text: 'Email Address', disabled: widget.isLoading),
+        AppLabel(text: 'Адрес електронної пошти', disabled: widget.isLoading),
         const SizedBox(height: 8),
         AppInput(
           controller: _emailController,
-          hintText: 'teacher@school.edu.ng',
+          hintText: 'user@knu.ua',
           errorText: _emailError.isEmpty ? null : _emailError,
           enabled: !widget.isLoading,
           keyboardType: TextInputType.emailAddress,
@@ -235,7 +235,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 6),
         const Text(
-          'Use your school email address (.edu.ng)',
+          'Використовуйте вашу робочу пошту (knu.ua)',
           style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
@@ -248,12 +248,12 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         Row(
           children: [
-            AppLabel(text: 'Password', disabled: widget.isLoading),
+            AppLabel(text: 'Пароль', disabled: widget.isLoading),
             const Spacer(),
             TextButton(
               onPressed: widget.isLoading ? null : _showForgotPasswordSnackBar,
               child: const Text(
-                'Forgot password?',
+                'Забули пароль?',
                 style: TextStyle(fontSize: 12, color: AppColors.accent),
               ),
             ),
@@ -262,7 +262,7 @@ class _LoginFormState extends State<LoginForm> {
         const SizedBox(height: 8),
         AppInput(
           controller: _passwordController,
-          hintText: 'Enter your password',
+          hintText: 'Введіть ваш пароль',
           errorText: _passwordError.isEmpty ? null : _passwordError,
           enabled: !widget.isLoading,
           obscureText: !_showPassword,
@@ -286,7 +286,7 @@ class _LoginFormState extends State<LoginForm> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'Please contact your school administrator to reset your password.',
+          'Будь ласка зв\'яжіться з адміністратором для скидання пароля.',
         ),
       ),
     );
@@ -300,7 +300,7 @@ class _LoginFormState extends State<LoginForm> {
         variant: ButtonVariant.primary,
         size: ButtonSize.lg,
         isLoading: widget.isLoading,
-        child: const Text('Sign In'),
+        child: const Text('Увійти'),
       ),
     );
   }
@@ -318,15 +318,13 @@ class _LoginFormState extends State<LoginForm> {
           children: [
             Icon(LucideIcons.userPlus, size: 18),
             SizedBox(width: 8),
-            Text('Sign up'),
+            Text('Зареєструватись'),
           ],
         ),
       ),
     );
   }
 }
-
-// ── Приватні stateless-підвіджети ─────────────────────────────────────────────
 
 class _MobileLogo extends StatelessWidget {
   const _MobileLogo();
@@ -360,7 +358,7 @@ class _MobileLogo extends StatelessWidget {
                 ),
               ),
               Text(
-                'Teacher Portal',
+                'Портал користувача',
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
               ),
             ],
@@ -382,7 +380,7 @@ class _OrDivider extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            "Don't have an account?",
+            "Немає акаунта?",
             style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
         ),
@@ -410,15 +408,15 @@ class _InfoBox extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.5),
           children: [
             TextSpan(
-              text: 'For Teachers: ',
+              text: 'Для викадачів: ',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
             TextSpan(
-              text: 'Use your school-issued email to sign in. '
-                  'Contact your administrator if you need assistance.',
+              text: 'Використовуйте для входу електронну адресу виданою університетом. '
+                  'Зверніться до адміністраторів, якщо вам потрібна допомога.',
             ),
           ],
         ),

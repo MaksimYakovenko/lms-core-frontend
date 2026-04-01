@@ -7,10 +7,9 @@ class GroupsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Groups',
+        'Групи',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );
   }
 }
-

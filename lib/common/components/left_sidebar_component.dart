@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class LeftSidebarComponent extends StatefulWidget {
   final int selectedIndex;
@@ -30,20 +30,20 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
 
 
   static const List<_NavItem> _studentNavItems = [
-    _NavItem(icon: LucideIcons.house, label: 'Home'),
-    _NavItem(icon: LucideIcons.fileText, label: 'Results'),
-    _NavItem(icon: LucideIcons.clipboardList, label: 'Tests'),
-    _NavItem(icon: LucideIcons.bookOpen, label: 'Resources'),
-    _NavItem(icon: LucideIcons.creditCard, label: 'Payment'),
-    _NavItem(icon: LucideIcons.newspaper, label: 'News'),
+    _NavItem(icon: LucideIcons.house, label: 'Головна'),
+    _NavItem(icon: LucideIcons.fileText, label: 'Результати'),
+    _NavItem(icon: LucideIcons.clipboardList, label: 'Тести'),
+    _NavItem(icon: LucideIcons.bookOpen, label: 'Ресурси'),
+    _NavItem(icon: LucideIcons.creditCard, label: 'Оплата'),
+    _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
   ];
 
   static const List<_NavItem> _adminNavItems = [
-    _NavItem(icon: LucideIcons.graduationCap, label: 'Teachers'),
-    _NavItem(icon: LucideIcons.shieldCheck, label: 'Admins'),
-    _NavItem(icon: LucideIcons.users, label: 'Students'),
-    _NavItem(icon: LucideIcons.layoutList, label: 'Groups'),
-    _NavItem(icon: LucideIcons.newspaper, label: 'News'),
+    _NavItem(icon: LucideIcons.graduationCap, label: 'Викладачі'),
+    _NavItem(icon: LucideIcons.shieldCheck, label: 'Адміністратори'),
+    _NavItem(icon: LucideIcons.users, label: 'Студенти'),
+    _NavItem(icon: LucideIcons.layoutList, label: 'Групи'),
+    _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
   ];
 
   List<_NavItem> get _navItems {
@@ -64,7 +64,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(24), // p-6
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(color: AppColors.sidebarBorder, width: 1),
@@ -89,27 +89,32 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                   ),
                 ),
                 const SizedBox(width: 12), // gap-3
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'EduPortal',
-                      style: TextStyle(
-                        color: AppColors.sidebarText,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.2,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'EduPortal',
+                        style: TextStyle(
+                          color: AppColors.sidebarText,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.2,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Teacher Dashboard',
-                      style: TextStyle(
-                        color: AppColors.sidebarSubtitle,
-                        fontSize: 14,
+                      SizedBox(height: 2),
+                      Text(
+                        'Електронний журнал для навчальних закладів',
+                        style: TextStyle(
+                          color: AppColors.sidebarSubtitle,
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -203,7 +208,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                   // Logout button
                   _NavTile(
                     icon: LucideIcons.logOut,
-                    label: 'Logout',
+                    label: 'Вийти з акаунту',
                     isActive: false,
                     activeColor: AppColors.sidebarActive,
                     textColor: AppColors.sidebarText,
@@ -213,7 +218,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
                 ] else ...[
                   _NavTile(
                     icon: LucideIcons.logIn,
-                    label: 'Sign In',
+                    label: 'Увійти',
                     isActive: false,
                     activeColor: AppColors.sidebarActive,
                     textColor: AppColors.sidebarText,

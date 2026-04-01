@@ -7,10 +7,9 @@ class TestsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Tests',
+        'Тести',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );
   }
 }
-

@@ -7,10 +7,9 @@ class ResourcesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Resources',
+        'Ресурси',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );
   }
 }
-

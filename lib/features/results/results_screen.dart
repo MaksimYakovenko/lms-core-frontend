@@ -70,16 +70,16 @@ final _mockStudents = List.generate(23, (i) {
 // ── Колонки ──────────────────────────────────────────────────────────────────
 
 const _kColumns = [
-  AppTableColumn(label: 'Student ID', width: FlexColumnWidth(1.4)),
-  AppTableColumn(label: 'Student Name', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Math', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'English', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Science', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Total', width: FlexColumnWidth(0.9), center: true),
-  AppTableColumn(label: 'Average', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Position', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Status', width: FlexColumnWidth(1.2), center: true),
-  AppTableColumn(label: 'Actions', width: FlexColumnWidth(0.8), right: true),
+  AppTableColumn(label: 'ID Студента', width: FlexColumnWidth(1.4)),
+  AppTableColumn(label: 'Ім\'я студента', width: FlexColumnWidth(2.0)),
+  AppTableColumn(label: 'Математика', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Англійська', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Природознавство', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Сума', width: FlexColumnWidth(0.9), center: true),
+  AppTableColumn(label: 'Середнє', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Місце', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.2), center: true),
+  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
 ];
 
 // ── ResultsScreen ────────────────────────────────────────────────────────────
@@ -147,9 +147,9 @@ class _ResultsScreenState extends State<ResultsScreen> {
       child: AppCard(
         children: [
           AppCardHeader(
-            title: const AppCardTitle(text: 'Student Results'),
+            title: const AppCardTitle(text: 'Результати студентів'),
             description: const AppCardDescription(
-              text: 'Academic performance overview',
+              text: 'Огляд успішності',
             ),
           ),
           AppCardContent(
@@ -252,9 +252,9 @@ class _StatusCell extends StatelessWidget {
       };
 
   String get _label => switch (status) {
-        StudentStatus.passed => 'Passed',
-        StudentStatus.failed => 'Failed',
-        StudentStatus.pending => 'Pending',
+        StudentStatus.passed => 'Здав',
+        StudentStatus.failed => 'Не здав',
+        StudentStatus.pending => 'Очікується',
       };
 
   @override
@@ -293,26 +293,22 @@ class _ActionsMenu extends StatelessWidget {
       onSelected: (action) => _onAction(context, action),
       itemBuilder: (_) => const [
         PopupMenuItem(
-            value: _Action.view,
-            child: _MenuItem(icon: LucideIcons.eye, label: 'View Details')),
-        PopupMenuItem(
             value: _Action.edit,
-            child: _MenuItem(icon: LucideIcons.pencil, label: 'Edit Results')),
+            child: _MenuItem(icon: LucideIcons.pencil, label: 'Редагувати результати')),
         PopupMenuItem(
             value: _Action.download,
             child: _MenuItem(
-                icon: LucideIcons.download, label: 'Download Report')),
+                icon: LucideIcons.download, label: 'Завантажити звіт')),
         PopupMenuItem(
             value: _Action.delete,
             child: _MenuItem(
-                icon: LucideIcons.trash2, label: 'Delete', color: _kRed600)),
+                icon: LucideIcons.trash2, label: 'Видалити', color: _kRed600)),
       ],
     );
   }
 
   void _onAction(BuildContext context, _Action action) {
     final msg = switch (action) {
-      _Action.view => 'View: ${student.name}',
       _Action.edit => 'Edit: ${student.name}',
       _Action.download => 'Download: ${student.name}',
       _Action.delete => 'Delete: ${student.name}',
@@ -322,7 +318,7 @@ class _ActionsMenu extends StatelessWidget {
   }
 }
 
-enum _Action { view, edit, download, delete }
+enum _Action { edit, download, delete }
 
 class _MenuItem extends StatelessWidget {
   const _MenuItem(

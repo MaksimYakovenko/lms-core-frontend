@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:lms_core_frontend/features/students/students_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
-import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_dialog.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
+import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 
 
 
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
-  AppTableColumn(label: 'Name', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Email', width: FlexColumnWidth(2.5)),
-  AppTableColumn(label: 'Role', width: FlexColumnWidth(1.0), center: true),
+  AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
+  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.5)),
+  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.0), center: true),
   AppTableColumn(
-    label: 'Last Login',
+    label: 'Останній вхід',
     width: FlexColumnWidth(2.0),
     center: true,
   ),
-  AppTableColumn(label: 'Actions', width: FlexColumnWidth(0.8), right: true),
+  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
 ];
 
 class StudentsScreen extends StatefulWidget {
@@ -110,85 +110,13 @@ class _AdminsScreenState extends State<StudentsScreen> {
         ),
         _RoleBadge(role: a.role),
         _LastLoginCell(lastLogin: a.lastLogin),
-        _AdminActionsMenu(admin: a, onRefresh: _load),
+        _AdminActionsMenu(admin: a, onRefresh: _load, service: _service),
       ]
       as List<Widget>,
     )
         .toList();
   }
 
-  void _showCreateAdminDialog(BuildContext context) {
-    final emailController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    String? apiError;
-    bool isLoading = false;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => Form(
-          key: formKey,
-          child: AppDialog(
-            title: 'Create Student',
-            description: 'Enter the email address of the new student.',
-            confirmLabel: 'Create Student',
-            confirmIcon: LucideIcons.circleCheck,
-            isLoading: isLoading,
-            onConfirm: () async {
-              if (!(formKey.currentState?.validate() ?? false)) return;
-              setDialogState(() {
-                isLoading = true;
-                apiError = null;
-              });
-              try {
-                await _service.createStudent(emailController.text.trim());
-                if (ctx.mounted) {
-                  Navigator.of(ctx).pop();
-                  _load();
-                }
-              } catch (e) {
-                setDialogState(() {
-                  apiError = e.toString().replaceFirst('Exception: ', '');
-                  isLoading = false;
-                });
-              }
-            },
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppDialogField(
-                  label: 'Email',
-                  controller: emailController,
-                  hintText: 'student@example.com',
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (val) {
-                    if (val == null || val.trim().isEmpty) {
-                      return 'Email is required';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(val.trim())) {
-                      return 'Enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
-                if (apiError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    apiError!,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.red600,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    ).whenComplete(() => emailController.dispose());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,47 +125,22 @@ class _AdminsScreenState extends State<StudentsScreen> {
       child: AppCard(
         children: [
           AppCardHeader(
-            title: const AppCardTitle(text: 'Students'),
+            title: const AppCardTitle(text: 'Студенти'),
             description: const AppCardDescription(
-              text: 'Manage student accounts',
+              text: 'Керування обліковими записами студентів',
             ),
           ),
           AppCardContent(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 320,
-                  child: _SearchField(
-                    controller: _searchController,
-                    onChanged:
-                        (val) => setState(() {
-                      _search = val;
-                      _currentPage = 1;
-                    }),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: AppButton(
-                    variant: ButtonVariant.outline,
-                    size: ButtonSize.lg,
-                    onPressed: () => _showCreateAdminDialog(context),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.userRoundPlus, size: 20,
-                          color: AppColors.gray900,
-                        ),
-                        SizedBox(width: 6),
-                        Text('Create Student'),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+            child: SizedBox(
+              width: 320,
+              child: _SearchField(
+                controller: _searchController,
+                onChanged:
+                    (val) => setState(() {
+                  _search = val;
+                  _currentPage = 1;
+                }),
+              ),
             ),
           ),
           AppCardContent(
@@ -252,7 +155,7 @@ class _AdminsScreenState extends State<StudentsScreen> {
               currentPage: _currentPage,
               itemsPerPage: _itemsPerPage,
               isLoading: _isLoading,
-              emptyText: 'No students found',
+              emptyText: 'Студентів не знайдено',
               onPageChange: (p) => setState(() => _currentPage = p),
             ),
           ),
@@ -294,7 +197,7 @@ class _LastLoginCell extends StatelessWidget {
   final String? lastLogin;
 
   String get _formatted {
-    if (lastLogin == null) return 'Never';
+    if (lastLogin == null) return 'Ніколи';
     try {
       final dt = DateTime.parse(lastLogin!).toLocal();
       return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-'
@@ -331,10 +234,11 @@ class _LastLoginCell extends StatelessWidget {
 }
 
 class _AdminActionsMenu extends StatelessWidget {
-  const _AdminActionsMenu({required this.admin, required this.onRefresh});
+  const _AdminActionsMenu({required this.admin, required this.onRefresh, required this.service});
 
   final StudentUser admin;
   final VoidCallback onRefresh;
+  final StudentsService service;
 
   @override
   Widget build(BuildContext context) {
@@ -352,21 +256,16 @@ class _AdminActionsMenu extends StatelessWidget {
       ),
       elevation: 4,
       onSelected: (action) => _onAction(context, action),
-      itemBuilder:
-          (_) => const [
-        PopupMenuItem(
-          value: _Action.view,
-          child: _MenuItem(icon: LucideIcons.eye, label: 'View Details'),
-        ),
+      itemBuilder: (_) => const [
         PopupMenuItem(
           value: _Action.edit,
-          child: _MenuItem(icon: LucideIcons.pencil, label: 'Edit Teacher'),
+          child: _MenuItem(icon: LucideIcons.pencil, label: 'Редагувати'),
         ),
         PopupMenuItem(
           value: _Action.delete,
           child: _MenuItem(
             icon: LucideIcons.trash2,
-            label: 'Delete',
+            label: 'Видалити',
             color: AppColors.red600,
           ),
         ),
@@ -375,18 +274,80 @@ class _AdminActionsMenu extends StatelessWidget {
   }
 
   void _onAction(BuildContext context, _Action action) {
-    final msg = switch (action) {
-      _Action.view => 'View: ${admin.email}',
-      _Action.edit => 'Edit: ${admin.email}',
-      _Action.delete => 'Delete: ${admin.email}',
-    };
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
+    if (action == _Action.delete) {
+      _showDeleteDialog(context);
+    }
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    bool isLoading = false;
+    String? apiError;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AppDialog(
+          title: 'Видалити студента',
+          description: 'Ця дія незворотна. Обліковий запис буде видалено назавжди.',
+          confirmLabel: 'Видалити',
+          confirmIcon: LucideIcons.trash2,
+          isLoading: isLoading,
+          onConfirm: () async {
+            setDialogState(() {
+              isLoading = true;
+              apiError = null;
+            });
+            try {
+              await service.deleteStudent(admin.id);
+              if (ctx.mounted) {
+                Navigator.of(ctx).pop();
+                onRefresh();
+                AppToast.success(
+                  ctx,
+                  title: 'Студента видалено',
+                  description: '${admin.name.isEmpty ? admin.email : admin.name} успішно видалено.',
+                );
+              }
+            } catch (e) {
+              setDialogState(() {
+                apiError = e.toString().replaceFirst('Exception: ', '');
+                isLoading = false;
+              });
+            }
+          },
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 14, color: AppColors.gray700, height: 1.5),
+                  children: [
+                    const TextSpan(text: 'Ви впевнені, що хочете видалити студента '),
+                    TextSpan(
+                      text: admin.name.isEmpty ? admin.email : admin.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.gray900),
+                    ),
+                    const TextSpan(text: '?'),
+                  ],
+                ),
+              ),
+              if (apiError != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  apiError!,
+                  style: const TextStyle(fontSize: 13, color: AppColors.red600),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
-enum _Action { view, edit, delete }
+enum _Action { edit, delete }
 
 class _MenuItem extends StatelessWidget {
   const _MenuItem({
@@ -427,7 +388,7 @@ class _SearchField extends StatelessWidget {
           onChanged: onChanged,
           style: const TextStyle(fontSize: 14, color: AppColors.gray900),
           decoration: InputDecoration(
-            hintText: 'Search by name or ID...',
+            hintText: 'Пошук по імені чи ID...',
             hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
             contentPadding: const EdgeInsets.only(
               left: 40,
@@ -487,7 +448,7 @@ class _ErrorBody extends StatelessWidget {
           TextButton.icon(
             onPressed: onRetry,
             icon: const Icon(LucideIcons.refreshCw, size: 15),
-            label: const Text('Retry'),
+            label: const Text('Повторити спробу'),
           ),
         ],
       ),

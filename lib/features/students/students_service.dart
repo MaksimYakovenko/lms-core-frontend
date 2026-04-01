@@ -77,5 +77,26 @@ class StudentsService {
     final detail = body['detail'] ?? 'Failed to create admin (${response.statusCode})';
     throw Exception(detail);
   }
+
+  Future<void> deleteStudent(int id) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$_baseUrl/students/delete_student/$id')
+        .replace(queryParameters: {'student_id': '$id'});
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to delete student (${response.statusCode})';
+    throw Exception(detail);
+  }
 }
 

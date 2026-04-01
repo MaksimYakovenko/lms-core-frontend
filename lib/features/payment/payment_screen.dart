@@ -7,10 +7,9 @@ class PaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Payment',
+        'Оплата',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );
   }
 }
-

@@ -82,7 +82,7 @@ class LeftBrandingSection extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Teacher Management System',
+                          'Система електронного журналу',
                           style: TextStyle(
                             color: Color(0xFFDCFCE7),
                             fontSize: 14,
@@ -94,7 +94,7 @@ class LeftBrandingSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 72),
                 const Text(
-                  'Empowering Education\nAcross Nigeria',
+                  'Розширення можливостей освіти з EduPortal',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
@@ -106,7 +106,7 @@ class LeftBrandingSection extends StatelessWidget {
                 const SizedBox(
                   width: 460,
                   child: Text(
-                    'Manage student results, create CBT exams, upload resources, and track assessments—all in one comprehensive platform.',
+                    'Керуйте навчальним процесом ефективно з нашим електронним журналом. Від управління результатами до створення комп\'ютерних тестів - все в одному місці.',
                     style: TextStyle(
                       color: Color(0xFFDCFCE7),
                       fontSize: 18,
@@ -116,21 +116,21 @@ class LeftBrandingSection extends StatelessWidget {
                 ),
                 const Spacer(),
                 const _FeatureItem(
-                  title: 'Results Management',
+                  title: 'Керування результатами',
                   description:
-                  'Upload and manage student results by class and subject',
+                  'Ведіть облік відвідуваності, оцінок та успішності учнів у реальному часі — зручно, просто та доступно будь-коли.',
                 ),
                 const SizedBox(height: 20),
                 const _FeatureItem(
-                  title: 'CBT Exams',
+                  title: 'Комп\'ютерні тести',
                   description:
-                  'Create and schedule computer-based tests with ease',
+                  'Створюйте інтерактивні комп\'ютерні тести з різними типами завдань для ефективного оцінювання знань учнів.',
                 ),
                 const SizedBox(height: 20),
                 const _FeatureItem(
-                  title: 'Resource Library',
+                  title: 'Ресурси для навчання',
                   description:
-                  'Share academic materials, videos, and past questions',
+                  'Діліться навчальними матеріалами, завданнями та ресурсами з учнями та колегами.',
                 ),
               ],
             ),

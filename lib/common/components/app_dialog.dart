@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
-
-const _kGray200 = Color(0xFFE5E7EB);
-const _kGray400 = Color(0xFF9CA3AF);
-const _kGray700 = Color(0xFF374151);
-const _kGray900 = Color(0xFF111827);
-const _kRed600  = Color(0xFFDC2626);
+import 'package:lms_core_frontend/common/constants/colors.dart';
 
 
 class AppDialog extends StatelessWidget {
@@ -87,7 +82,7 @@ class AppDialog extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: _kGray900,
+                          color: AppColors.gray900,
                           height: 1.2,
                         ),
                       ),
@@ -97,7 +92,7 @@ class AppDialog extends StatelessWidget {
                           description!,
                           style: const TextStyle(
                             fontSize: 14,
-                            color: _kGray400,
+                            color: AppColors.gray400,
                             height: 1.4,
                           ),
                         ),
@@ -115,7 +110,7 @@ class AppDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       color: Colors.transparent,
                     ),
-                    child: const Icon(LucideIcons.x, size: 16, color: _kGray700),
+                    child: const Icon(LucideIcons.x, size: 16, color: AppColors.gray700),
                   ),
                 ),
               ],
@@ -129,7 +124,7 @@ class AppDialog extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ── Separator ────────────────────────────────────────────────────
-            const Divider(height: 1, color: _kGray200),
+            const Divider(height: 1, color: AppColors.gray200),
             const SizedBox(height: 16),
 
             // ── DialogFooter ─────────────────────────────────────────────────
@@ -171,7 +166,6 @@ class AppDialog extends StatelessWidget {
 
 // ── AppDialogField ────────────────────────────────────────────────────────────
 
-/// Стилізоване поле вводу для використання всередині AppDialog.
 class AppDialogField extends StatelessWidget {
   const AppDialogField({
     super.key,
@@ -200,7 +194,7 @@ class AppDialogField extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color: _kGray900,
+            color: AppColors.gray900,
             height: 1.0,
           ),
         ),
@@ -209,11 +203,11 @@ class AppDialogField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureText,
-          style: const TextStyle(fontSize: 14, color: _kGray900),
+          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
           validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(fontSize: 14, color: _kGray400),
+            hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 10,
@@ -222,26 +216,26 @@ class AppDialogField extends StatelessWidget {
             fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kGray200),
+              borderSide: const BorderSide(color: AppColors.gray200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kGray200),
+              borderSide: const BorderSide(color: AppColors.gray200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
               borderSide: const BorderSide(
-                color: Color(0xFF93C5FD),
+                color: AppColors.inputFocusBorder,
                 width: 1.5,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kRed600),
+              borderSide: const BorderSide(color: AppColors.red600),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: _kRed600, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.red600, width: 1.5),
             ),
           ),
         ),
