@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lms_core_frontend/features/students/students_service.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
-import 'package:lms_core_frontend/common/components/app_dialog.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
-import 'package:lms_core_frontend/common/components/app_toast_component.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
-
-
+import 'package:lms_core_frontend/features/students/widgets/student_role_badge.dart';
+import 'package:lms_core_frontend/features/students/widgets/student_last_login_cell.dart';
+import 'package:lms_core_frontend/features/students/widgets/student_action_menu.dart';
+import 'package:lms_core_frontend/features/students/widgets/student_search_field.dart';
+import 'package:lms_core_frontend/features/students/widgets/student_error_body.dart';
 
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
   AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
   AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.5)),
   AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(
-    label: 'Останній вхід',
-    width: FlexColumnWidth(2.0),
-    center: true,
-  ),
+  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(2.0), center: true),
   AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
 ];
 
@@ -26,10 +22,10 @@ class StudentsScreen extends StatefulWidget {
   const StudentsScreen({super.key});
 
   @override
-  State<StudentsScreen> createState() => _AdminsScreenState();
+  State<StudentsScreen> createState() => _StudentsScreenState();
 }
 
-class _AdminsScreenState extends State<StudentsScreen> {
+class _StudentsScreenState extends State<StudentsScreen> {
   static const _itemsPerPage = 8;
 
   final _service = StudentsService();
@@ -45,12 +41,15 @@ class _AdminsScreenState extends State<StudentsScreen> {
     if (_search.isEmpty) return _students;
     final q = _search.toLowerCase();
     return _students
-        .where(
-          (a) =>
-      a.name.toLowerCase().contains(q) ||
-          a.email.toLowerCase().contains(q),
-    )
+        .where((a) => a.name.toLowerCase().contains(q) || a.email.toLowerCase().contains(q))
         .toList();
+  }
+
+  List<StudentUser> get _paginated {
+    final all = _filtered;
+    final start = (_currentPage - 1) * _itemsPerPage;
+    final end = (start + _itemsPerPage).clamp(0, all.length);
+    return all.sublist(start, end);
   }
 
   @override
@@ -66,10 +65,7 @@ class _AdminsScreenState extends State<StudentsScreen> {
   }
 
   Future<void> _load() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+    setState(() { _isLoading = true; _error = null; });
     try {
       final data = await _service.getStudents();
       setState(() => _students = data);
@@ -80,43 +76,19 @@ class _AdminsScreenState extends State<StudentsScreen> {
     }
   }
 
-  List<StudentUser> get _paginated {
-    final all = _filtered;
-    final start = (_currentPage - 1) * _itemsPerPage;
-    final end = (start + _itemsPerPage).clamp(0, all.length);
-    return all.sublist(start, end);
-  }
-
   List<List<Widget>> _buildRows(List<StudentUser> page) {
-    return page
-        .map(
-          (a) =>
-      [
-        Text(
-          '${a.id}',
-          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
-        ),
-        Text(
-          a.name.isEmpty ? '—' : a.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: AppColors.gray900,
-          ),
-        ),
-        Text(
-          a.email,
-          style: const TextStyle(fontSize: 14, color: AppColors.gray700),
-        ),
-        _RoleBadge(role: a.role),
-        _LastLoginCell(lastLogin: a.lastLogin),
-        _AdminActionsMenu(admin: a, onRefresh: _load, service: _service),
-      ]
-      as List<Widget>,
-    )
-        .toList();
+    return page.map((a) => [
+      Text('${a.id}', style: const TextStyle(fontSize: 14, color: AppColors.gray900)),
+      Text(
+        a.name.isEmpty ? '—' : a.name,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.gray900),
+      ),
+      Text(a.email, style: const TextStyle(fontSize: 14, color: AppColors.gray700)),
+      StudentRoleBadge(role: a.role),
+      StudentLastLoginCell(lastLogin: a.lastLogin),
+      StudentActionMenu(student: a, onRefresh: _load, service: _service),
+    ] as List<Widget>).toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,329 +98,31 @@ class _AdminsScreenState extends State<StudentsScreen> {
         children: [
           AppCardHeader(
             title: const AppCardTitle(text: 'Студенти'),
-            description: const AppCardDescription(
-              text: 'Керування обліковими записами студентів',
-            ),
+            description: const AppCardDescription(text: 'Керування обліковими записами студентів'),
           ),
           AppCardContent(
             child: SizedBox(
               width: 320,
-              child: _SearchField(
+              child: StudentSearchField(
                 controller: _searchController,
-                onChanged:
-                    (val) => setState(() {
-                  _search = val;
-                  _currentPage = 1;
-                }),
+                onChanged: (val) => setState(() { _search = val; _currentPage = 1; }),
               ),
             ),
           ),
           AppCardContent(
             isLast: true,
-            child:
-            _error != null
-                ? _ErrorBody(error: _error!, onRetry: _load)
+            child: _error != null
+                ? StudentErrorBody(error: _error!, onRetry: _load)
                 : AppTable(
-              columns: _kColumns,
-              rows: _isLoading ? [] : _buildRows(_paginated),
-              totalCount: _filtered.length,
-              currentPage: _currentPage,
-              itemsPerPage: _itemsPerPage,
-              isLoading: _isLoading,
-              emptyText: 'Студентів не знайдено',
-              onPageChange: (p) => setState(() => _currentPage = p),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RoleBadge extends StatelessWidget {
-  const _RoleBadge({required this.role});
-
-  final String role;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: AppColors.roleBadgeBg,
-        border: Border.all(color: AppColors.roleBadgeBorder),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        role,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: AppColors.roleBadgeText,
-        ),
-      ),
-    );
-  }
-}
-
-class _LastLoginCell extends StatelessWidget {
-  const _LastLoginCell({required this.lastLogin});
-
-  final String? lastLogin;
-
-  String get _formatted {
-    if (lastLogin == null) return 'Ніколи';
-    try {
-      final dt = DateTime.parse(lastLogin!).toLocal();
-      return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-'
-          '${dt.day.toString().padLeft(2, '0')}  '
-          '${dt.hour.toString().padLeft(2, '0')}:'
-          '${dt.minute.toString().padLeft(2, '0')}';
-    } catch (_) {
-      return lastLogin!;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isNever = lastLogin == null;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          isNever ? LucideIcons.circleMinus : LucideIcons.clock,
-          size: 14,
-          color: isNever ? AppColors.gray400 : AppColors.green700,
-        ),
-        const SizedBox(width: 5),
-        Text(
-          _formatted,
-          style: TextStyle(
-            fontSize: 13,
-            color: isNever ? AppColors.gray400 : AppColors.gray700,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AdminActionsMenu extends StatelessWidget {
-  const _AdminActionsMenu({required this.admin, required this.onRefresh, required this.service});
-
-  final StudentUser admin;
-  final VoidCallback onRefresh;
-  final StudentsService service;
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<_Action>(
-      icon: const Icon(
-        LucideIcons.ellipsisVertical,
-        size: 16,
-        color: AppColors.gray700,
-      ),
-      iconSize: 16,
-      padding: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: const BorderSide(color: AppColors.gray200),
-      ),
-      elevation: 4,
-      onSelected: (action) => _onAction(context, action),
-      itemBuilder: (_) => const [
-        PopupMenuItem(
-          value: _Action.edit,
-          child: _MenuItem(icon: LucideIcons.pencil, label: 'Редагувати'),
-        ),
-        PopupMenuItem(
-          value: _Action.delete,
-          child: _MenuItem(
-            icon: LucideIcons.trash2,
-            label: 'Видалити',
-            color: AppColors.red600,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _onAction(BuildContext context, _Action action) {
-    if (action == _Action.delete) {
-      _showDeleteDialog(context);
-    }
-  }
-
-  void _showDeleteDialog(BuildContext context) {
-    bool isLoading = false;
-    String? apiError;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AppDialog(
-          title: 'Видалити студента',
-          description: 'Ця дія незворотна. Обліковий запис буде видалено назавжди.',
-          confirmLabel: 'Видалити',
-          confirmIcon: LucideIcons.trash2,
-          isLoading: isLoading,
-          onConfirm: () async {
-            setDialogState(() {
-              isLoading = true;
-              apiError = null;
-            });
-            try {
-              await service.deleteStudent(admin.id);
-              if (ctx.mounted) {
-                Navigator.of(ctx).pop();
-                onRefresh();
-                AppToast.success(
-                  ctx,
-                  title: 'Студента видалено',
-                  description: '${admin.name.isEmpty ? admin.email : admin.name} успішно видалено.',
-                );
-              }
-            } catch (e) {
-              setDialogState(() {
-                apiError = e.toString().replaceFirst('Exception: ', '');
-                isLoading = false;
-              });
-            }
-          },
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 14, color: AppColors.gray700, height: 1.5),
-                  children: [
-                    const TextSpan(text: 'Ви впевнені, що хочете видалити студента '),
-                    TextSpan(
-                      text: admin.name.isEmpty ? admin.email : admin.name,
-                      style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.gray900),
-                    ),
-                    const TextSpan(text: '?'),
-                  ],
-                ),
-              ),
-              if (apiError != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  apiError!,
-                  style: const TextStyle(fontSize: 13, color: AppColors.red600),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-enum _Action { edit, delete }
-
-class _MenuItem extends StatelessWidget {
-  const _MenuItem({
-    required this.icon,
-    required this.label,
-    this.color = AppColors.gray900,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 15, color: color),
-        const SizedBox(width: 8),
-        Text(label, style: TextStyle(fontSize: 14, color: color)),
-      ],
-    );
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({required this.controller, required this.onChanged});
-
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.centerLeft,
-      children: [
-        TextField(
-          controller: controller,
-          onChanged: onChanged,
-          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
-          decoration: InputDecoration(
-            hintText: 'Пошук по імені чи ID...',
-            hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
-            contentPadding: const EdgeInsets.only(
-              left: 40,
-              right: 12,
-              top: 10,
-              bottom: 10,
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: AppColors.gray200),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(color: AppColors.gray200),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
-              borderSide: const BorderSide(
-                color: AppColors.inputFocusBorder,
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 12),
-          child: Icon(LucideIcons.search, size: 16, color: AppColors.gray400),
-        ),
-      ],
-    );
-  }
-}
-
-class _ErrorBody extends StatelessWidget {
-  const _ErrorBody({required this.error, required this.onRetry});
-
-  final String error;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(LucideIcons.circleAlert, size: 32, color: AppColors.red600),
-          const SizedBox(height: 12),
-          Text(
-            error,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: AppColors.red600),
-          ),
-          const SizedBox(height: 16),
-          TextButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(LucideIcons.refreshCw, size: 15),
-            label: const Text('Повторити спробу'),
+                    columns: _kColumns,
+                    rows: _isLoading ? [] : _buildRows(_paginated),
+                    totalCount: _filtered.length,
+                    currentPage: _currentPage,
+                    itemsPerPage: _itemsPerPage,
+                    isLoading: _isLoading,
+                    emptyText: 'Студентів не знайдено',
+                    onPageChange: (p) => setState(() => _currentPage = p),
+                  ),
           ),
         ],
       ),
