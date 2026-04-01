@@ -116,14 +116,13 @@ class AppTable extends StatelessWidget {
                     ),
         ),
         const SizedBox(height: 16),
-        // ── Пагінація ────────────────────────────────────────────────────────
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               totalCount == 0
-                  ? 'No records'
-                  : 'Showing $_start to $_end of $totalCount records',
+                  ? 'Немає записів'
+                  : 'Показано $_start–$_end з $totalCount записів',
               style: const TextStyle(fontSize: 14, color: _kGray600),
             ),
             Row(
@@ -138,7 +137,7 @@ class AppTable extends StatelessWidget {
                     children: [
                       Icon(LucideIcons.chevronLeft, size: 16),
                       SizedBox(width: 4),
-                      Text('Previous'),
+                      Text('Минула'),
                     ],
                   ),
                 ),
@@ -151,7 +150,7 @@ class AppTable extends StatelessWidget {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Next'),
+                      Text('Наступна'),
                       SizedBox(width: 4),
                       Icon(LucideIcons.chevronRight, size: 16),
                     ],

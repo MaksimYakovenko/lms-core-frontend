@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
-import 'package:lms_core_frontend/features/admins/admins_service.dart';
-import 'package:lms_core_frontend/features/admins/dialogs/delete_admin_dialog.dart';
-import 'package:lms_core_frontend/features/admins/dialogs/edit_admin_dialog.dart';
+import 'package:lms_core_frontend/features/groups/groups_service.dart';
+import 'package:lms_core_frontend/features/groups/dialogs/edit_group_dialog.dart';
+import 'package:lms_core_frontend/features/groups/dialogs/delete_group_dialog.dart';
 
-enum AdminAction { edit, delete }
+enum GroupAction { edit, delete }
 
-class AdminActionMenu extends StatelessWidget {
-  const AdminActionMenu({
+class GroupActionMenu extends StatelessWidget {
+  const GroupActionMenu({
     super.key,
-    required this.admin,
+    required this.group,
     required this.onRefresh,
     required this.service,
   });
 
-  final AdminUser admin;
+  final Group group;
   final VoidCallback onRefresh;
-  final AdminsService service;
+  final GroupsService service;
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<AdminAction>(
+    return PopupMenuButton<GroupAction>(
       icon: const Icon(LucideIcons.ellipsisVertical, size: 16, color: AppColors.gray700),
       iconSize: 16,
       padding: EdgeInsets.zero,
@@ -31,20 +31,20 @@ class AdminActionMenu extends StatelessWidget {
       ),
       elevation: 4,
       onSelected: (action) {
-        if (action == AdminAction.edit) {
-          showEditAdminDialog(context, admin: admin, service: service, onRefresh: onRefresh);
+        if (action == GroupAction.edit) {
+          showEditGroupDialog(context, group: group, service: service, onRefresh: onRefresh);
         }
-        if (action == AdminAction.delete) {
-          showDeleteAdminDialog(context, admin: admin, service: service, onRefresh: onRefresh);
+        if (action == GroupAction.delete) {
+          showDeleteGroupDialog(context, group: group, service: service, onRefresh: onRefresh);
         }
       },
       itemBuilder: (_) => const [
         PopupMenuItem(
-          value: AdminAction.edit,
+          value: GroupAction.edit,
           child: _MenuItem(icon: LucideIcons.pencil, label: 'Редагувати'),
         ),
         PopupMenuItem(
-          value: AdminAction.delete,
+          value: GroupAction.delete,
           child: _MenuItem(icon: LucideIcons.trash2, label: 'Видалити', color: AppColors.red600),
         ),
       ],

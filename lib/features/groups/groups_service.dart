@@ -2,44 +2,32 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
-class StudentUser {
+class Group {
   final int id;
-  final String email;
   final String name;
-  final String role;
-  final String? lastLogin;
+  final int courseNumber;
 
-  const StudentUser({
-    required this.id,
-    required this.email,
-    required this.name,
-    required this.role,
-    this.lastLogin,
-  });
+  const Group({required this.id, required this.name, required this.courseNumber});
 
-  factory StudentUser.fromJson(Map<String, dynamic> json) {
-    return StudentUser(
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(
       id: json['id'] as int,
-      email: (json['email'] ?? '') as String,
       name: (json['name'] ?? '') as String,
-      role: (json['role'] ?? '') as String,
-      lastLogin: json['last_login'] as String?,
+      courseNumber: (json['course_number'] ?? 0) as int,
     );
   }
 }
 
-class StudentsService {
+class GroupsService {
   static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
-  Future<List<StudentUser>> getStudents() async {
+  Future<List<Group>> getGroups() async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/get_students');
-
     final response = await http.get(
-      uri,
+      Uri.parse('$_baseUrl/groups/get_groups'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -48,43 +36,36 @@ class StudentsService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final list = jsonDecode(response.body) as List<dynamic>;
-      return list
-          .map((e) => StudentUser.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return list.map((e) => Group.fromJson(e as Map<String, dynamic>)).toList();
     }
 
-    throw Exception('Failed to fetch students (${response.statusCode})');
+    throw Exception('Failed to fetch groups (${response.statusCode})');
   }
 
-
-  Future<void> createStudent(String email) async {
+  Future<void> createGroup(String name, int courseNumber) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/create_student');
-
     final response = await http.post(
-      uri,
+      Uri.parse('$_baseUrl/groups/create_group'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'email': email, 'role': 'STUDENT'}),
+      body: jsonEncode({'name': name, 'course_number': courseNumber}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to create admin (${response.statusCode})';
+    final detail = body['detail'] ?? 'Failed to create group (${response.statusCode})';
     throw Exception(detail);
   }
 
-  Future<void> updateStudent(int id, {required String name}) async {
+  Future<void> updateGroup(int id, {required String name}) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/update_student');
-
     final response = await http.put(
-      uri,
+      Uri.parse('$_baseUrl/groups/update_group'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -95,18 +76,15 @@ class StudentsService {
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to update student (${response.statusCode})';
+    final detail = body['detail'] ?? 'Failed to update group (${response.statusCode})';
     throw Exception(detail);
   }
 
-  Future<void> deleteStudent(int id) async {
+  Future<void> deleteGroup(int id) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/delete_student/$id')
-        .replace(queryParameters: {'student_id': '$id'});
-
     final response = await http.delete(
-      uri,
+      Uri.parse('$_baseUrl/groups/delete_group/$id'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -116,7 +94,7 @@ class StudentsService {
     if (response.statusCode == 200 || response.statusCode == 204) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to delete student (${response.statusCode})';
+    final detail = body['detail'] ?? 'Failed to delete group (${response.statusCode})';
     throw Exception(detail);
   }
 }

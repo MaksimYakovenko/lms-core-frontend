@@ -77,6 +77,27 @@ class AdminsService {
     throw Exception(detail);
   }
 
+  Future<void> updateAdmin(int id, {required String name}) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$_baseUrl/admins/update_admin');
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'id': id, 'name': name}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to update admin (${response.statusCode})';
+    throw Exception(detail);
+  }
+
   Future<void> deleteAdmin(int id) async {
     final token = await _authService.getToken();
 

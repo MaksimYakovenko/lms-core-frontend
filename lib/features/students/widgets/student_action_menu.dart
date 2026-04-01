@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/features/students/students_service.dart';
 import 'package:lms_core_frontend/features/students/dialogs/delete_student_dialog.dart';
+import 'package:lms_core_frontend/features/students/dialogs/edit_student_dialog.dart';
 
 enum StudentAction { edit, delete }
 
@@ -30,6 +31,9 @@ class StudentActionMenu extends StatelessWidget {
       ),
       elevation: 4,
       onSelected: (action) {
+        if (action == StudentAction.edit) {
+          showEditStudentDialog(context, student: student, service: service, onRefresh: onRefresh);
+        }
         if (action == StudentAction.delete) {
           showDeleteStudentDialog(context, student: student, service: service, onRefresh: onRefresh);
         }
