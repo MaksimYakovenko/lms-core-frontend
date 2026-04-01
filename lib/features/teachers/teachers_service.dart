@@ -77,6 +77,27 @@ class TeachersService {
     throw Exception(detail);
   }
 
+  Future<void> updateTeacher(int id, {required String name}) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$_baseUrl/teachers/update_teacher/$id');
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'id': id, 'name': name}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to update teacher (${response.statusCode})';
+    throw Exception(detail);
+  }
+
   Future<void> deleteTeacher(int id) async {
     final token = await _authService.getToken();
 
