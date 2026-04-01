@@ -7,6 +7,7 @@ class StudentUser {
   final String email;
   final String name;
   final String role;
+  final int? groupId;
   final String? lastLogin;
 
   const StudentUser({
@@ -14,6 +15,7 @@ class StudentUser {
     required this.email,
     required this.name,
     required this.role,
+    this.groupId,
     this.lastLogin,
   });
 
@@ -23,6 +25,7 @@ class StudentUser {
       email: (json['email'] ?? '') as String,
       name: (json['name'] ?? '') as String,
       role: (json['role'] ?? '') as String,
+      groupId: json['group_id'] as int?,
       lastLogin: json['last_login'] as String?,
     );
   }
@@ -75,6 +78,25 @@ class StudentsService {
 
     final body = jsonDecode(response.body);
     final detail = body['detail'] ?? 'Failed to create admin (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+  Future<void> assignToGroup(int studentId, int groupId) async {
+    final token = await _authService.getToken();
+
+    final response = await http.put(
+      Uri.parse('$_baseUrl/students/assign_to_group'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'student_id': studentId, 'group_id': groupId}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to assign student to group (${response.statusCode})';
     throw Exception(detail);
   }
 

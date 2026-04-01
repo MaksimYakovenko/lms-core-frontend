@@ -26,16 +26,6 @@ class AppTableColumn {
   });
 }
 
-// ── AppTable ─────────────────────────────────────────────────────────────────
-
-/// Універсальна таблиця з пагінацією.
-///
-/// [columns]      — список описів колонок (заголовки + ширини)
-/// [rows]         — список рядків, кожен рядок — список віджетів (по кількості колонок)
-/// [totalCount]   — загальна кількість записів для пагінації
-/// [currentPage]  — поточна сторінка (1-based)
-/// [itemsPerPage] — кількість рядків на сторінку
-/// [onPageChange] — callback при зміні сторінки
 class AppTable extends StatelessWidget {
   const AppTable({
     super.key,
@@ -67,7 +57,6 @@ class AppTable extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Таблиця ──────────────────────────────────────────────────────────
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -104,10 +93,13 @@ class AppTable extends StatelessWidget {
                           (cells) => TableRow(
                             children: List.generate(
                               cells.length,
-                              (i) => _TCell(
-                                center: columns[i].center,
-                                right: columns[i].right,
-                                child: cells[i],
+                              (i) => TableCell(
+                                verticalAlignment: TableCellVerticalAlignment.middle,
+                                child: _TCell(
+                                  center: columns[i].center,
+                                  right: columns[i].right,
+                                  child: cells[i],
+                                ),
                               ),
                             ),
                           ),
@@ -205,7 +197,7 @@ class _TCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       child: Align(
         alignment: right
             ? Alignment.centerRight

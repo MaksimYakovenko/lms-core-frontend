@@ -4,8 +4,9 @@ import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/features/students/students_service.dart';
 import 'package:lms_core_frontend/features/students/dialogs/delete_student_dialog.dart';
 import 'package:lms_core_frontend/features/students/dialogs/edit_student_dialog.dart';
+import 'package:lms_core_frontend/features/students/dialogs/assign_group_dialog.dart';
 
-enum StudentAction { edit, delete }
+enum StudentAction { edit, assignGroup, delete }
 
 class StudentActionMenu extends StatelessWidget {
   const StudentActionMenu({
@@ -34,6 +35,9 @@ class StudentActionMenu extends StatelessWidget {
         if (action == StudentAction.edit) {
           showEditStudentDialog(context, student: student, service: service, onRefresh: onRefresh);
         }
+        if (action == StudentAction.assignGroup) {
+          showAssignGroupDialog(context, student: student, service: service, onRefresh: onRefresh);
+        }
         if (action == StudentAction.delete) {
           showDeleteStudentDialog(context, student: student, service: service, onRefresh: onRefresh);
         }
@@ -42,6 +46,10 @@ class StudentActionMenu extends StatelessWidget {
         PopupMenuItem(
           value: StudentAction.edit,
           child: _MenuItem(icon: LucideIcons.pencil, label: 'Редагувати'),
+        ),
+        PopupMenuItem(
+          value: StudentAction.assignGroup,
+          child: _MenuItem(icon: LucideIcons.users, label: 'Призначити групу'),
         ),
         PopupMenuItem(
           value: StudentAction.delete,

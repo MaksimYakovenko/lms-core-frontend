@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lms_core_frontend/features/students/students_service.dart';
+import 'package:lms_core_frontend/features/groups/groups_service.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
@@ -10,12 +11,13 @@ import 'package:lms_core_frontend/features/students/widgets/student_search_field
 import 'package:lms_core_frontend/features/students/widgets/student_error_body.dart';
 
 const _kColumns = [
-  AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
+  AppTableColumn(label: 'ID', width: FlexColumnWidth(0.5)),
   AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
   AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.5)),
-  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(2.0), center: true),
-  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
+  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.2), center: true),
+  AppTableColumn(label: 'Група', width: FlexColumnWidth(2.2)),
+  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(1.8), center: true),
+  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.6), right: true),
 ];
 
 class StudentsScreen extends StatefulWidget {
@@ -29,8 +31,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
   static const _itemsPerPage = 8;
 
   final _service = StudentsService();
+  final _groupsService = GroupsService();
 
   List<StudentUser> _students = [];
+  Map<int, Group> _groupsMap = {};
   bool _isLoading = true;
   String? _error;
   int _currentPage = 1;
@@ -67,8 +71,16 @@ class _StudentsScreenState extends State<StudentsScreen> {
   Future<void> _load() async {
     setState(() { _isLoading = true; _error = null; });
     try {
-      final data = await _service.getStudents();
-      setState(() => _students = data);
+      final results = await Future.wait([
+        _service.getStudents(),
+        _groupsService.getGroups(),
+      ]);
+      final students = results[0] as List<StudentUser>;
+      final groups = results[1] as List<Group>;
+      setState(() {
+        _students = students;
+        _groupsMap = { for (final g in groups) g.id: g };
+      });
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
@@ -76,8 +88,26 @@ class _StudentsScreenState extends State<StudentsScreen> {
     }
   }
 
+  Widget _buildGroupCell(int? groupId) {
+    if (groupId == null) {
+      return const Text('—', style: TextStyle(fontSize: 14, color: AppColors.gray400));
+    }
+    final group = _groupsMap[groupId];
+    if (group == null) {
+      return Text('ID $groupId', style: const TextStyle(fontSize: 14, color: AppColors.gray400));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(group.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.gray900)),
+        Text('Курс ${group.courseNumber}', style: const TextStyle(fontSize: 12, color: AppColors.gray400)),
+      ],
+    );
+  }
+
   List<List<Widget>> _buildRows(List<StudentUser> page) {
-    return page.map((a) => [
+    return page.map<List<Widget>>((a) => [
       Text('${a.id}', style: const TextStyle(fontSize: 14, color: AppColors.gray900)),
       Text(
         a.name.isEmpty ? '—' : a.name,
@@ -85,9 +115,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
       ),
       Text(a.email, style: const TextStyle(fontSize: 14, color: AppColors.gray700)),
       StudentRoleBadge(role: a.role),
+      _buildGroupCell(a.groupId),
       StudentLastLoginCell(lastLogin: a.lastLogin),
       StudentActionMenu(student: a, onRefresh: _load, service: _service),
-    ] as List<Widget>).toList();
+    ]).toList();
   }
 
   @override
