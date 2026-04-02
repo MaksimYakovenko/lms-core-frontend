@@ -1,0 +1,23 @@
+# Version control
+.git
+.gitignore
+
+# IDE / editor
+.idea
+.vscode
+*.iml
+
+# Flutter build output (rebuilt inside Docker)
+build/
+
+# Test artifacts
+test/
+coverage/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
