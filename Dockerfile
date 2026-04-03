@@ -1,37 +1,25 @@
-# ─────────────────────────────────────────────
-# Stage 1 — Build Flutter Web
-# ─────────────────────────────────────────────
-FROM ghcr.io/cirruslabs/flutter:3.29.3 AS builder
+FROM ghcr.io/cirruslabs/flutter:stable AS builder
 
 WORKDIR /app
 
-# Copy dependency manifests first (layer-caching)
 COPY pubspec.yaml pubspec.lock ./
-
-# Download pub packages
 RUN flutter pub get
 
-# Copy the rest of the source
 COPY . .
 
-# Build a release web bundle
-RUN flutter build web --release --no-tree-shake-icons
+RUN flutter build web --release
 
-# ─────────────────────────────────────────────
-# Stage 2 — Serve with Nginx
-# ─────────────────────────────────────────────
-FROM nginx:1.27-alpine AS runner
+FROM dart:stable AS server
 
-# Remove default nginx static assets
-RUN rm -rf /usr/share/nginx/html/*
+WORKDIR /srv
 
-# Copy built web app
-COPY --from=builder /app/build/web /usr/share/nginx/html
+RUN dart pub global activate dhttpd
 
-# Nginx config: serve index.html for all routes (SPA / Flutter Web)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build/web ./web
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+ENV PATH="$PATH:/root/.pub-cache/bin"
+
+CMD ["dhttpd", "--path", "web", "--port", "8080"]
 
