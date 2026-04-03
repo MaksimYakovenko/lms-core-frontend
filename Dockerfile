@@ -21,5 +21,5 @@ EXPOSE 8080
 
 ENV PATH="$PATH:/root/.pub-cache/bin"
 
-CMD ["dhttpd", "--path", "web", "--port", "8080"]
+CMD ["dhttpd", "--path", "web"]
 
