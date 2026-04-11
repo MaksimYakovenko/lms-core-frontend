@@ -11,6 +11,7 @@ import 'package:lms_core_frontend/features/resources/resources_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
 import 'package:lms_core_frontend/features/students/students_screen.dart';
+import 'package:lms_core_frontend/features/subjects/subjects_screen.dart';
 import 'package:lms_core_frontend/features/teachers/teachers_screen.dart';
 import 'package:lms_core_frontend/features/tests/tests_screen.dart';
 
@@ -86,6 +87,11 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.news.path}',
         name: ViewIdentifiers.news.name,
         builder: (context, state) => const NewsScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.subjects.path}',
+        name: ViewIdentifiers.subjects.name,
+        builder: (context, state) => const SubjectsScreen(),
       ),
     ],
   ),

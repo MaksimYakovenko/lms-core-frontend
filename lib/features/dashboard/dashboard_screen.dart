@@ -13,6 +13,7 @@ const _studentPathToIndex = {
   '/resources': 3,
   '/payment': 4,
   '/news': 5,
+  '/subjects': 6,
 };
 
 const _adminPathToIndex = {
@@ -20,7 +21,8 @@ const _adminPathToIndex = {
   '/admins': 1,
   '/students': 2,
   '/groups': 3,
-  '/news': 4,
+  '/subjects': 4,
+  '/news': 5,
 };
 
 class DashboardScreen extends StatelessWidget {
@@ -28,7 +30,6 @@ class DashboardScreen extends StatelessWidget {
 
   const DashboardScreen({super.key, required this.child});
 
-  // index → route name для навігації
   static const _studentIndexToRoute = [
     'student-home',
     'results',
@@ -36,6 +37,7 @@ class DashboardScreen extends StatelessWidget {
     'resources',
     'payment',
     'news',
+    'subjects',
   ];
 
   static const _adminIndexToRoute = [
@@ -43,6 +45,7 @@ class DashboardScreen extends StatelessWidget {
     'admins',
     'students',
     'groups',
+    'subjects',
     'news',
   ];
 
