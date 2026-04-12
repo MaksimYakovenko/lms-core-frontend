@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 abstract final class AppColors {
   // ── Backgrounds ───────────────────────────────────────────────────────────
-  static const background1 = Color(0xFFEFF6FF);
+  // main app background (changed to #F9FAFB as requested)
+  static const background1 = Color(0xFFF9FAFB);
   static const background2 = Color(0xFFF0FDF4);
 
   // ── Text ──────────────────────────────────────────────────────────────────

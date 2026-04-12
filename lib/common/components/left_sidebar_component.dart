@@ -40,6 +40,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
   ];
 
   static const List<_NavItem> _adminNavItems = [
+    _NavItem(icon: LucideIcons.house, label: 'Головна'),
     _NavItem(icon: LucideIcons.graduationCap, label: 'Викладачі'),
     _NavItem(icon: LucideIcons.shieldCheck, label: 'Адміністратори'),
     _NavItem(icon: LucideIcons.users, label: 'Студенти'),
@@ -290,7 +291,7 @@ class _NavTileState extends State<_NavTile> {
           duration: const Duration(milliseconds: 150),
           height: 40, // h-10
           decoration: BoxDecoration(
-            color: highlighted ? widget.activeColor : Colors.transparent, // hover:bg-slate-800
+            color: highlighted ? widget.activeColor : Colors.transparent,
             borderRadius: BorderRadius.circular(6),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12), // justify-start

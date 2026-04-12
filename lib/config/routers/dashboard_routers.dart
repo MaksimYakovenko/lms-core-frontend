@@ -15,6 +15,8 @@ import 'package:lms_core_frontend/features/subjects/subjects_screen.dart';
 import 'package:lms_core_frontend/features/teachers/teachers_screen.dart';
 import 'package:lms_core_frontend/features/tests/tests_screen.dart';
 
+import '../../features/admin_main/main_screen.dart';
+
 final dashboardRoutes = [
   ShellRoute(
     builder: (context, state, shellChild) => DashboardScreen(child: shellChild),
@@ -92,6 +94,11 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.subjects.path}',
         name: ViewIdentifiers.subjects.name,
         builder: (context, state) => const SubjectsScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.adminMain.path}',
+        name: ViewIdentifiers.adminMain.name,
+        builder: (context, state) => const AdminMainScreen(),
       ),
     ],
   ),

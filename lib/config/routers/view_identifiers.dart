@@ -45,4 +45,6 @@ class ViewIdentifiers {
       const RouteDescriptor('news', path: 'news');
   static RouteDescriptor subjects =
       const RouteDescriptor('subjects', path: 'subjects');
+  static RouteDescriptor adminMain =
+      const RouteDescriptor('admin-admin_main', path: 'admin-admin_main');
 }

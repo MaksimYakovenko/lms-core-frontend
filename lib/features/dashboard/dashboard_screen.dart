@@ -17,12 +17,13 @@ const _studentPathToIndex = {
 };
 
 const _adminPathToIndex = {
-  '/teachers': 0,
-  '/admins': 1,
-  '/students': 2,
-  '/groups': 3,
-  '/subjects': 4,
-  '/news': 5,
+  '/admin-admin_main': 0,
+  '/teachers': 1,
+  '/admins': 2,
+  '/students': 3,
+  '/groups': 4,
+  '/subjects': 5,
+  '/news': 6,
 };
 
 class DashboardScreen extends StatelessWidget {
@@ -41,6 +42,7 @@ class DashboardScreen extends StatelessWidget {
   ];
 
   static const _adminIndexToRoute = [
+    'admin-admin_main',
     'teachers',
     'admins',
     'students',

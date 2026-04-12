@@ -5,6 +5,7 @@ import 'package:toastification/toastification.dart';
 import 'package:lms_core_frontend/config/routers/dashboard_routers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 import 'package:lms_core_frontend/features/not_found_page/not_found_page_screen.dart';
+import 'package:lms_core_frontend/common/constants/colors.dart';
 
 final _router = GoRouter(
   routes: dashboardRoutes,
@@ -32,6 +33,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'LMS',
         theme: ThemeData(
+          // set global scaffold background to main app background
+          scaffoldBackgroundColor: AppColors.background1,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
         routerConfig: _router,
