@@ -4,18 +4,21 @@ import 'package:lms_core_frontend/features/admins/admins_screen.dart';
 import 'package:lms_core_frontend/features/auth/login_screen.dart';
 import 'package:lms_core_frontend/features/auth/registry_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
+import 'package:lms_core_frontend/features/groups/group_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
+import 'package:lms_core_frontend/features/journals/journals_screen.dart';
 import 'package:lms_core_frontend/features/news/news_screen.dart';
 import 'package:lms_core_frontend/features/payment/payment_screen.dart';
 import 'package:lms_core_frontend/features/resources/resources_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
 import 'package:lms_core_frontend/features/students/students_screen.dart';
+import 'package:lms_core_frontend/features/subjects/subjects_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/subjects/subjects_screen.dart';
 import 'package:lms_core_frontend/features/teachers/teachers_screen.dart';
 import 'package:lms_core_frontend/features/tests/tests_screen.dart';
-
 import '../../features/admin_main/main_screen.dart';
+import '../../features/teachers/teacher_quick_add_screen.dart';
 
 final dashboardRoutes = [
   ShellRoute(
@@ -99,6 +102,26 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.adminMain.path}',
         name: ViewIdentifiers.adminMain.name,
         builder: (context, state) => const AdminMainScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.journals.path}',
+        name: ViewIdentifiers.journals.name,
+        builder: (context, state) => const JournalsScreen(),
+      ),
+      GoRoute(
+          path: '/${ViewIdentifiers.teacherQuickAdd.path}',
+          name: ViewIdentifiers.teacherQuickAdd.name,
+          builder: (context, state) => const TeacherQuickAddScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.groupQuickAdd.path}',
+        name: ViewIdentifiers.groupQuickAdd.name,
+        builder: (context, state) => const GroupQuickAddScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.subjectQuickAdd.path}',
+        name: ViewIdentifiers.subjectQuickAdd.name,
+        builder: (context, state) => const SubjectsQuickAddScreen(),
       ),
     ],
   ),

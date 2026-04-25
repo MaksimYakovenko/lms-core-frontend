@@ -46,6 +46,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.users, label: 'Студенти'),
     _NavItem(icon: LucideIcons.layoutList, label: 'Групи'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Предмети'),
+    _NavItem(icon: LucideIcons.clipboardCheck, label: 'Журнали'),
     _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
   ];
 
@@ -124,7 +125,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16), // p-4
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: List.generate(_navItems.length, (index) {
                   final item = _navItems[index];
