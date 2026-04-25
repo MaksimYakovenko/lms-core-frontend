@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_stat_card.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/features/admin_main/main_service.dart';
 
 import '../../common/constants/colors.dart';
+import '../../config/routers/view_identifiers.dart';
 
 class AdminMainScreen extends StatefulWidget {
   const AdminMainScreen({super.key});
@@ -220,13 +222,20 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                 const _SectionHeader(),
                 const SizedBox(height: 24),
                 Row(
-                  children: const [
+                  children: [
                     Expanded(
                       child: _QuickActionCard(
                         title: 'Викладачі',
                         icon: LucideIcons.graduationCap,
                         iconColor: Color(0xFF2563EB),
                         textColor: Color(0xFF2563EB),
+                        onAdd:
+                            () => context.goNamed(
+                              ViewIdentifiers.teacherQuickAdd.name,
+                            ),
+                        onViewAll:
+                            () =>
+                                context.goNamed(ViewIdentifiers.teachers.name),
                       ),
                     ),
                     SizedBox(width: 24),
@@ -236,6 +245,9 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                         icon: LucideIcons.user,
                         iconColor: Color(0xFF16A34A),
                         textColor: Color(0xFF16A34A),
+                        onViewAll:
+                            () =>
+                                context.goNamed(ViewIdentifiers.students.name),
                       ),
                     ),
                     SizedBox(width: 24),
@@ -245,6 +257,12 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                         icon: LucideIcons.layers,
                         iconColor: Color(0xFF9333EA),
                         textColor: Color(0xFF9333EA),
+                        onAdd:
+                            () => context.goNamed(
+                              ViewIdentifiers.groupQuickAdd.name,
+                            ),
+                        onViewAll:
+                            () => context.goNamed(ViewIdentifiers.groups.name),
                       ),
                     ),
                     SizedBox(width: 24),
@@ -254,6 +272,13 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                         icon: LucideIcons.library,
                         iconColor: Color(0xFFEA580C),
                         textColor: Color(0xFFEA580C),
+                        onAdd:
+                            () => context.goNamed(
+                              ViewIdentifiers.subjectQuickAdd.name,
+                            ),
+                        onViewAll:
+                            () =>
+                                context.goNamed(ViewIdentifiers.subjects.name),
                       ),
                     ),
                   ],
@@ -341,11 +366,9 @@ class _QuickActionCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          _ActionItem(
-            icon: LucideIcons.plus,
-            label: 'Додати',
-            onTap: onAdd,
-          ),
+          _ActionItem(icon: LucideIcons.plus, label: 'Додати', onTap: onAdd),
+
+          const SizedBox(height: 5),
 
           _ActionItem(
             icon: LucideIcons.list,
@@ -363,11 +386,7 @@ class _ActionItem extends StatefulWidget {
   final String label;
   final VoidCallback? onTap;
 
-  const _ActionItem({
-    required this.icon,
-    required this.label,
-    this.onTap,
-  });
+  const _ActionItem({required this.icon, required this.label, this.onTap});
 
   @override
   State<_ActionItem> createState() => _ActionItemState();

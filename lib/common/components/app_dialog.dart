@@ -28,7 +28,6 @@ class AppDialog extends StatelessWidget {
   final bool isLoading;
   final double width;
 
-  /// Зручний статичний метод для показу діалогу
   static Future<T?> show<T>({
     required BuildContext context,
     required String title,
@@ -36,7 +35,7 @@ class AppDialog extends StatelessWidget {
     required Widget content,
     List<Widget>? actions,
     VoidCallback? onConfirm,
-    String confirmLabel = 'Confirm',
+    String confirmLabel = 'Підтвердити',
     IconData? confirmIcon,
     bool isLoading = false,
     double width = 480,
@@ -136,7 +135,7 @@ class AppDialog extends StatelessWidget {
                       variant: ButtonVariant.outline,
                       size: ButtonSize.lg,
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: const Text('Скасувати'),
                     ),
                     const SizedBox(width: 8),
                     AppButton(

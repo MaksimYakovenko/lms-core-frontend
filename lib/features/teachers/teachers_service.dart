@@ -73,7 +73,8 @@ class TeachersService {
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to create teacher (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to create teacher (${response.statusCode})';
     throw Exception(detail);
   }
 
@@ -94,15 +95,16 @@ class TeachersService {
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to update teacher (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to update teacher (${response.statusCode})';
     throw Exception(detail);
   }
 
   Future<void> deleteTeacher(int id) async {
     final token = await _authService.getToken();
-
-    final uri = Uri.parse('$_baseUrl/teachers/delete_teacher/$id')
-        .replace(queryParameters: {'teacher_id': '$id'});
+    final uri = Uri.parse(
+      '$_baseUrl/teachers/delete_teacher/$id',
+    ).replace(queryParameters: {'teacher_id': '$id'});
 
     final response = await http.delete(
       uri,
@@ -115,8 +117,29 @@ class TeachersService {
     if (response.statusCode == 200 || response.statusCode == 204) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to delete teacher (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to delete teacher (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+  Future<void> assignTeacherToGroups(int teacherId, List<int> groupIds) async {
+    final token = await _authService.getToken();
+    final uri = Uri.parse('$_baseUrl/teachers/assign_to_groups');
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'teacher_id': teacherId, 'group_ids': groupIds}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail =
+        body['detail'] ?? 'Failed to assign teacher (${response.statusCode})';
     throw Exception(detail);
   }
 }
-

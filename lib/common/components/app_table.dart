@@ -36,7 +36,7 @@ class AppTable extends StatelessWidget {
     this.itemsPerPage = 8,
     required this.onPageChange,
     this.isLoading = false,
-    this.emptyText = 'No data available',
+    this.emptyText = 'Немає даних для відображення',
   });
 
   final List<AppTableColumn> columns;
