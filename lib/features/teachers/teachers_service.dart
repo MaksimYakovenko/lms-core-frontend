@@ -9,6 +9,7 @@ class TeacherUser {
   final String role;
   final String status;
   final String? lastLogin;
+  final List<int> groupIds;
 
   const TeacherUser({
     required this.id,
@@ -17,6 +18,7 @@ class TeacherUser {
     required this.role,
     required this.status,
     this.lastLogin,
+    this.groupIds = const [],
   });
 
   factory TeacherUser.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,10 @@ class TeacherUser {
       name: (json['name'] ?? '') as String,
       role: (json['role'] ?? '') as String,
       status: (json['user_status'] ?? '') as String,
+      groupIds: (json['group_ids'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          [],
       lastLogin: json['last_login'] as String?,
     );
   }
@@ -136,6 +142,27 @@ class TeachersService {
         if (token != null) 'Authorization': 'Bearer $token',
       },
       body: jsonEncode({'teacher_id': teacherId, 'group_ids': groupIds}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail =
+        body['detail'] ?? 'Failed to assign teacher (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+  Future<void> assignTeacherToSubjects(int teacherId, List<int> subjectIds) async {
+    final token = await _authService.getToken();
+    final uri = Uri.parse('$_baseUrl/teachers/assign_to_subjects');
+
+    final response = await http.put(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'teacher_id': teacherId, 'subject_ids': subjectIds}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) return;

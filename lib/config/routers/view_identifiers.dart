@@ -55,4 +55,6 @@ class ViewIdentifiers {
       const RouteDescriptor('group-quick-add', path: 'group-quick-add');
   static RouteDescriptor subjectQuickAdd =
       const RouteDescriptor('subject-quick-add', path: 'subject-quick-add');
+  static RouteDescriptor appointment =
+      const RouteDescriptor('appointment', path: 'appointment');
 }

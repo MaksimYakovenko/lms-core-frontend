@@ -34,7 +34,6 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.fileText, label: 'Результати'),
     _NavItem(icon: LucideIcons.clipboardList, label: 'Тести'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Ресурси'),
-    _NavItem(icon: LucideIcons.creditCard, label: 'Оплата'),
     _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Предмети'),
   ];
@@ -47,6 +46,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.layoutList, label: 'Групи'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Предмети'),
     _NavItem(icon: LucideIcons.clipboardCheck, label: 'Журнали'),
+    _NavItem(icon: LucideIcons.link, label: 'Призначення'),
     _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
   ];
 

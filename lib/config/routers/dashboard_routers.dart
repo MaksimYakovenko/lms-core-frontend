@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/admins/admins_screen.dart';
+import 'package:lms_core_frontend/features/appointment/appointment_screen.dart';
 import 'package:lms_core_frontend/features/auth/login_screen.dart';
 import 'package:lms_core_frontend/features/auth/registry_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
@@ -8,7 +9,6 @@ import 'package:lms_core_frontend/features/groups/group_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
 import 'package:lms_core_frontend/features/journals/journals_screen.dart';
 import 'package:lms_core_frontend/features/news/news_screen.dart';
-import 'package:lms_core_frontend/features/payment/payment_screen.dart';
 import 'package:lms_core_frontend/features/resources/resources_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
@@ -61,12 +61,6 @@ final dashboardRoutes = [
         name: ViewIdentifiers.resources.name,
         builder: (context, state) => const ResourcesScreen(),
       ),
-      GoRoute(
-        path: '/${ViewIdentifiers.payment.path}',
-        name: ViewIdentifiers.payment.name,
-        builder: (context, state) => const PaymentScreen(),
-      ),
-
       // Admin routes
       GoRoute(
         path: '/${ViewIdentifiers.teachers.path}',
@@ -122,6 +116,11 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.subjectQuickAdd.path}',
         name: ViewIdentifiers.subjectQuickAdd.name,
         builder: (context, state) => const SubjectsQuickAddScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.appointment.path}',
+        name: ViewIdentifiers.appointment.name,
+        builder: (context, state) => const AppointmentScreen(),
       ),
     ],
   ),

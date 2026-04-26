@@ -11,9 +11,8 @@ const _studentPathToIndex = {
   '/results': 1,
   '/tests': 2,
   '/resources': 3,
-  '/payment': 4,
-  '/news': 5,
-  '/subjects': 6,
+  '/news': 4,
+  '/subjects': 5,
 };
 
 const _adminPathToIndex = {
@@ -24,7 +23,8 @@ const _adminPathToIndex = {
   '/groups': 4,
   '/subjects': 5,
   '/journals': 6,
-  '/news': 7,
+  '/appointment': 7,
+  '/news': 8,
 };
 
 class DashboardScreen extends StatelessWidget {
@@ -37,7 +37,6 @@ class DashboardScreen extends StatelessWidget {
     'results',
     'tests',
     'resources',
-    'payment',
     'news',
     'subjects',
   ];
@@ -50,6 +49,7 @@ class DashboardScreen extends StatelessWidget {
     'groups',
     'subjects',
     'journals',
+    'appointment',
     'news',
   ];
 

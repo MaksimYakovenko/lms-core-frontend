@@ -14,7 +14,7 @@ const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
   AppTableColumn(label: 'Назва', width: FlexColumnWidth(4.0)),
   AppTableColumn(label: 'Курс', width: FlexColumnWidth(10.8), center: true),
-  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
+  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), center: true),
 ];
 
 class GroupsScreen extends StatefulWidget {

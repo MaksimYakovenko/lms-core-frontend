@@ -13,14 +13,21 @@ import 'package:lms_core_frontend/features/teachers/widgets/teachers_search_fiel
 import 'package:lms_core_frontend/features/teachers/widgets/teachers_error_body.dart';
 import 'package:lms_core_frontend/features/teachers/dialogs/create_teacher_dialog.dart';
 
+import '../groups/groups_service.dart';
+
 const _kColumns = [
-  AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
-  AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.2), center: true),
-  AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.4), center: true),
-  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(1.8), center: true),
-  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
+  AppTableColumn(label: 'ID', width: FlexColumnWidth(0.4)),
+  AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(1.6)),
+  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.2)),
+  AppTableColumn(label: 'Роль', width: FlexColumnWidth(0.9), center: true),
+  AppTableColumn(label: 'Групи', width: FlexColumnWidth(1.2)),
+  AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.3), center: true),
+  AppTableColumn(
+    label: 'Останній вхід',
+    width: FlexColumnWidth(1.6),
+    center: true,
+  ),
+  AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.5), center: true),
 ];
 
 class TeachersScreen extends StatefulWidget {
@@ -34,7 +41,8 @@ class _TeachersScreenState extends State<TeachersScreen> {
   static const _itemsPerPage = 8;
 
   final _service = TeachersService();
-
+  final _groupService = GroupsService();
+  Map<int, Group> _groupsMap = {};
   List<TeacherUser> _teachers = [];
   bool _isLoading = true;
   String? _error;
@@ -46,7 +54,11 @@ class _TeachersScreenState extends State<TeachersScreen> {
     if (_search.isEmpty) return _teachers;
     final q = _search.toLowerCase();
     return _teachers
-        .where((a) => a.name.toLowerCase().contains(q) || a.email.toLowerCase().contains(q))
+        .where(
+          (a) =>
+      a.name.toLowerCase().contains(q) ||
+          a.email.toLowerCase().contains(q),
+    )
         .toList();
   }
 
@@ -70,10 +82,17 @@ class _TeachersScreenState extends State<TeachersScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       final data = await _service.getTeachers();
-      setState(() => _teachers = data);
+      final groups = await _groupService.getGroups();
+      setState(() {
+        _teachers = data;
+        _groupsMap = {for (var g in groups) g.id: g};
+      });
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
@@ -82,18 +101,91 @@ class _TeachersScreenState extends State<TeachersScreen> {
   }
 
   List<List<Widget>> _buildRows(List<TeacherUser> page) {
-    return page.map((a) => [
-      Text('${a.id}', style: const TextStyle(fontSize: 14, color: AppColors.gray900)),
-      Text(
-        a.name.isEmpty ? '—' : a.name,
-        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.gray900),
-      ),
-      Text(a.email, style: const TextStyle(fontSize: 14, color: AppColors.gray700)),
-      TeacherRoleBadge(role: a.role),
-      TeacherStatusBadge(status: TeacherStatus.fromString(a.status)),
-      TeacherLastLoginCell(lastLogin: a.lastLogin),
-      TeacherActionMenu(teacher: a, onRefresh: _load, service: _service),
-    ] as List<Widget>).toList();
+    return page
+        .map(
+          (a) => [
+        Text(
+          '${a.id}',
+          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+        ),
+        Text(
+          a.name.isEmpty ? '—' : a.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: AppColors.gray900,
+          ),
+        ),
+        Text(
+          a.email,
+          style: const TextStyle(fontSize: 14, color: AppColors.gray700),
+        ),
+        TeacherRoleBadge(role: a.role),
+        _buildGroupCells(a.groupIds),
+        TeacherStatusBadge(status: TeacherStatus.fromString(a.status)),
+        TeacherLastLoginCell(lastLogin: a.lastLogin),
+        TeacherActionMenu(teacher: a, onRefresh: _load, service: _service),
+      ],
+    )
+        .toList();
+  }
+
+  Widget _buildGroupCells(List<int> groupIds) {
+    if (groupIds.isEmpty) {
+      return const Text(
+        '—',
+        style: TextStyle(fontSize: 14, color: AppColors.gray400),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: groupIds.map((groupId) {
+        final group = _groupsMap[groupId];
+
+        if (group == null) {
+          return Text(
+            'ID $groupId',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 14, color: AppColors.gray400),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                group.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.gray900,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Курс ${group.courseNumber}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.gray400,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
   }
 
   @override
@@ -104,7 +196,9 @@ class _TeachersScreenState extends State<TeachersScreen> {
         children: [
           AppCardHeader(
             title: const AppCardTitle(text: 'Викладачі'),
-            description: const AppCardDescription(text: 'Керування обліковими записами викладачів'),
+            description: const AppCardDescription(
+              text: 'Керування обліковими записами викладачів',
+            ),
           ),
           AppCardContent(
             child: Row(
@@ -115,7 +209,11 @@ class _TeachersScreenState extends State<TeachersScreen> {
                   width: 320,
                   child: TeacherSearchField(
                     controller: _searchController,
-                    onChanged: (val) => setState(() { _search = val; _currentPage = 1; }),
+                    onChanged:
+                        (val) => setState(() {
+                      _search = val;
+                      _currentPage = 1;
+                    }),
                   ),
                 ),
                 Padding(
@@ -123,7 +221,8 @@ class _TeachersScreenState extends State<TeachersScreen> {
                   child: AppButton(
                     variant: ButtonVariant.outline,
                     size: ButtonSize.lg,
-                    onPressed: () => showCreateTeacherDialog(
+                    onPressed:
+                        () => showCreateTeacherDialog(
                       context,
                       service: _service,
                       onRefresh: _load,
@@ -131,7 +230,11 @@ class _TeachersScreenState extends State<TeachersScreen> {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(LucideIcons.userRoundPlus, size: 20, color: AppColors.gray900),
+                        Icon(
+                          LucideIcons.userRoundPlus,
+                          size: 20,
+                          color: AppColors.gray900,
+                        ),
                         SizedBox(width: 6),
                         Text('Створити викладача'),
                       ],
@@ -143,18 +246,19 @@ class _TeachersScreenState extends State<TeachersScreen> {
           ),
           AppCardContent(
             isLast: true,
-            child: _error != null
+            child:
+            _error != null
                 ? TeacherErrorBody(error: _error!, onRetry: _load)
                 : AppTable(
-                    columns: _kColumns,
-                    rows: _isLoading ? [] : _buildRows(_paginated),
-                    totalCount: _filtered.length,
-                    currentPage: _currentPage,
-                    itemsPerPage: _itemsPerPage,
-                    isLoading: _isLoading,
-                    emptyText: 'Викладачів не знайдено',
-                    onPageChange: (p) => setState(() => _currentPage = p),
-                  ),
+              columns: _kColumns,
+              rows: _isLoading ? [] : _buildRows(_paginated),
+              totalCount: _filtered.length,
+              currentPage: _currentPage,
+              itemsPerPage: _itemsPerPage,
+              isLoading: _isLoading,
+              emptyText: 'Викладачів не знайдено',
+              onPageChange: (p) => setState(() => _currentPage = p),
+            ),
           ),
         ],
       ),

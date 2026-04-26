@@ -3,13 +3,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 
-// ── Токени ───────────────────────────────────────────────────────────────────
-
 const _kBorderColor = Color(0xFFE2E8F0);
 const _kGray50 = Color(0xFFF9FAFB);
 const _kGray600 = Color(0xFF4B5563);
-
-// ── Моделі ───────────────────────────────────────────────────────────────────
 
 class AppTableColumn {
   final String label;

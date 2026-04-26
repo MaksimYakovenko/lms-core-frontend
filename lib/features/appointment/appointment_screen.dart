@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+class AppointmentScreen extends StatelessWidget {
+  const AppointmentScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Оплата',
+        'Призначення',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );
