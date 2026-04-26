@@ -44,6 +44,8 @@ abstract final class AppColors {
   static const roleBadgeBorder = Color(0xFFBFDBFE);
   static const roleBadgeText   = Color(0xFF1D4ED8);
 
+  // ── User Status ───────────────────────────────────────────────────────────────
+
   // ── Input focus border ────────────────────────────────────────────────────
   static const inputFocusBorder = Color(0xFF93C5FD);
 }

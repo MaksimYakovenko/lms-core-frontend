@@ -9,14 +9,20 @@ import 'package:lms_core_frontend/features/students/widgets/student_last_login_c
 import 'package:lms_core_frontend/features/students/widgets/student_action_menu.dart';
 import 'package:lms_core_frontend/features/students/widgets/student_search_field.dart';
 import 'package:lms_core_frontend/features/students/widgets/student_error_body.dart';
+import 'package:lms_core_frontend/features/students/widgets/student_status_badge.dart';
 
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.5)),
-  AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.5)),
-  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.2), center: true),
-  AppTableColumn(label: 'Група', width: FlexColumnWidth(2.2)),
-  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(1.8), center: true),
+  AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(1.8)),
+  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(1.9)), // ↓
+  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.4), center: true), // ↑
+  AppTableColumn(label: 'Група', width: FlexColumnWidth(1.7)), // ↓
+  AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.3), center: true),
+  AppTableColumn(
+    label: 'Останній вхід',
+    width: FlexColumnWidth(1.6),
+    center: true,
+  ),
   AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.6), right: true),
 ];
 
@@ -45,7 +51,11 @@ class _StudentsScreenState extends State<StudentsScreen> {
     if (_search.isEmpty) return _students;
     final q = _search.toLowerCase();
     return _students
-        .where((a) => a.name.toLowerCase().contains(q) || a.email.toLowerCase().contains(q))
+        .where(
+          (a) =>
+              a.name.toLowerCase().contains(q) ||
+              a.email.toLowerCase().contains(q),
+        )
         .toList();
   }
 
@@ -69,7 +79,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       final results = await Future.wait([
         _service.getStudents(),
@@ -79,7 +92,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
       final groups = results[1] as List<Group>;
       setState(() {
         _students = students;
-        _groupsMap = { for (final g in groups) g.id: g };
+        _groupsMap = {for (final g in groups) g.id: g};
       });
     } catch (e) {
       setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
@@ -90,35 +103,66 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
   Widget _buildGroupCell(int? groupId) {
     if (groupId == null) {
-      return const Text('—', style: TextStyle(fontSize: 14, color: AppColors.gray400));
+      return const Text(
+        '—',
+        style: TextStyle(fontSize: 14, color: AppColors.gray400),
+      );
     }
     final group = _groupsMap[groupId];
     if (group == null) {
-      return Text('ID $groupId', style: const TextStyle(fontSize: 14, color: AppColors.gray400));
+      return Text(
+        'ID $groupId',
+        style: const TextStyle(fontSize: 14, color: AppColors.gray400),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(group.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.gray900)),
-        Text('Курс ${group.courseNumber}', style: const TextStyle(fontSize: 12, color: AppColors.gray400)),
+        Text(
+          group.name,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: AppColors.gray900,
+          ),
+        ),
+        Text(
+          'Курс ${group.courseNumber}',
+          style: const TextStyle(fontSize: 12, color: AppColors.gray400),
+        ),
       ],
     );
   }
 
   List<List<Widget>> _buildRows(List<StudentUser> page) {
-    return page.map<List<Widget>>((a) => [
-      Text('${a.id}', style: const TextStyle(fontSize: 14, color: AppColors.gray900)),
-      Text(
-        a.name.isEmpty ? '—' : a.name,
-        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.gray900),
-      ),
-      Text(a.email, style: const TextStyle(fontSize: 14, color: AppColors.gray700)),
-      StudentRoleBadge(role: a.role),
-      _buildGroupCell(a.groupId),
-      StudentLastLoginCell(lastLogin: a.lastLogin),
-      StudentActionMenu(student: a, onRefresh: _load, service: _service),
-    ]).toList();
+    return page
+        .map<List<Widget>>(
+          (a) => [
+            Text(
+              '${a.id}',
+              style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+            ),
+            Text(
+              a.name.isEmpty ? '—' : a.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.gray900,
+              ),
+            ),
+            Text(
+              a.email,
+              style: const TextStyle(fontSize: 14, color: AppColors.gray700),
+            ),
+            StudentRoleBadge(role: a.role),
+            _buildGroupCell(a.groupId),
+            StudentStatusBadge(status: StudentStatus.fromString(a.status)),
+            StudentLastLoginCell(lastLogin: a.lastLogin),
+            StudentActionMenu(student: a, onRefresh: _load, service: _service),
+          ],
+        )
+        .toList();
   }
 
   @override
@@ -129,35 +173,41 @@ class _StudentsScreenState extends State<StudentsScreen> {
         children: [
           AppCardHeader(
             title: const AppCardTitle(text: 'Студенти'),
-            description: const AppCardDescription(text: 'Керування обліковими записами студентів'),
+            description: const AppCardDescription(
+              text: 'Керування обліковими записами студентів',
+            ),
           ),
           AppCardContent(
             child: SizedBox(
               width: 320,
               child: StudentSearchField(
                 controller: _searchController,
-                onChanged: (val) => setState(() { _search = val; _currentPage = 1; }),
+                onChanged:
+                    (val) => setState(() {
+                      _search = val;
+                      _currentPage = 1;
+                    }),
               ),
             ),
           ),
           AppCardContent(
             isLast: true,
-            child: _error != null
-                ? StudentErrorBody(error: _error!, onRetry: _load)
-                : AppTable(
-                    columns: _kColumns,
-                    rows: _isLoading ? [] : _buildRows(_paginated),
-                    totalCount: _filtered.length,
-                    currentPage: _currentPage,
-                    itemsPerPage: _itemsPerPage,
-                    isLoading: _isLoading,
-                    emptyText: 'Студентів не знайдено',
-                    onPageChange: (p) => setState(() => _currentPage = p),
-                  ),
+            child:
+                _error != null
+                    ? StudentErrorBody(error: _error!, onRetry: _load)
+                    : AppTable(
+                      columns: _kColumns,
+                      rows: _isLoading ? [] : _buildRows(_paginated),
+                      totalCount: _filtered.length,
+                      currentPage: _currentPage,
+                      itemsPerPage: _itemsPerPage,
+                      isLoading: _isLoading,
+                      emptyText: 'Студентів не знайдено',
+                      onPageChange: (p) => setState(() => _currentPage = p),
+                    ),
           ),
         ],
       ),
     );
   }
 }
-

@@ -7,6 +7,7 @@ class TeacherUser {
   final String email;
   final String name;
   final String role;
+  final String status;
   final String? lastLogin;
 
   const TeacherUser({
@@ -14,6 +15,7 @@ class TeacherUser {
     required this.email,
     required this.name,
     required this.role,
+    required this.status,
     this.lastLogin,
   });
 
@@ -23,6 +25,7 @@ class TeacherUser {
       email: (json['email'] ?? '') as String,
       name: (json['name'] ?? '') as String,
       role: (json['role'] ?? '') as String,
+      status: (json['user_status'] ?? '') as String,
       lastLogin: json['last_login'] as String?,
     );
   }

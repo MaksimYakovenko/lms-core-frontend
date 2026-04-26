@@ -4,6 +4,7 @@ import 'package:lms_core_frontend/common/components/app_card.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
+import 'package:lms_core_frontend/features/teachers/widgets/teacher_status_badge.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/features/teachers/widgets/teacher_role_badge.dart';
 import 'package:lms_core_frontend/features/teachers/widgets/teacher_last_login_cell.dart';
@@ -15,9 +16,10 @@ import 'package:lms_core_frontend/features/teachers/dialogs/create_teacher_dialo
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.6)),
   AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(2.0)),
-  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.5)),
-  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.0), center: true),
-  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(2.0), center: true),
+  AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.0)),
+  AppTableColumn(label: 'Роль', width: FlexColumnWidth(1.2), center: true),
+  AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.4), center: true),
+  AppTableColumn(label: 'Останній вхід', width: FlexColumnWidth(1.8), center: true),
   AppTableColumn(label: 'Дії', width: FlexColumnWidth(0.8), right: true),
 ];
 
@@ -88,6 +90,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
       ),
       Text(a.email, style: const TextStyle(fontSize: 14, color: AppColors.gray700)),
       TeacherRoleBadge(role: a.role),
+      TeacherStatusBadge(status: TeacherStatus.fromString(a.status)),
       TeacherLastLoginCell(lastLogin: a.lastLogin),
       TeacherActionMenu(teacher: a, onRefresh: _load, service: _service),
     ] as List<Widget>).toList();
@@ -158,4 +161,3 @@ class _TeachersScreenState extends State<TeachersScreen> {
     );
   }
 }
-

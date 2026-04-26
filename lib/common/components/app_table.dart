@@ -11,7 +11,6 @@ const _kGray600 = Color(0xFF4B5563);
 
 // ── Моделі ───────────────────────────────────────────────────────────────────
 
-/// Опис однієї колонки таблиці
 class AppTableColumn {
   final String label;
   final FlexColumnWidth width;

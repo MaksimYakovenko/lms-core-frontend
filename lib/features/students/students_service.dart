@@ -7,6 +7,7 @@ class StudentUser {
   final String email;
   final String name;
   final String role;
+  final String status;
   final int? groupId;
   final String? lastLogin;
 
@@ -15,6 +16,7 @@ class StudentUser {
     required this.email,
     required this.name,
     required this.role,
+    required this.status,
     this.groupId,
     this.lastLogin,
   });
@@ -25,6 +27,7 @@ class StudentUser {
       email: (json['email'] ?? '') as String,
       name: (json['name'] ?? '') as String,
       role: (json['role'] ?? '') as String,
+      status: (json['status'] ?? '') as String,
       groupId: json['group_id'] as int?,
       lastLogin: json['last_login'] as String?,
     );

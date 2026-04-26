@@ -7,11 +7,11 @@ import 'package:lms_core_frontend/features/students/students_service.dart';
 import 'package:lms_core_frontend/features/groups/groups_service.dart';
 
 Future<void> showAssignGroupDialog(
-  BuildContext context, {
-  required StudentUser student,
-  required StudentsService service,
-  required VoidCallback onRefresh,
-}) {
+    BuildContext context, {
+      required StudentUser student,
+      required StudentsService service,
+      required VoidCallback onRefresh,
+    }) {
   return showDialog(
     context: context,
     builder: (_) => _AssignGroupDialog(student: student, service: service, onRefresh: onRefresh),

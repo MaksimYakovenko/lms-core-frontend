@@ -144,26 +144,28 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: AppCard(
-        children: [
-          AppCardHeader(
-            title: const AppCardTitle(text: 'Результати студентів'),
-            description: const AppCardDescription(
-              text: 'Огляд успішності',
+      child: SingleChildScrollView(
+        child: AppCard(
+          children: [
+            AppCardHeader(
+              title: const AppCardTitle(text: 'Результати студентів'),
+              description: const AppCardDescription(
+                text: 'Огляд успішності',
+              ),
             ),
-          ),
-          AppCardContent(
-            isLast: true,
-            child: AppTable(
-              columns: _kColumns,
-              rows: _buildRows(paginated, all),
-              totalCount: all.length,
-              currentPage: _currentPage,
-              itemsPerPage: _itemsPerPage,
-              onPageChange: (page) => setState(() => _currentPage = page),
+            AppCardContent(
+              isLast: true,
+              child: AppTable(
+                columns: _kColumns,
+                rows: _buildRows(paginated, all),
+                totalCount: all.length,
+                currentPage: _currentPage,
+                itemsPerPage: _itemsPerPage,
+                onPageChange: (page) => setState(() => _currentPage = page),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

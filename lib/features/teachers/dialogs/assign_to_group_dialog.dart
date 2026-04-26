@@ -105,6 +105,7 @@ Future<void> showAssignToGroupDialog(
                           '${group.name}  •  ${group.courseNumber} курс',
                           style: const TextStyle(fontSize: 14),
                         ),
+                        activeColor: AppColors.textPrimary,
                         onChanged: (checked) {
                           setDialogState(() {
                             if (checked == true) {
