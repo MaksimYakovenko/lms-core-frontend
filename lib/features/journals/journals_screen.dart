@@ -6,6 +6,8 @@ import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/features/journals/journals_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'dialogs/create_journal_dialog.dart';
+
 class JournalsScreen extends StatefulWidget {
   const JournalsScreen({super.key});
 
@@ -60,7 +62,13 @@ class _JournalsScreenState extends State<JournalsScreen> {
                 AppButton(
                   variant: ButtonVariant.black,
                   size: ButtonSize.defaultSize,
-                  onPressed: () {},
+                  onPressed: () => createJournalDialog(
+                    context,
+                    service: _service,
+                    onRefresh: () => setState(() {
+                      _futureJournals = _service.getJournals();
+                    }),
+                  ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -87,24 +95,25 @@ class _JournalsScreenState extends State<JournalsScreen> {
 
                 final journals = snapshot.data ?? [];
 
-                final rows = journals.map((j) {
-                  return [
-                    Text(
-                      j.subject.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      j.group.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ];
-                }).toList();
+                final rows =
+                    journals.map((j) {
+                      return [
+                        Text(
+                          j.subject.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          j.group.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ];
+                    }).toList();
 
                 return Column(
                   children: [
@@ -183,7 +192,10 @@ class _JournalsScreenState extends State<JournalsScreen> {
 
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF9FAFB),
                         border: Border.all(color: const Color(0xFFE2E8F0)),
@@ -204,8 +216,14 @@ class _JournalsScreenState extends State<JournalsScreen> {
 
                     AppTable(
                       columns: const [
-                        AppTableColumn(label: 'Предмет', width: FlexColumnWidth(4)),
-                        AppTableColumn(label: 'Група', width: FlexColumnWidth(4)),
+                        AppTableColumn(
+                          label: 'Предмет',
+                          width: FlexColumnWidth(4),
+                        ),
+                        AppTableColumn(
+                          label: 'Група',
+                          width: FlexColumnWidth(4),
+                        ),
                       ],
                       rows: rows,
                       totalCount: journals.length,

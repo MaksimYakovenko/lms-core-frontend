@@ -90,7 +90,12 @@ class JournalsService {
     throw Exception(detail);
   }
 
-  Future<void> createJournal(String name, int courseNumber) async {
+  Future<void> createJournalWithAssignment({
+    required int groupId,
+    required int subjectId,
+    required int teacherId,
+    required int? assistantId,
+  }) async {
     final token = await _authService.getToken();
 
     final response = await http.post(
@@ -99,13 +104,18 @@ class JournalsService {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'name': name, 'course_number': courseNumber}),
+      body: jsonEncode({
+        'group_id': groupId,
+        'subject_id': subjectId,
+        'teacher_id': teacherId,
+        'assistant_id': assistantId,
+      }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to create group (${response.statusCode})';
+    final detail = body['detail'] ?? 'Failed to create journal (${response.statusCode})';
     throw Exception(detail);
   }
 
