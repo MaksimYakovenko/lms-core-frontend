@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class SignInResponse {
   final String accessToken;
 
@@ -66,13 +68,12 @@ class CaptchaResponse {
 }
 
 class AuthService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
   static const _tokenKey = 'access_token';
   static const _userNameKey = 'user_name';
   static const _userRoleKey = 'user_role';
 
   Future<CaptchaResponse> getCaptcha() async {
-    final uri = Uri.parse('$_baseUrl/auth/captcha');
+    final uri = Uri.parse('$baseUrl/auth/captcha');
 
     final response = await http.get(
       uri,
@@ -96,7 +97,7 @@ class AuthService {
     required String captchaId,
     required String captchaAnswer,
   }) async {
-    final uri = Uri.parse('$_baseUrl/auth/sign-up');
+    final uri = Uri.parse('$baseUrl/auth/sign-up');
 
     final response = await http.post(
       uri,
@@ -129,7 +130,7 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final uri = Uri.parse('$_baseUrl/auth/sign-in');
+    final uri = Uri.parse('$baseUrl/auth/sign-in');
 
     final response = await http.post(
       uri,
@@ -152,7 +153,7 @@ class AuthService {
   }
 
   Future<UserMe> getMe(String accessToken) async {
-    final uri = Uri.parse('$_baseUrl/users/me');
+    final uri = Uri.parse('$baseUrl/users/me');
 
     final response = await http.get(
       uri,

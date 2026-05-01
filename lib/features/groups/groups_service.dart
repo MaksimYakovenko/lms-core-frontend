@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class Group {
   final int id;
   final String name;
@@ -19,7 +21,6 @@ class Group {
 }
 
 class GroupsService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
@@ -27,7 +28,7 @@ class GroupsService {
     final token = await _authService.getToken();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/groups/get_groups'),
+      Uri.parse('$baseUrl/groups/get_groups'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -46,7 +47,7 @@ class GroupsService {
     final token = await _authService.getToken();
 
     final response = await http.post(
-      Uri.parse('$_baseUrl/groups/create_group'),
+      Uri.parse('$baseUrl/groups/create_group'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -65,7 +66,7 @@ class GroupsService {
     final token = await _authService.getToken();
 
     final response = await http.put(
-      Uri.parse('$_baseUrl/groups/update_group'),
+      Uri.parse('$baseUrl/groups/update_group'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -84,7 +85,7 @@ class GroupsService {
     final token = await _authService.getToken();
 
     final response = await http.delete(
-      Uri.parse('$_baseUrl/groups/delete_group/$id'),
+      Uri.parse('$baseUrl/groups/delete_group/$id'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class TeacherUser {
   final int id;
   final String email;
@@ -38,14 +40,13 @@ class TeacherUser {
 }
 
 class TeachersService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
   Future<List<TeacherUser>> getTeachers() async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/teachers/get_teachers');
+    final uri = Uri.parse('$baseUrl/teachers/get_teachers');
 
     final response = await http.get(
       uri,
@@ -68,7 +69,7 @@ class TeachersService {
   Future<void> createTeacher(String email) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/teachers/create_teacher');
+    final uri = Uri.parse('$baseUrl/teachers/create_teacher');
 
     final response = await http.post(
       uri,
@@ -90,7 +91,7 @@ class TeachersService {
   Future<void> updateTeacher(int id, {required String name}) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/teachers/update_teacher/$id');
+    final uri = Uri.parse('$baseUrl/teachers/update_teacher/$id');
 
     final response = await http.put(
       uri,
@@ -112,7 +113,7 @@ class TeachersService {
   Future<void> deleteTeacher(int id) async {
     final token = await _authService.getToken();
     final uri = Uri.parse(
-      '$_baseUrl/teachers/delete_teacher/$id',
+      '$baseUrl/teachers/delete_teacher/$id',
     ).replace(queryParameters: {'teacher_id': '$id'});
 
     final response = await http.delete(
@@ -133,7 +134,7 @@ class TeachersService {
 
   Future<void> assignTeacherToGroups(int teacherId, List<int> groupIds) async {
     final token = await _authService.getToken();
-    final uri = Uri.parse('$_baseUrl/teachers/assign_to_groups');
+    final uri = Uri.parse('$baseUrl/teachers/assign_to_groups');
 
     final response = await http.put(
       uri,
@@ -154,7 +155,7 @@ class TeachersService {
 
   Future<void> assignTeacherToSubjects(int teacherId, List<int> subjectIds) async {
     final token = await _authService.getToken();
-    final uri = Uri.parse('$_baseUrl/teachers/assign_to_subjects');
+    final uri = Uri.parse('$baseUrl/teachers/assign_to_subjects');
 
     final response = await http.put(
       uri,

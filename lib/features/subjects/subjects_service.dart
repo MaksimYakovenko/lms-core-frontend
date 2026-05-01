@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class Subject {
   final int id;
   final String name;
@@ -14,14 +16,13 @@ class Subject {
 }
 
 class SubjectsService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
   Future<List<Subject>> getSubjects() async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/subjects/get_subjects');
+    final uri = Uri.parse('$baseUrl/subjects/get_subjects');
 
     final response = await http.get(
       uri,
@@ -45,7 +46,7 @@ class SubjectsService {
     final token = await _authService.getToken();
 
     final response = await http.post(
-      Uri.parse('$_baseUrl/subjects/create_subject'),
+      Uri.parse('$baseUrl/subjects/create_subject'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -65,7 +66,7 @@ class SubjectsService {
     final token = await _authService.getToken();
 
     final response = await http.put(
-      Uri.parse('$_baseUrl/subjects/update_subject'),
+      Uri.parse('$baseUrl/subjects/update_subject'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -85,7 +86,7 @@ class SubjectsService {
     final token = await _authService.getToken();
 
     final uri = Uri.parse(
-      '$_baseUrl/subjects/delete_subject/$id',
+      '$baseUrl/subjects/delete_subject/$id',
     ).replace(queryParameters: {'subject_id': '$id'});
 
     final response = await http.delete(

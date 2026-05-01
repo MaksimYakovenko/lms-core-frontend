@@ -20,7 +20,6 @@ const _kColumns = [
   AppTableColumn(label: 'Ім\'я', width: FlexColumnWidth(1.6)),
   AppTableColumn(label: 'Пошта', width: FlexColumnWidth(2.2)),
   AppTableColumn(label: 'Роль', width: FlexColumnWidth(0.9), center: true),
-  AppTableColumn(label: 'Групи', width: FlexColumnWidth(1.2)),
   AppTableColumn(label: 'Статус', width: FlexColumnWidth(1.3), center: true),
   AppTableColumn(
     label: 'Останній вхід',
@@ -121,71 +120,12 @@ class _TeachersScreenState extends State<TeachersScreen> {
           style: const TextStyle(fontSize: 14, color: AppColors.gray700),
         ),
         TeacherRoleBadge(role: a.role),
-        _buildGroupCells(a.groupIds),
         TeacherStatusBadge(status: TeacherStatus.fromString(a.status)),
         TeacherLastLoginCell(lastLogin: a.lastLogin),
         TeacherActionMenu(teacher: a, onRefresh: _load, service: _service),
       ],
     )
         .toList();
-  }
-
-  Widget _buildGroupCells(List<int> groupIds) {
-    if (groupIds.isEmpty) {
-      return const Text(
-        '—',
-        style: TextStyle(fontSize: 14, color: AppColors.gray400),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: groupIds.map((groupId) {
-        final group = _groupsMap[groupId];
-
-        if (group == null) {
-          return Text(
-            'ID $groupId',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 14, color: AppColors.gray400),
-          );
-        }
-
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                group.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.gray900,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                'Курс ${group.courseNumber}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.gray400,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
-    );
   }
 
   @override

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class AdminUser {
   final int id;
   final String email;
@@ -32,14 +34,13 @@ class AdminUser {
 }
 
 class AdminsService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
   Future<List<AdminUser>> getAdmins() async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/admins/get_admins');
+    final uri = Uri.parse('$baseUrl/admins/get_admins');
 
     final response = await http.get(
       uri,
@@ -62,7 +63,7 @@ class AdminsService {
   Future<void> createAdmin(String email) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/admins/create_admin');
+    final uri = Uri.parse('$baseUrl/admins/create_admin');
 
     final response = await http.post(
       uri,
@@ -83,7 +84,7 @@ class AdminsService {
   Future<void> updateAdmin(int id, {required String name}) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/admins/update_admin');
+    final uri = Uri.parse('$baseUrl/admins/update_admin');
 
     final response = await http.put(
       uri,
@@ -104,7 +105,7 @@ class AdminsService {
   Future<void> deleteAdmin(int id) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/admins/delete_admin/$id')
+    final uri = Uri.parse('$baseUrl/admins/delete_admin/$id')
         .replace(queryParameters: {'admin_id': '$id'});
 
     final response = await http.delete(

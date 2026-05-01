@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class JournalRef {
   final int id;
   final String name;
@@ -48,7 +50,6 @@ class Journal {
 }
 
 class JournalsService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
@@ -56,7 +57,7 @@ class JournalsService {
     final token = await _authService.getToken();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/journals'),
+      Uri.parse('$baseUrl/journals'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -75,7 +76,7 @@ class JournalsService {
     final token = await _authService.getToken();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/journals/$id'),
+      Uri.parse('$baseUrl/journals/$id'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -93,7 +94,7 @@ class JournalsService {
     final token = await _authService.getToken();
 
     final response = await http.post(
-      Uri.parse('$_baseUrl/journals'),
+      Uri.parse('$baseUrl/journals'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -112,7 +113,7 @@ class JournalsService {
     final token = await _authService.getToken();
 
     final response = await http.delete(
-      Uri.parse('$_baseUrl/journals/$id'),
+      Uri.parse('$baseUrl/journals/$id'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',

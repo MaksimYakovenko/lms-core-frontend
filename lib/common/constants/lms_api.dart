@@ -1,0 +1,1 @@
+const baseUrl = 'https://lms-core-api-production.up.railway.app';

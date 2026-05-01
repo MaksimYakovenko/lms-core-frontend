@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
+import '../../common/constants/lms_api.dart';
+
 class StudentUser {
   final int id;
   final String email;
@@ -35,14 +37,13 @@ class StudentUser {
 }
 
 class StudentsService {
-  static const _baseUrl = 'https://lms-core-api-production.up.railway.app';
 
   final AuthService _authService = AuthService();
 
   Future<List<StudentUser>> getStudents() async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/get_students');
+    final uri = Uri.parse('$baseUrl/students/get_students');
 
     final response = await http.get(
       uri,
@@ -66,7 +67,7 @@ class StudentsService {
   Future<void> createStudent(String email) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/create_student');
+    final uri = Uri.parse('$baseUrl/students/create_student');
 
     final response = await http.post(
       uri,
@@ -88,7 +89,7 @@ class StudentsService {
     final token = await _authService.getToken();
 
     final response = await http.put(
-      Uri.parse('$_baseUrl/students/assign_to_group'),
+      Uri.parse('$baseUrl/students/assign_to_group'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
@@ -106,7 +107,7 @@ class StudentsService {
   Future<void> updateStudent(int id, {required String name}) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/update_student');
+    final uri = Uri.parse('$baseUrl/students/update_student');
 
     final response = await http.put(
       uri,
@@ -127,7 +128,7 @@ class StudentsService {
   Future<void> deleteStudent(int id) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('$_baseUrl/students/delete_student/$id')
+    final uri = Uri.parse('$baseUrl/students/delete_student/$id')
         .replace(queryParameters: {'student_id': '$id'});
 
     final response = await http.delete(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_stat_card.dart';
+import 'package:lms_core_frontend/features/admin_main/widgets/action_item.dart';
+import 'package:lms_core_frontend/features/admin_main/widgets/section_header.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/features/admin_main/main_service.dart';
 
@@ -219,7 +221,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _SectionHeader(),
+                const SectionHeader(),
                 const SizedBox(height: 24),
                 Row(
                   children: [
@@ -293,34 +295,6 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(LucideIcons.plus, size: 20, color: Color(0xFF42464E)),
-            SizedBox(width: 8),
-            Text(
-              'Швидкі дії',
-              style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Керуйте даними швидко та легко',
-          style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
-        ),
-      ],
-    );
-  }
-}
-
 class _QuickActionCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -366,11 +340,11 @@ class _QuickActionCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          _ActionItem(icon: LucideIcons.plus, label: 'Додати', onTap: onAdd),
+          ActionItem(icon: LucideIcons.plus, label: 'Додати', onTap: onAdd),
 
           const SizedBox(height: 5),
 
-          _ActionItem(
+          ActionItem(
             icon: LucideIcons.list,
             label: 'Переглянути список',
             onTap: onViewAll,
@@ -381,48 +355,3 @@ class _QuickActionCard extends StatelessWidget {
   }
 }
 
-class _ActionItem extends StatefulWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback? onTap;
-
-  const _ActionItem({required this.icon, required this.label, this.onTap});
-
-  @override
-  State<_ActionItem> createState() => _ActionItemState();
-}
-
-class _ActionItemState extends State<_ActionItem> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: _hovered ? const Color(0xFFE5E7EB) : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              Icon(widget.icon, size: 18, color: const Color(0xFF111827)),
-              const SizedBox(width: 10),
-              Text(
-                widget.label,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF111827)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
