@@ -102,6 +102,8 @@ final dashboardRoutes = [
         name: ViewIdentifiers.journals.name,
         builder: (context, state) => const JournalsScreen(),
       ),
+
+
       GoRoute(
           path: '/${ViewIdentifiers.teacherQuickAdd.path}',
           name: ViewIdentifiers.teacherQuickAdd.name,

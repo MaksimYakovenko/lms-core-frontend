@@ -99,18 +99,30 @@ class _JournalsScreenState extends State<JournalsScreen> {
                     journals.map((j) {
                       return [
                         Text(
-                          j.subject.name,
+                          j.subject,
                           style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.textPrimary,
                           ),
                         ),
-                        Text(
-                          j.group.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textPrimary,
-                          ),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: j.groups.map((g) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF22C55E),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${g.name} (курс ${g.courseNumber})',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.background1,
+                              ),
+                            ),
+                          )).toList(),
                         ),
                       ];
                     }).toList();

@@ -7,50 +7,42 @@ import '../../common/constants/lms_api.dart';
 class JournalRef {
   final int id;
   final String name;
+  final int courseNumber;
 
-  const JournalRef({required this.id, required this.name});
+  const JournalRef({
+    required this.id,
+    required this.name,
+    this.courseNumber = 0,
+  });
 
   factory JournalRef.fromJson(Map<String, dynamic> json) {
     return JournalRef(
-      id: json['id'] as int,
-      name: (json['name'] ?? '') as String,
+      id: (json['id'] as num).toInt(),
+      name: (json['name'] ?? '').toString(),
+      courseNumber: json['course_number'] != null
+          ? (json['course_number'] as num).toInt()
+          : 0,
     );
   }
 }
 
 class Journal {
-  final int id;
-  final JournalRef group;
-  final JournalRef subject;
-  final JournalRef teacher;
-  final JournalRef? assistant;
-  final List<dynamic> lessons;
+  final String subject;
+  final List<JournalRef> groups;
 
-  const Journal({
-    required this.id,
-    required this.group,
-    required this.subject,
-    required this.teacher,
-    this.assistant,
-    required this.lessons,
-  });
+  const Journal({required this.subject, required this.groups});
 
   factory Journal.fromJson(Map<String, dynamic> json) {
     return Journal(
-      id: json['id'] as int,
-      group: JournalRef.fromJson(json['group'] as Map<String, dynamic>),
-      subject: JournalRef.fromJson(json['subject'] as Map<String, dynamic>),
-      teacher: JournalRef.fromJson(json['teacher'] as Map<String, dynamic>),
-      assistant: json['assistant'] != null
-          ? JournalRef.fromJson(json['assistant'] as Map<String, dynamic>)
-          : null,
-      lessons: (json['lessons'] as List<dynamic>?) ?? [],
+      subject: (json['subject'] ?? '').toString(),
+      groups: (json['groups'] as List<dynamic>? ?? [])
+          .map((e) => JournalRef.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 }
 
 class JournalsService {
-
   final AuthService _authService = AuthService();
 
   Future<List<Journal>> getJournals() async {
@@ -66,7 +58,9 @@ class JournalsService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final list = jsonDecode(response.body) as List<dynamic>;
-      return list.map((e) => Journal.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => Journal.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
 
     throw Exception('Failed to fetch groups (${response.statusCode})');
@@ -86,7 +80,8 @@ class JournalsService {
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to fetch journal (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to fetch journal (${response.statusCode})';
     throw Exception(detail);
   }
 
@@ -115,7 +110,8 @@ class JournalsService {
     if (response.statusCode == 200 || response.statusCode == 201) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to create journal (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to create journal (${response.statusCode})';
     throw Exception(detail);
   }
 
@@ -133,8 +129,8 @@ class JournalsService {
     if (response.statusCode == 200 || response.statusCode == 204) return;
 
     final body = jsonDecode(response.body);
-    final detail = body['detail'] ?? 'Failed to delete journal (${response.statusCode})';
+    final detail =
+        body['detail'] ?? 'Failed to delete journal (${response.statusCode})';
     throw Exception(detail);
   }
 }
-

@@ -49,6 +49,8 @@ class ViewIdentifiers {
       const RouteDescriptor('admin-admin_main', path: 'admin-admin_main');
   static RouteDescriptor journals =
       const RouteDescriptor('journals', path: 'journals');
+  static RouteDescriptor journalDetails =
+      const RouteDescriptor('journal-details', path: 'journals/:id');
   static RouteDescriptor teacherQuickAdd =
       const RouteDescriptor('teacher-quick-add', path: 'teacher-quick-add');
   static RouteDescriptor groupQuickAdd =
