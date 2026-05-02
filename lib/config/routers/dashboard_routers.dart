@@ -8,8 +8,8 @@ import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
 import 'package:lms_core_frontend/features/groups/group_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
 import 'package:lms_core_frontend/features/journals/journals_screen.dart';
+import 'package:lms_core_frontend/features/journals/journal_details_screen.dart';
 import 'package:lms_core_frontend/features/news/news_screen.dart';
-import 'package:lms_core_frontend/features/resources/resources_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
 import 'package:lms_core_frontend/features/students/students_screen.dart';
@@ -59,7 +59,7 @@ final dashboardRoutes = [
       GoRoute(
         path: '/${ViewIdentifiers.resources.path}',
         name: ViewIdentifiers.resources.name,
-        builder: (context, state) => const ResourcesScreen(),
+        builder: (context, state) => const ResultsScreen(),
       ),
       // Admin routes
       GoRoute(
@@ -102,8 +102,14 @@ final dashboardRoutes = [
         name: ViewIdentifiers.journals.name,
         builder: (context, state) => const JournalsScreen(),
       ),
-
-
+      GoRoute(
+        path: '/${ViewIdentifiers.journalDetails.path}',
+        name: ViewIdentifiers.journalDetails.name,
+        builder: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          return JournalDetailsScreen(journalId: id);
+        },
+      ),
       GoRoute(
           path: '/${ViewIdentifiers.teacherQuickAdd.path}',
           name: ViewIdentifiers.teacherQuickAdd.name,
@@ -127,6 +133,3 @@ final dashboardRoutes = [
     ],
   ),
 ];
-
-
-

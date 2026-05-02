@@ -408,7 +408,7 @@ class _InfoBox extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: AppColors.textMuted, height: 1.5),
           children: [
             TextSpan(
-              text: 'Для викадачів: ',
+              text: 'Для викладачів: ',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,

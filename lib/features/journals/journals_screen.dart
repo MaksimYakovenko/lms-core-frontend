@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_stat_card.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
+import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/journals/journals_service.dart';
+import 'package:lms_core_frontend/features/journals/widgets/group_badge.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'dialogs/create_journal_dialog.dart';
@@ -108,22 +111,14 @@ class _JournalsScreenState extends State<JournalsScreen> {
                         Wrap(
                           spacing: 6,
                           runSpacing: 4,
-                          children: j.groups.map((g) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF22C55E),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              '${g.name} (курс ${g.courseNumber})',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.background1,
-                              ),
+                          children: j.groups.map((g) => GroupBadge(
+                            text: '${g.name} (курс ${g.courseNumber})',
+                            onTap: () => context.goNamed(
+                              ViewIdentifiers.journalDetails.name,
+                              pathParameters: {'id': g.journalId.toString()},
                             ),
                           )).toList(),
-                        ),
+                        )
                       ];
                     }).toList();
 
