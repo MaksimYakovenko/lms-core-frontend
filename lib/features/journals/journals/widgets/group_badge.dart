@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../common/constants/colors.dart';
+import '../../../../common/constants/colors.dart';
 
 class GroupBadge extends StatefulWidget {
   final String text;

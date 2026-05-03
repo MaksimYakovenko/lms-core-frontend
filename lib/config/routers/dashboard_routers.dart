@@ -4,11 +4,12 @@ import 'package:lms_core_frontend/features/admins/admins_screen.dart';
 import 'package:lms_core_frontend/features/appointment/appointment_screen.dart';
 import 'package:lms_core_frontend/features/auth/login_screen.dart';
 import 'package:lms_core_frontend/features/auth/registry_screen.dart';
+import 'package:lms_core_frontend/features/classrooms/classrooms_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
 import 'package:lms_core_frontend/features/groups/group_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
-import 'package:lms_core_frontend/features/journals/journals_screen.dart';
-import 'package:lms_core_frontend/features/journals/journal_details_screen.dart';
+import 'package:lms_core_frontend/features/journals/journals/journals_screen.dart';
+import 'package:lms_core_frontend/features/journals/journal_details/journal_details_screen.dart';
 import 'package:lms_core_frontend/features/news/news_screen.dart';
 import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
@@ -129,6 +130,11 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.appointment.path}',
         name: ViewIdentifiers.appointment.name,
         builder: (context, state) => const AppointmentScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.classrooms.path}',
+        name: ViewIdentifiers.classrooms.name,
+        builder: (context, state) => const ClassroomsScreen(),
       ),
     ],
   ),

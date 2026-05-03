@@ -146,16 +146,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     );
   }
 
-  String _formatGroupsList(List<int> groupIds) {
-    if (groupIds.isEmpty) return '—';
-    return groupIds
-        .map((id) {
-          final group = _groupsMap[id];
-          return group != null ? group.name : 'ID $id';
-        })
-        .join(', ');
-  }
-
   String _formatSubjectsList(List<int> subjectIds) {
     if (subjectIds.isEmpty) return '—';
     return subjectIds

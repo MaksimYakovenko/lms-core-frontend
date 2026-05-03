@@ -6,7 +6,7 @@ import 'package:lms_core_frontend/common/components/app_table.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/journals/journals_service.dart';
-import 'package:lms_core_frontend/features/journals/widgets/group_badge.dart';
+import 'package:lms_core_frontend/features/journals/journals/widgets/group_badge.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'dialogs/create_journal_dialog.dart';

@@ -45,6 +45,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     _NavItem(icon: LucideIcons.users, label: 'Студенти'),
     _NavItem(icon: LucideIcons.layoutList, label: 'Групи'),
     _NavItem(icon: LucideIcons.bookOpen, label: 'Предмети'),
+    _NavItem(icon: LucideIcons.school, label: 'Аудиторії'),
     _NavItem(icon: LucideIcons.clipboardCheck, label: 'Журнали'),
     _NavItem(icon: LucideIcons.link, label: 'Призначення'),
     _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
@@ -126,25 +127,27 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                children: List.generate(_navItems.length, (index) {
-                  final item = _navItems[index];
-                  final isActive = widget.selectedIndex == index;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: _NavTile(
-                      icon: item.icon,
-                      label: item.label,
-                      isActive: isActive,
-                      activeColor: AppColors.sidebarActive,
-                      textColor: AppColors.sidebarText,
-                      textMutedColor: AppColors.sidebarTextMuted,
-                      onTap: () {
-                        widget.onItemSelected?.call(index);
-                      },
-                    ),
-                  );
-                }),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: List.generate(_navItems.length, (index) {
+                    final item = _navItems[index];
+                    final isActive = widget.selectedIndex == index;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: _NavTile(
+                        icon: item.icon,
+                        label: item.label,
+                        isActive: isActive,
+                        activeColor: AppColors.sidebarActive,
+                        textColor: AppColors.sidebarText,
+                        textMutedColor: AppColors.sidebarTextMuted,
+                        onTap: () {
+                          widget.onItemSelected?.call(index);
+                        },
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
           ),

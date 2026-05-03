@@ -22,9 +22,10 @@ const _adminPathToIndex = {
   '/students': 3,
   '/groups': 4,
   '/subjects': 5,
-  '/journals': 6,
-  '/appointment': 7,
-  '/news': 8,
+  '/classrooms': 6,
+  '/journals': 7,
+  '/appointment': 8,
+  '/news': 9,
 };
 
 class DashboardScreen extends StatelessWidget {
@@ -48,6 +49,7 @@ class DashboardScreen extends StatelessWidget {
     'students',
     'groups',
     'subjects',
+    'classrooms',
     'journals',
     'appointment',
     'news',

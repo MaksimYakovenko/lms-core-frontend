@@ -6,8 +6,8 @@ import 'package:lms_core_frontend/common/components/app_dialog.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 import 'package:lms_core_frontend/features/groups/groups_service.dart';
 
-import '../../subjects/subjects_service.dart';
-import '../../teachers/teachers_service.dart';
+import '../../../subjects/subjects_service.dart';
+import '../../../teachers/teachers_service.dart';
 
 Future<void> createJournalDialog(
   BuildContext context, {

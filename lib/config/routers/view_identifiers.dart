@@ -59,4 +59,6 @@ class ViewIdentifiers {
       const RouteDescriptor('subject-quick-add', path: 'subject-quick-add');
   static RouteDescriptor appointment =
       const RouteDescriptor('appointment', path: 'appointment');
+  static RouteDescriptor classrooms =
+      const RouteDescriptor('classrooms', path: 'classrooms');
 }

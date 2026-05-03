@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lms_core_frontend/features/journals/widgets/student_grade_row.dart';
-
-import '../journals_service.dart';
+import 'package:lms_core_frontend/features/journals/journal_details/widgets/student_grade_row.dart';
+import '../journal_details_service.dart';
 
 class GradesTable extends StatelessWidget {
   const GradesTable({
@@ -160,7 +159,7 @@ class _MonthHeaderRow extends StatelessWidget {
               child: Text(
                 'ПІБ студента',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFFD1D5DB),
                   letterSpacing: 0.5,

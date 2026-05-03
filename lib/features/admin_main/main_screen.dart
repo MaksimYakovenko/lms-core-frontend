@@ -76,7 +76,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
           const SizedBox(height: 10),
           const Text(
             'Керуйте своєю шкільною системою з цієї панелі інструментів',
-            style: TextStyle(fontSize: 15, color: AppColors.textMuted),
+            style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 36),
 

@@ -169,44 +169,47 @@ class _StudentsScreenState extends State<StudentsScreen> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: AppCard(
-        children: [
-          AppCardHeader(
-            title: const AppCardTitle(text: 'Студенти'),
-            description: const AppCardDescription(
-              text: 'Керування обліковими записами студентів',
-            ),
-          ),
-          AppCardContent(
-            child: SizedBox(
-              width: 320,
-              child: StudentSearchField(
-                controller: _searchController,
-                onChanged:
-                    (val) => setState(() {
-                      _search = val;
-                      _currentPage = 1;
-                    }),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: AppCard(
+          children: [
+            AppCardHeader(
+              title: const AppCardTitle(text: 'Студенти'),
+              description: const AppCardDescription(
+                text: 'Керування обліковими записами студентів',
               ),
             ),
-          ),
-          AppCardContent(
-            isLast: true,
-            child:
-                _error != null
-                    ? StudentErrorBody(error: _error!, onRetry: _load)
-                    : AppTable(
-                      columns: _kColumns,
-                      rows: _isLoading ? [] : _buildRows(_paginated),
-                      totalCount: _filtered.length,
-                      currentPage: _currentPage,
-                      itemsPerPage: _itemsPerPage,
-                      isLoading: _isLoading,
-                      emptyText: 'Студентів не знайдено',
-                      onPageChange: (p) => setState(() => _currentPage = p),
-                    ),
-          ),
-        ],
+            AppCardContent(
+              child: SizedBox(
+                width: 320,
+                child: StudentSearchField(
+                  controller: _searchController,
+                  onChanged:
+                      (val) => setState(() {
+                        _search = val;
+                        _currentPage = 1;
+                      }),
+                ),
+              ),
+            ),
+            AppCardContent(
+              isLast: true,
+              child:
+                  _error != null
+                      ? StudentErrorBody(error: _error!, onRetry: _load)
+                      : AppTable(
+                        columns: _kColumns,
+                        rows: _isLoading ? [] : _buildRows(_paginated),
+                        totalCount: _filtered.length,
+                        currentPage: _currentPage,
+                        itemsPerPage: _itemsPerPage,
+                        isLoading: _isLoading,
+                        emptyText: 'Студентів не знайдено',
+                        onPageChange: (p) => setState(() => _currentPage = p),
+                      ),
+            ),
+          ],
+        ),
       ),
     );
   }

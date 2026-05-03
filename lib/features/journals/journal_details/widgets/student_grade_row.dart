@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../journals_service.dart';
+import '../journal_details_service.dart';
 import '../utils/grade_style.dart';
+
 
 class StudentGradeRow extends StatefulWidget {
   const StudentGradeRow({
@@ -86,7 +86,7 @@ class _StudentGradeRowState extends State<StudentGradeRow> {
                   student.fullName,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: _hovered
                         ? const Color(0xFF1D4ED8)
