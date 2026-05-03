@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:lms_core_frontend/config/routers/dashboard_routers.dart';
@@ -31,9 +32,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ToastificationWrapper(
       child: MaterialApp.router(
+        locale: const Locale('uk'),
+        supportedLocales: const [Locale('uk'), Locale('en'), Locale('ru')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         title: 'LMS',
         theme: ThemeData(
-          // set global scaffold background to main app background
           scaffoldBackgroundColor: AppColors.background1,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),

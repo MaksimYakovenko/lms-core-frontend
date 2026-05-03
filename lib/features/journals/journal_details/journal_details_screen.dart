@@ -20,14 +20,19 @@ class JournalDetailsScreen extends StatefulWidget {
 class _JournalDetailsScreenState extends State<JournalDetailsScreen> {
   final _service = JournalDetailsService();
 
-  late final Future<JournalDetails> _future;
+  late Future<JournalDetails> _future;
 
   @override
   void initState() {
     super.initState();
+    _refresh();
+  }
 
+  void _refresh() {
     final id = int.tryParse(widget.journalId) ?? 0;
-    _future = _service.getJournalById(id);
+    setState(() {
+      _future = _service.getJournalById(id);
+    });
   }
 
   @override
@@ -54,16 +59,17 @@ class _JournalDetailsScreenState extends State<JournalDetailsScreen> {
           return const Center(child: Text('Журнал не знайдено'));
         }
 
-        return JournalDetailsContent(journal: journal);
+        return JournalDetailsContent(journal: journal, onRefresh: _refresh);
       },
     );
   }
 }
 
 class JournalDetailsContent extends StatelessWidget {
-  const JournalDetailsContent({super.key, required this.journal});
+  const JournalDetailsContent({super.key, required this.journal, this.onRefresh});
 
   final JournalDetails journal;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,7 @@ class JournalDetailsContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          JournalHeader(journal: journal),
+          JournalHeader(journal: journal, onRefresh: onRefresh),
           const SizedBox(height: 16),
           const JournalFilters(),
           Padding(
@@ -98,7 +104,7 @@ class JournalDetailsContent extends StatelessWidget {
                   AppButton(
                     variant: ButtonVariant.black,
                     size: ButtonSize.lg,
-                    onPressed: () => {},
+                    onPressed: () { },
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

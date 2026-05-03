@@ -45,6 +45,7 @@ dependencies:
   web: ^1.1.1
   dropdown_flutter: ^1.0.3
   google_fonts: ^6.3.2
+  flutter_localization: ^0.3.3
 
 dev_dependencies:
   flutter_test:

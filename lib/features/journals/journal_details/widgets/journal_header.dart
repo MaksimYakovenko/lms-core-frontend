@@ -5,12 +5,14 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../common/components/app_button.dart';
 import '../../../../common/constants/colors.dart';
 import '../../../../config/routers/view_identifiers.dart';
+import '../../lessons/dialogs/create_lesson_dialog.dart';
 import '../journal_details_service.dart';
 
 class JournalHeader extends StatelessWidget {
-  const JournalHeader({super.key, required this.journal});
+  const JournalHeader({super.key, required this.journal, this.onRefresh});
 
   final JournalDetails journal;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,11 @@ class JournalHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 24),
-          _TeacherInfo(name: journal.teacherName),
+          _TeacherInfo(
+            name: journal.teacherName,
+            journalId: journal.id,
+            onRefresh: onRefresh,
+          ),
         ],
       ),
     );
@@ -61,9 +67,15 @@ class JournalHeader extends StatelessWidget {
 }
 
 class _TeacherInfo extends StatelessWidget {
-  const _TeacherInfo({required this.name});
+  const _TeacherInfo({
+    required this.name,
+    required this.journalId,
+    this.onRefresh,
+  });
 
   final String name;
+  final int journalId;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +109,17 @@ class _TeacherInfo extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         AppButton(
           variant: ButtonVariant.black,
-          size: ButtonSize.defaultSize,
-          onPressed: () => {},
-          child: Row(
+          size: ButtonSize.lg,
+          onPressed:
+              () => showCreateLessonDialog(
+                context,
+                journalId: journalId,
+                onRefresh: onRefresh ?? () {},
+              ),
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(LucideIcons.calendarPlus, size: 16),
