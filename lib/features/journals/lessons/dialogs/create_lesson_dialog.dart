@@ -126,8 +126,9 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
       await _service.createLesson(
         journalId: widget.journalId,
         lessonType: _selectedLessonType!.value,
-        periodNumber: _selectedPeriod!.number,
         date: _selectedDate,
+        classroomId: _selectedClassroom?.id,
+        lessonNumber: _selectedPeriod?.number,
       );
       if (mounted) {
         Navigator.of(context).pop();

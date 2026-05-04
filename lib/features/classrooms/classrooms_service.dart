@@ -19,6 +19,12 @@ class Classroom {
       name: (json['name'] ?? '') as String,
     );
   }
+
+  @override
+  bool operator ==(Object other) => other is Classroom && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class ClassroomsService {

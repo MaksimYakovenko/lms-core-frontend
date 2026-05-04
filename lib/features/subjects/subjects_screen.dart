@@ -140,6 +140,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
               itemsPerPage: _itemsPerPage,
               isLoading: _isLoading,
               emptyText: 'Предметів не знайдено',
+              emptyIcon: LucideIcons.bookX,
               onPageChange: (p) => setState(() => _currentPage = p),
             ),
           ),

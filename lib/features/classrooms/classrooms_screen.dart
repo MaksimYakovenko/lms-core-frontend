@@ -176,6 +176,7 @@ class _ClassroomScreenState extends State<ClassroomsScreen> {
                         itemsPerPage: _itemsPerPage,
                         isLoading: _isLoading,
                         emptyText: 'Аудиторії не знайдено',
+                        emptyIcon: LucideIcons.building2,
                         onPageChange: (p) => setState(() => _currentPage = p),
                       ),
             ),

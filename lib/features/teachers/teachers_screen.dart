@@ -197,6 +197,8 @@ class _TeachersScreenState extends State<TeachersScreen> {
               itemsPerPage: _itemsPerPage,
               isLoading: _isLoading,
               emptyText: 'Викладачів не знайдено',
+              emptyIcon: LucideIcons.userRoundX,
+
               onPageChange: (p) => setState(() => _currentPage = p),
             ),
           ),

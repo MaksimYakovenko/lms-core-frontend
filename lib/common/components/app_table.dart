@@ -32,6 +32,7 @@ class AppTable extends StatelessWidget {
     required this.onPageChange,
     this.isLoading = false,
     this.emptyText = 'Немає даних для відображення',
+    this.emptyIcon,
   });
 
   final List<AppTableColumn> columns;
@@ -42,6 +43,7 @@ class AppTable extends StatelessWidget {
   final ValueChanged<int> onPageChange;
   final bool isLoading;
   final String emptyText;
+  final IconData? emptyIcon;
 
   int get _totalPages => (totalCount / itemsPerPage).ceil().clamp(1, 9999);
   int get _start => (currentPage - 1) * itemsPerPage + 1;
@@ -62,7 +64,7 @@ class AppTable extends StatelessWidget {
           child: isLoading
               ? const _LoadingBody()
               : rows.isEmpty
-                  ? _EmptyBody(text: emptyText)
+                  ? _EmptyBody(text: emptyText, icon: emptyIcon)
                   : Table(
                       columnWidths: {
                         for (var i = 0; i < columns.length; i++)
@@ -223,18 +225,30 @@ class _LoadingBody extends StatelessWidget {
 }
 
 class _EmptyBody extends StatelessWidget {
-  const _EmptyBody({required this.text});
+  const _EmptyBody({required this.text, this.icon});
 
   final String text;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 48),
       child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 14, color: _kGray600),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon ?? LucideIcons.inbox,
+              size: 40,
+              color: const Color(0xFF9CA3AF),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              text,
+              style: const TextStyle(fontSize: 15, color: _kGray600),
+            ),
+          ],
         ),
       ),
     );

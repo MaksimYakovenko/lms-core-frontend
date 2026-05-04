@@ -81,22 +81,25 @@ class LessonsService {
   }
 
   Future<void> createLesson({
-    required int journalId,
-    required String lessonType,
-    required int periodNumber,
     required DateTime date,
+    required String lessonType,
+    int? classroomId,
+    int? lessonNumber,
+    required int journalId,
   }) async {
-    final uri = Uri.parse('$baseUrl/lessons/');
+    final uri = Uri.parse('$baseUrl/journals/$journalId/lessons');
+
+    final requestBody = <String, dynamic>{
+      'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'lesson_type': lessonType,
+      if (classroomId != null) 'classroom_id': classroomId,
+      if (lessonNumber != null) 'lesson_number': lessonNumber,
+    };
 
     final response = await http.post(
       uri,
       headers: await _headers(),
-      body: jsonEncode({
-        'journal_id': journalId,
-        'lesson_type': lessonType,
-        'period_number': periodNumber,
-        'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
-      }),
+      body: jsonEncode(requestBody),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) return;

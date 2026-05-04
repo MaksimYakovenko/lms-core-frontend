@@ -10,6 +10,7 @@ import 'package:lms_core_frontend/features/students/widgets/student_action_menu.
 import 'package:lms_core_frontend/features/students/widgets/student_search_field.dart';
 import 'package:lms_core_frontend/features/students/widgets/student_error_body.dart';
 import 'package:lms_core_frontend/features/students/widgets/student_status_badge.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 const _kColumns = [
   AppTableColumn(label: 'ID', width: FlexColumnWidth(0.5)),
@@ -205,6 +206,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
                         itemsPerPage: _itemsPerPage,
                         isLoading: _isLoading,
                         emptyText: 'Студентів не знайдено',
+                        emptyIcon: LucideIcons.userRoundX,
                         onPageChange: (p) => setState(() => _currentPage = p),
                       ),
             ),

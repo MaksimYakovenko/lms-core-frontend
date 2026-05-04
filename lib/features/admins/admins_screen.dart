@@ -202,6 +202,7 @@ class _AdminsScreenState extends State<AdminsScreen> {
                       itemsPerPage: _itemsPerPage,
                       isLoading: _isLoading,
                       emptyText: 'Адміністраторів не знайдено',
+                      emptyIcon: LucideIcons.userRoundX,
                       onPageChange: (p) => setState(() => _currentPage = p),
                     ),
           ),

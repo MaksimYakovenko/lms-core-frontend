@@ -6,6 +6,7 @@ import 'package:lms_core_frontend/features/groups/groups_service.dart';
 import 'package:lms_core_frontend/features/subjects/subjects_service.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
 import 'package:lms_core_frontend/common/components/app_table.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../common/constants/colors.dart';
 
@@ -204,6 +205,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       itemsPerPage: _itemsPerPage,
                       isLoading: _isLoading,
                       emptyText: 'Немає призначень',
+                      emptyIcon: LucideIcons.clipboardX,
                       onPageChange: (p) => setState(() => _currentPage = p),
                     ),
           ),

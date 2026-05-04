@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
@@ -7,13 +8,17 @@ import '../../../common/constants/lms_api.dart';
 
 class JournalGrade {
   final int lessonId;
+  final int? studentId;
   final String? value;
 
-  const JournalGrade({required this.lessonId, this.value});
+  const JournalGrade({required this.lessonId, this.studentId, this.value});
 
   factory JournalGrade.fromJson(Map<String, dynamic> json) {
     return JournalGrade(
       lessonId: (json['lesson_id'] as num).toInt(),
+      studentId: json['student_id'] != null
+          ? (json['student_id'] as num).toInt()
+          : null,
       value: json['value']?.toString(),
     );
   }
@@ -22,16 +27,84 @@ class JournalGrade {
 class JournalLesson {
   final int id;
   final DateTime date;
-  final String? groupTag;
+  final String? lessonType;
+  final int? orderIndex;
 
-  const JournalLesson({required this.id, required this.date, this.groupTag});
+  const JournalLesson({
+    required this.id,
+    required this.date,
+    this.lessonType,
+    this.orderIndex,
+  });
 
   factory JournalLesson.fromJson(Map<String, dynamic> json) {
     return JournalLesson(
       id: (json['id'] as num).toInt(),
       date: DateTime.parse(json['date'] as String),
-      groupTag: json['group_tag']?.toString(),
+      lessonType: json['lesson_type']?.toString(),
+      orderIndex: json['order_index'] != null
+          ? (json['order_index'] as num).toInt()
+          : null,
     );
+  }
+
+  String? get typeLabel {
+    switch (lessonType) {
+      case 'LECTURE':
+        return 'Лек.';
+      case 'SEMINAR':
+        return 'Сем.';
+      case 'PRACTICAL':
+        return 'Пр.';
+      case 'CREDIT':
+        return 'Зал.';
+      case 'EXAM':
+        return 'Екз.';
+      case 'LAB':
+        return 'Лаб.';
+      default:
+        return lessonType;
+    }
+  }
+
+  /// Badge background color per type
+  Color get typeBadgeBg {
+    switch (lessonType) {
+      case 'LECTURE':
+        return const Color(0xFFDBEAFE);
+      case 'SEMINAR':
+        return const Color(0xFFF3E8FF);
+      case 'PRACTICAL':
+        return const Color(0xFFD1FAE5);
+      case 'CREDIT':
+        return const Color(0xFFFEF3C7);
+      case 'EXAM':
+        return const Color(0xFFFEE2E2);
+      case 'LAB':
+        return const Color(0xFFE0F2FE);
+      default:
+        return const Color(0xFFF3F4F6);
+    }
+  }
+
+  /// Badge text color per type
+  Color get typeBadgeText {
+    switch (lessonType) {
+      case 'LECTURE':
+        return const Color(0xFF1D4ED8);
+      case 'SEMINAR':
+        return const Color(0xFF7C3AED);
+      case 'PRACTICAL':
+        return const Color(0xFF065F46);
+      case 'CREDIT':
+        return const Color(0xFF92400E);
+      case 'EXAM':
+        return const Color(0xFF991B1B);
+      case 'LAB':
+        return const Color(0xFF0369A1);
+      default:
+        return const Color(0xFF374151);
+    }
   }
 }
 
@@ -46,14 +119,24 @@ class JournalStudent {
     required this.grades,
   });
 
-  factory JournalStudent.fromJson(Map<String, dynamic> json) {
+  factory JournalStudent.fromJson(
+    Map<String, dynamic> json, {
+    List<JournalGrade> externalGrades = const [],
+  }) {
+    // grades can come embedded in student object OR from top-level grades list
+    final embedded = (json['grades'] as List<dynamic>? ?? [])
+        .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    final studentId = (json['id'] as num).toInt();
+    final fromExternal = externalGrades
+        .where((g) => g.studentId == studentId)
+        .toList();
+
     return JournalStudent(
-      id: (json['id'] as num).toInt(),
+      id: studentId,
       fullName: (json['full_name'] ?? json['name'] ?? '').toString(),
-      grades:
-          (json['grades'] as List<dynamic>? ?? [])
-              .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      grades: embedded.isNotEmpty ? embedded : fromExternal,
     );
   }
 
@@ -94,6 +177,11 @@ class JournalDetails {
     final teacherMap =
         json['teacher'] is Map ? json['teacher'] as Map<String, dynamic> : null;
 
+    // Parse top-level grades list (new API format)
+    final topGrades = (json['grades'] as List<dynamic>? ?? [])
+        .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
+        .toList();
+
     return JournalDetails(
       id: (json['id'] as num).toInt(),
       subject:
@@ -114,7 +202,10 @@ class JournalDetails {
               .toList(),
       students:
           (json['students'] as List<dynamic>? ?? [])
-              .map((e) => JournalStudent.fromJson(e as Map<String, dynamic>))
+              .map((e) => JournalStudent.fromJson(
+                    e as Map<String, dynamic>,
+                    externalGrades: topGrades,
+                  ))
               .toList(),
     );
   }

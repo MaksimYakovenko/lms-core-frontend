@@ -142,6 +142,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                     itemsPerPage: _itemsPerPage,
                     isLoading: _isLoading,
                     emptyText: 'Груп не знайдено',
+                    emptyIcon: LucideIcons.users,
                     onPageChange: (p) => setState(() => _currentPage = p),
                   ),
           ),
