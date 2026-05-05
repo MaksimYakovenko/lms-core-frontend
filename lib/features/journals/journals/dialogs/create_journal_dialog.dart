@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lms_core_frontend/features/journals/journals_service.dart';
+import 'package:lms_core_frontend/features/journals/journals/journals_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_dialog.dart';

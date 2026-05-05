@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
-import '../../common/constants/lms_api.dart';
+import '../../../common/constants/lms_api.dart';
 
 class JournalRef {
   final int journalId;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lms_core_frontend/features/journals/journals/journals_service.dart';
 
 import '../../../common/constants/colors.dart';
 import 'journal_details_service.dart';
@@ -16,12 +17,12 @@ class JournalDetailsScreen extends StatefulWidget {
   final String journalId;
 
   @override
-  State<JournalDetailsScreen> createState() =>
-      _JournalDetailsScreenState();
+  State<JournalDetailsScreen> createState() => _JournalDetailsScreenState();
 }
 
 class _JournalDetailsScreenState extends State<JournalDetailsScreen> {
   final _service = JournalDetailsService();
+  final _journalsService = JournalsService();
 
   late Future<JournalDetails> _future;
 
@@ -65,6 +66,7 @@ class _JournalDetailsScreenState extends State<JournalDetailsScreen> {
 
         return JournalDetailsContent(
           journal: journal,
+          service: _journalsService,
           onRefresh: _refresh,
         );
       },
@@ -76,11 +78,13 @@ class JournalDetailsContent extends StatelessWidget {
   const JournalDetailsContent({
     super.key,
     required this.journal,
-    this.onRefresh,
+    required this.service,
+    required this.onRefresh,
   });
 
   final JournalDetails journal;
-  final VoidCallback? onRefresh;
+  final JournalsService service;
+  final VoidCallback onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +116,11 @@ class JournalDetailsContent extends StatelessWidget {
               onRefresh: onRefresh,
             ),
             const SizedBox(height: 24),
-            JournalInfoCard(journal: journal),
+            JournalInfoCard(
+              journal: journal,
+              service: service,
+              onRefresh: onRefresh,
+            ),
             const SizedBox(height: 24),
             const JournalLegend(),
             const SizedBox(height: 24),

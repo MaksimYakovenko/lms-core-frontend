@@ -7,7 +7,7 @@ enum ButtonVariant {
   secondary,
   ghost,
   link,
-  black,
+  black
 }
 
 enum ButtonSize { defaultSize, sm, lg, icon }
