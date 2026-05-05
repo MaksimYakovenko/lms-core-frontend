@@ -108,4 +108,56 @@ class LessonsService {
     final detail = body['detail'] ?? 'Failed to create lesson (${response.statusCode})';
     throw Exception(detail);
   }
+
+
+  Future<void> editLesson({
+    required DateTime date,
+    required String lessonType,
+    int? classroomId,
+    int? lessonNumber,
+    required int journalId,
+    required int lessonId,
+  }) async {
+    final uri = Uri.parse('$baseUrl/journals/$journalId/lessons/$lessonId');
+
+    final requestBody = <String, dynamic>{
+      'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'lesson_type': lessonType,
+      if (classroomId != null) 'classroom_id': classroomId,
+      if (lessonNumber != null) 'lesson_number': lessonNumber,
+    };
+
+    final response = await http.put(
+      uri,
+      headers: await _headers(),
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to edit lesson (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+
+  Future<void> deleteLesson(int journalId, int lessonId) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$baseUrl/journals/$journalId/lessons/$lessonId');
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    final body = jsonDecode(response.body);
+    final detail = body['detail'] ?? 'Failed to delete lesson (${response.statusCode})';
+    throw Exception(detail);
+  }
 }

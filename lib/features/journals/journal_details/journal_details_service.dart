@@ -16,9 +16,10 @@ class JournalGrade {
   factory JournalGrade.fromJson(Map<String, dynamic> json) {
     return JournalGrade(
       lessonId: (json['lesson_id'] as num).toInt(),
-      studentId: json['student_id'] != null
-          ? (json['student_id'] as num).toInt()
-          : null,
+      studentId:
+          json['student_id'] != null
+              ? (json['student_id'] as num).toInt()
+              : null,
       value: json['value']?.toString(),
     );
   }
@@ -42,9 +43,10 @@ class JournalLesson {
       id: (json['id'] as num).toInt(),
       date: DateTime.parse(json['date'] as String),
       lessonType: json['lesson_type']?.toString(),
-      orderIndex: json['order_index'] != null
-          ? (json['order_index'] as num).toInt()
-          : null,
+      orderIndex:
+          json['order_index'] != null
+              ? (json['order_index'] as num).toInt()
+              : null,
     );
   }
 
@@ -54,7 +56,7 @@ class JournalLesson {
         return 'Лек.';
       case 'SEMINAR':
         return 'Сем.';
-      case 'PRACTICAL':
+      case 'PRACTICE':
         return 'Пр.';
       case 'CREDIT':
         return 'Зал.';
@@ -62,26 +64,53 @@ class JournalLesson {
         return 'Екз.';
       case 'LAB':
         return 'Лаб.';
+      case 'MODULE':
+        return 'МКР';
+      case 'COLLOQUIUM':
+        return 'Колокв.';
+      case 'CONSULTATION':
+        return 'Конс.';
+      case 'FACULTATIVE':
+        return 'Факул.';
       default:
         return lessonType;
     }
   }
 
-  /// Badge background color per type
   Color get typeBadgeBg {
     switch (lessonType) {
       case 'LECTURE':
         return const Color(0xFFDBEAFE);
+
       case 'SEMINAR':
         return const Color(0xFFF3E8FF);
-      case 'PRACTICAL':
+
+      case 'PRACTICE':
         return const Color(0xFFD1FAE5);
-      case 'CREDIT':
-        return const Color(0xFFFEF3C7);
-      case 'EXAM':
-        return const Color(0xFFFEE2E2);
+
       case 'LAB':
         return const Color(0xFFE0F2FE);
+
+      case 'CREDIT':
+        return const Color(0xFFFEF3C7);
+
+      case 'EXAM':
+        return const Color(0xFFFEE2E2);
+
+      case 'MODULE':
+        return const Color(0xFFE5E7EB);
+
+      case 'COLLOQUIUM':
+        return const Color(0xFFFFEDD5);
+
+      case 'CONSULTATION':
+        return const Color(0xFFE0E7FF);
+
+      case 'FACULTATIVE':
+        return const Color(
+          0xFFF0FDF4,
+        );
+
       default:
         return const Color(0xFFF3F4F6);
     }
@@ -123,15 +152,14 @@ class JournalStudent {
     Map<String, dynamic> json, {
     List<JournalGrade> externalGrades = const [],
   }) {
-    // grades can come embedded in student object OR from top-level grades list
-    final embedded = (json['grades'] as List<dynamic>? ?? [])
-        .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final embedded =
+        (json['grades'] as List<dynamic>? ?? [])
+            .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
+            .toList();
 
     final studentId = (json['id'] as num).toInt();
-    final fromExternal = externalGrades
-        .where((g) => g.studentId == studentId)
-        .toList();
+    final fromExternal =
+        externalGrades.where((g) => g.studentId == studentId).toList();
 
     return JournalStudent(
       id: studentId,
@@ -166,7 +194,6 @@ class JournalDetails {
     required this.students,
   });
 
-
   factory JournalDetails.fromJson(Map<String, dynamic> json) {
     final subjectMap =
         json['subject'] is Map ? json['subject'] as Map<String, dynamic> : null;
@@ -177,10 +204,10 @@ class JournalDetails {
     final teacherMap =
         json['teacher'] is Map ? json['teacher'] as Map<String, dynamic> : null;
 
-    // Parse top-level grades list (new API format)
-    final topGrades = (json['grades'] as List<dynamic>? ?? [])
-        .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
-        .toList();
+    final topGrades =
+        (json['grades'] as List<dynamic>? ?? [])
+            .map((e) => JournalGrade.fromJson(e as Map<String, dynamic>))
+            .toList();
 
     return JournalDetails(
       id: (json['id'] as num).toInt(),
@@ -202,10 +229,12 @@ class JournalDetails {
               .toList(),
       students:
           (json['students'] as List<dynamic>? ?? [])
-              .map((e) => JournalStudent.fromJson(
-                    e as Map<String, dynamic>,
-                    externalGrades: topGrades,
-                  ))
+              .map(
+                (e) => JournalStudent.fromJson(
+                  e as Map<String, dynamic>,
+                  externalGrades: topGrades,
+                ),
+              )
               .toList(),
     );
   }

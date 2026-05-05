@@ -63,11 +63,11 @@ class JournalInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           const Text(
-            'Клацніть на комірку, щоб редагувати оцінку або відвідування',
+            'Клацніть на комірку, щоб редагувати оцінку, пару або відвідування',
             style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
-          JournalTable(journal: journal),
+          JournalTable(journal: journal, onRefresh: onRefresh),
           const SizedBox(height: 32),
           Row(
             children: [

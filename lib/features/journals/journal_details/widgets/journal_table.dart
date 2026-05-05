@@ -3,15 +3,18 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../common/constants/colors.dart';
 import '../journal_details_service.dart';
+import '../../lessons/dialogs/edit_lesson_dialog.dart';
 import 'score_cell.dart';
 
 class JournalTable extends StatelessWidget {
   const JournalTable({
     super.key,
     required this.journal,
+    this.onRefresh,
   });
 
   final JournalDetails journal;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -78,49 +81,63 @@ class JournalTable extends StatelessWidget {
             ),
           ),
           for (final lesson in lessons)
-            _cell(
-              width: cellW,
-              height: headerH,
-              borderLeft: true,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _monthLabel(lesson.date),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  if (lesson.typeLabel != null && lesson.typeLabel!.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 1),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 5,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: lesson.typeBadgeBg,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        lesson.typeLabel!,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: lesson.typeBadgeText,
+            GestureDetector(
+              onTap: () => showEditLessonDialog(
+                context,
+                journalId: journal.id,
+                lessonId: lesson.id,
+                onRefresh: onRefresh ?? () {},
+                initialLessonType: lesson.lessonType,
+                initialDate: lesson.date,
+                initialLessonNumber: lesson.orderIndex,
+              ),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: _cell(
+                  width: cellW,
+                  height: headerH,
+                  borderLeft: true,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _monthLabel(lesson.date),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
                         ),
                       ),
-                    ),
-                  Text(
-                    '${lesson.date.day}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFFDB2777),
-                    ),
+                      if (lesson.typeLabel != null && lesson.typeLabel!.isNotEmpty)
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 1),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: lesson.typeBadgeBg,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            lesson.typeLabel!,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: lesson.typeBadgeText,
+                            ),
+                          ),
+                        ),
+                      Text(
+                        '${lesson.date.day}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFDB2777),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
         ],
