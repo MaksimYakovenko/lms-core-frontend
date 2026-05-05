@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../common/constants/colors.dart';
 import '../journal_details_service.dart';
 import '../../lessons/dialogs/edit_lesson_dialog.dart';
+import '../dialogs/set_grade_dialog.dart';
 import 'score_cell.dart';
 
 class JournalTable extends StatelessWidget {
@@ -20,6 +21,7 @@ class JournalTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final lessons = journal.lessons;
     final students = journal.students;
+    final service = JournalDetailsService();
 
     if (students.isEmpty) {
       return Container(
@@ -186,10 +188,25 @@ class JournalTable extends StatelessWidget {
                 ),
               ),
               for (final lesson in lessons)
-                ScoreCell(
-                  value: student.gradeFor(lesson.id),
-                  width: cellW,
-                  height: rowH,
+                GestureDetector(
+                  onTap: () => showSetGradeDialog(
+                    context,
+                    journalId: journal.id,
+                    lessonId: lesson.id,
+                    studentId: student.id,
+                    studentName: student.fullName,
+                    lessonLabel:
+                        '${lesson.typeLabel ?? lesson.lessonType ?? ''} ${lesson.date.day}.${lesson.date.month.toString().padLeft(2, '0')}',
+                    service: service,
+                    onRefresh: onRefresh ?? () {},
+                    currentValue: student.gradeFor(lesson.id),
+                    gradeId: student.gradeObjectFor(lesson.id)?.id,
+                  ),
+                  child: ScoreCell(
+                    value: student.gradeFor(lesson.id),
+                    width: cellW,
+                    height: rowH,
+                  ),
                 ),
             ],
           ),

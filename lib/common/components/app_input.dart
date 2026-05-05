@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/services/text_formatter.dart';
 
 class AppInput extends StatelessWidget {
   const AppInput({
@@ -11,7 +12,7 @@ class AppInput extends StatelessWidget {
     this.keyboardType,
     this.suffixIcon,
     this.onChanged,
-    this.onEditingComplete,
+    this.onEditingComplete, required List<TextInputFormatter> inputFormatters,
   });
 
   final TextEditingController? controller;
@@ -105,8 +106,6 @@ class AppInput extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
             borderSide: const BorderSide(color: _errorBorderColor),
           ),
-
-          // shadow-like focus ring через focusedBorder (Flutter не підтримує ring natively)
         ),
       ),
     );

@@ -69,41 +69,23 @@ class JournalInfoCard extends StatelessWidget {
           const SizedBox(height: 16),
           JournalTable(journal: journal, onRefresh: onRefresh),
           const SizedBox(height: 32),
-          Row(
-            children: [
-              AppButton(
-                variant: ButtonVariant.black,
-                size: ButtonSize.lg,
-                onPressed: () {},
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(LucideIcons.save, size: 16),
-                    SizedBox(width: 8),
-                    Text('Зберегти оцінки'),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              AppButton(
-                variant: ButtonVariant.destructive,
-                size: ButtonSize.lg,
-                onPressed: () => showDeleteJournalDetailsDialog(
-                  context,
-                  journal: journal,
-                  service: service,
-                  onDeleted: onRefresh,
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(LucideIcons.trash2, size: 16),
-                    SizedBox(width: 8),
-                    Text('Видалити журнал'),
-                  ],
-                ),
-              ),
-            ],
+          AppButton(
+            variant: ButtonVariant.destructive,
+            size: ButtonSize.lg,
+            onPressed: () => showDeleteJournalDetailsDialog(
+              context,
+              journal: journal,
+              service: service,
+              onDeleted: onRefresh,
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(LucideIcons.trash2, size: 16),
+                SizedBox(width: 8),
+                Text('Видалити журнал'),
+              ],
+            ),
           ),
         ],
       ),

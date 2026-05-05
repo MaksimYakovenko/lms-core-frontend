@@ -7,14 +7,16 @@ import 'package:lms_core_frontend/features/auth/auth_service.dart';
 import '../../../common/constants/lms_api.dart';
 
 class JournalGrade {
+  final int? id;
   final int lessonId;
   final int? studentId;
   final String? value;
 
-  const JournalGrade({required this.lessonId, this.studentId, this.value});
+  const JournalGrade({this.id, required this.lessonId, this.studentId, this.value});
 
   factory JournalGrade.fromJson(Map<String, dynamic> json) {
     return JournalGrade(
+      id: json['id'] != null ? (json['id'] as num).toInt() : null,
       lessonId: (json['lesson_id'] as num).toInt(),
       studentId:
           json['student_id'] != null
@@ -107,9 +109,7 @@ class JournalLesson {
         return const Color(0xFFE0E7FF);
 
       case 'FACULTATIVE':
-        return const Color(
-          0xFFF0FDF4,
-        );
+        return const Color(0xFFF0FDF4);
 
       default:
         return const Color(0xFFF3F4F6);
@@ -171,6 +171,14 @@ class JournalStudent {
   String? gradeFor(int lessonId) {
     try {
       return grades.firstWhere((g) => g.lessonId == lessonId).value;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  JournalGrade? gradeObjectFor(int lessonId) {
+    try {
+      return grades.firstWhere((g) => g.lessonId == lessonId);
     } catch (_) {
       return null;
     }
@@ -263,6 +271,59 @@ class JournalDetailsService {
     final body = jsonDecode(response.body);
     final detail =
         body['detail'] ?? 'Failed to fetch journal (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+  Future<void> deleteGrade(int journalId, int gradeId) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$baseUrl/journals/$journalId/grades/$gradeId');
+
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    final body = jsonDecode(response.body);
+    final detail =
+        body['detail'] ??
+        'Failed to delete grade for student (${response.statusCode})';
+    throw Exception(detail);
+  }
+
+  Future<void> putGrade(
+    int journalId, {
+    required int lessonId,
+    required int studentId,
+    required String value,
+    String? remark,
+  }) async {
+    final token = await _authService.getToken();
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/journals/$journalId/grades'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'lesson_id': lessonId,
+        'student_id': studentId,
+        'value': value,
+        'remark': remark ?? '',
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) return;
+
+    final body = jsonDecode(response.body);
+    final detail =
+        body['detail'] ?? 'Failed to save grade (${response.statusCode})';
     throw Exception(detail);
   }
 }

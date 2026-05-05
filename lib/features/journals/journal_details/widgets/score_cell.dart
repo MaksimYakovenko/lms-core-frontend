@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
 
-class ScoreCell extends StatelessWidget {
+class ScoreCell extends StatefulWidget {
   const ScoreCell({
     super.key,
     required this.value,
@@ -15,30 +15,43 @@ class ScoreCell extends StatelessWidget {
   final double height;
 
   @override
-  Widget build(BuildContext context) {
-    final bg = _bgColor(value);
-    final textColor = _textColor(value);
+  State<ScoreCell> createState() => _ScoreCellState();
+}
 
-    return Container(
-      width: width,
-      height: height,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: bg,
-        border: const Border(
-          left: BorderSide(color: AppColors.divider),
+class _ScoreCellState extends State<ScoreCell> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = _bgColor(widget.value);
+    final hoverBg = Color.lerp(bg, Colors.black, 0.07)!;
+    final textColor = _textColor(widget.value);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        width: widget.width,
+        height: widget.height,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: _hovered ? hoverBg : bg,
+          border: const Border(
+            left: BorderSide(color: AppColors.divider),
+          ),
         ),
+        child: widget.value != null
+            ? Text(
+                widget.value!,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              )
+            : null,
       ),
-      child: value != null
-          ? Text(
-        value!,
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          color: textColor,
-        ),
-      )
-          : null,
     );
   }
 

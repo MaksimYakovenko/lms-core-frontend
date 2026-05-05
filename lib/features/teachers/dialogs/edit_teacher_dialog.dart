@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/common/components/app_dialog.dart';
 import 'package:lms_core_frontend/common/components/app_input.dart';
@@ -64,7 +65,9 @@ Future<void> showEditTeacherDialog(
               errorText: nameError.isEmpty ? null : nameError,
               onChanged: (_) {
                 if (nameError.isNotEmpty) setDialogState(() => nameError = '');
-              },
+              }, inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[а-яА-ЯёЁa-zA-Z\s]')),
+            ],
             ),
             if (apiError != null) ...[
               const SizedBox(height: 8),

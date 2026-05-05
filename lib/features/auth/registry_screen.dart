@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
@@ -422,7 +423,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
           onChanged: (v) {
             if (_emailError.isNotEmpty) _validateEmail(v);
           },
-          onEditingComplete: () => _validateEmail(_emailController.text.trim()),
+          onEditingComplete: () => _validateEmail(_emailController.text.trim()), inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         ),
       ],
     );
@@ -441,7 +444,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
           onChanged: (v) {
             if (_firstNameError.isNotEmpty) _validateFirstName(v);
           },
-          onEditingComplete: () => _validateFirstName(_firstNameController.text),
+          onEditingComplete: () => _validateFirstName(_firstNameController.text), inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[а-яА-ЯёЁa-zA-Z\s]')),
+        ],
         ),
       ],
     );
@@ -460,7 +465,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
           onChanged: (v) {
             if (_lastNameError.isNotEmpty) _validateLastName(v);
           },
-          onEditingComplete: () => _validateLastName(_lastNameController.text),
+          onEditingComplete: () => _validateLastName(_lastNameController.text), inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[а-яА-ЯёЁa-zA-Z\s]')),
+        ],
         ),
       ],
     );
@@ -487,7 +494,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
               _showPassword ? LucideIcons.eyeOff : LucideIcons.eye,
               color: AppColors.textSecondary,
             ),
-          ),
+          ), inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         ),
       ],
     );
@@ -509,7 +518,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
               suffixIcon: const Icon(
                 LucideIcons.calendarDays,
                 color: AppColors.textSecondary,
-              ),
+              ), inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'\s')),
+            ],
             ),
           ),
         ),
@@ -589,7 +600,9 @@ class _RegistryScreenState extends State<RegistryScreen> {
           onChanged: (v) {
             if (_captchaError.isNotEmpty) _validateCaptcha(v);
           },
-          onEditingComplete: () => _validateCaptcha(_captchaController.text),
+          onEditingComplete: () => _validateCaptcha(_captchaController.text), inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         ),
       ],
     );

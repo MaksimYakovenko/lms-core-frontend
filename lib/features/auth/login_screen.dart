@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_button.dart';
 import 'package:lms_core_frontend/common/components/app_card.dart';
@@ -231,7 +232,9 @@ class _LoginFormState extends State<LoginForm> {
           enabled: !widget.isLoading,
           keyboardType: TextInputType.emailAddress,
           onChanged: (v) { if (_emailError.isNotEmpty) validateEmail(v); },
-          onEditingComplete: () => validateEmail(_emailController.text.trim()),
+          onEditingComplete: () => validateEmail(_emailController.text.trim()), inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         ),
         const SizedBox(height: 6),
         const Text(
@@ -276,7 +279,9 @@ class _LoginFormState extends State<LoginForm> {
               _showPassword ? LucideIcons.eyeOff : LucideIcons.eye,
               color: AppColors.textSecondary,
             ),
-          ),
+          ), inputFormatters: [
+            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         ),
       ],
     );
