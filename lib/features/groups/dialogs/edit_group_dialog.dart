@@ -13,7 +13,12 @@ Future<void> showEditGroupDialog(
 }) {
   return showDialog(
     context: context,
-    builder: (_) => _EditGroupDialog(group: group, service: service, onRefresh: onRefresh),
+    builder:
+        (_) => _EditGroupDialog(
+          group: group,
+          service: service,
+          onRefresh: onRefresh,
+        ),
   );
 }
 
@@ -54,10 +59,17 @@ class _EditGroupDialogState extends State<_EditGroupDialog> {
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
 
     try {
-      await widget.service.updateGroup(widget.group.id, name: _nameController.text.trim());
+      await widget.service.updateGroup(
+        widget.group.id,
+        widget.group.courseNumber,
+        name: _nameController.text.trim(),
+      );
       if (mounted) {
         Navigator.of(context).pop();
         widget.onRefresh();
@@ -91,7 +103,10 @@ class _EditGroupDialogState extends State<_EditGroupDialog> {
             ),
             if (_error != null) ...[
               const SizedBox(height: 10),
-              Text(_error!, style: const TextStyle(fontSize: 13, color: AppColors.red600)),
+              Text(
+                _error!,
+                style: const TextStyle(fontSize: 13, color: AppColors.red600),
+              ),
             ],
           ],
         ),
@@ -122,4 +137,3 @@ class _EditGroupDialogState extends State<_EditGroupDialog> {
     );
   }
 }
-

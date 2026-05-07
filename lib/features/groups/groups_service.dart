@@ -62,16 +62,16 @@ class GroupsService {
     throw Exception(detail);
   }
 
-  Future<void> updateGroup(int id, {required String name}) async {
+  Future<void> updateGroup(int id, int courseNumber, {required String name}) async {
     final token = await _authService.getToken();
 
     final response = await http.put(
-      Uri.parse('$baseUrl/groups/update_group'),
+      Uri.parse('$baseUrl/groups/update_group/$id'),
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'id': id, 'name': name}),
+      body: jsonEncode({'id': id, 'name': name, 'course_number': courseNumber}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) return;

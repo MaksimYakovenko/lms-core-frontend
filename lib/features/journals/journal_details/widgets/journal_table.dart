@@ -92,6 +92,9 @@ class JournalTable extends StatelessWidget {
                 initialLessonType: lesson.lessonType,
                 initialDate: lesson.date,
                 initialLessonNumber: lesson.orderIndex,
+                initialTitle: lesson.title,
+                initialDescription: lesson.description,
+                initialClassroomId: lesson.classroomId,
               ),
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,

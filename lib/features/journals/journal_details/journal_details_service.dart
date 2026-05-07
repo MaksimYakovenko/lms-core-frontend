@@ -32,12 +32,18 @@ class JournalLesson {
   final DateTime date;
   final String? lessonType;
   final int? orderIndex;
+  final String? title;
+  final String? description;
+  final int? classroomId;
 
   const JournalLesson({
     required this.id,
     required this.date,
     this.lessonType,
     this.orderIndex,
+    this.title,
+    this.description,
+    this.classroomId,
   });
 
   factory JournalLesson.fromJson(Map<String, dynamic> json) {
@@ -49,6 +55,9 @@ class JournalLesson {
           json['order_index'] != null
               ? (json['order_index'] as num).toInt()
               : null,
+      title: json['title']?.toString(),
+      description: json['description']?.toString(),
+      classroomId: json['classroom_id'] != null ? (json['classroom_id'] as num).toInt() : null,
     );
   }
 

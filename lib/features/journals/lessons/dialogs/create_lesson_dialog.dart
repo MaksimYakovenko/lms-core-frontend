@@ -41,12 +41,22 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
   Classroom? _selectedClassroom;
   DateTime _selectedDate = DateTime.now();
 
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
   bool _isLoadingTypes = true;
   bool _isLoadingPeriods = true;
   bool _isLoadingClassrooms = true;
   bool _isSubmitting = false;
   String? _loadError;
   String? _submitError;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -129,6 +139,8 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
         date: _selectedDate,
         classroomId: _selectedClassroom?.id,
         lessonNumber: _selectedPeriod?.number,
+        title: _titleController.text.trim().isEmpty ? null : _titleController.text.trim(),
+        description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
       );
       if (mounted) {
         Navigator.of(context).pop();
@@ -179,7 +191,7 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
   Widget build(BuildContext context) {
     return AppDialog(
       title: 'Додати пару',
-      description: 'Оберіть тип пари та номер пари',
+      description: 'Заповніть інформацію про пару',
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,133 +203,196 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
             ),
             const SizedBox(height: 12),
           ],
-          const Text(
-            'Тип пари',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.gray900,
-              height: 1.0,
-            ),
-          ),
-          const SizedBox(height: 6),
-          if (_isLoadingTypes)
-            _loadingIndicator()
-          else
-            DropdownButtonFormField<LessonType>(
-              value: _selectedLessonType,
-              hint: const Text(
-                'Оберіть тип пари...',
-                style: TextStyle(fontSize: 14, color: AppColors.gray400),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Тип пари',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.gray900,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    if (_isLoadingTypes)
+                      _loadingIndicator()
+                    else
+                      DropdownButtonFormField<LessonType>(
+                        value: _selectedLessonType,
+                        hint: const Text(
+                          'Оберіть...',
+                          style: TextStyle(fontSize: 14, color: AppColors.gray400),
+                        ),
+                        decoration: _dropdownDecoration(),
+                        style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+                        isExpanded: true,
+                        items: _lessonTypes
+                            .map((t) => DropdownMenuItem(value: t, child: Text(t.label)))
+                            .toList(),
+                        onChanged: (t) => setState(() => _selectedLessonType = t),
+                      ),
+                  ],
+                ),
               ),
-              decoration: _dropdownDecoration(),
-              style: const TextStyle(fontSize: 14, color: AppColors.gray900),
-              items:
-                  _lessonTypes
-                      .map(
-                        (t) => DropdownMenuItem(value: t, child: Text(t.label)),
-                      )
-                      .toList(),
-              onChanged: (t) => setState(() => _selectedLessonType = t),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Номер пари',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.gray900,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    if (_isLoadingPeriods)
+                      _loadingIndicator()
+                    else
+                      DropdownButtonFormField<LessonPeriod>(
+                        value: _selectedPeriod,
+                        hint: const Text(
+                          'Оберіть...',
+                          style: TextStyle(fontSize: 14, color: AppColors.gray400),
+                        ),
+                        decoration: _dropdownDecoration(),
+                        style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+                        isExpanded: true,
+                        items: _lessonPeriods
+                            .map((p) => DropdownMenuItem(
+                                  value: p,
+                                  child: Text('${p.label} (${p.startTime}–${p.endTime})'),
+                                ))
+                            .toList(),
+                        onChanged: (p) => setState(() => _selectedPeriod = p),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
 
           const SizedBox(height: 12),
-          const Text(
-            'Дата проведення пари',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.gray900,
-              height: 1.0,
-            ),
-          ),
-          const SizedBox(height: 6),
-          InkWell(
-            onTap: () async {
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: _selectedDate,
-                firstDate: DateTime(2020),
-                lastDate: DateTime(2100),
-                builder:
-                    (context, child) => Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: const ColorScheme.light(
-                          primary: AppColors.accent,
-                          onPrimary: Colors.white,
-                          onSurface: AppColors.gray900,
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Дата',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.gray900,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _selectedDate,
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2100),
+                          builder: (context, child) => Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                primary: AppColors.accent,
+                                onPrimary: Colors.white,
+                                onSurface: AppColors.gray900,
+                              ),
+                            ),
+                            child: child!,
+                          ),
+                        );
+                        if (picked != null) setState(() => _selectedDate = picked);
+                      },
+                      borderRadius: BorderRadius.circular(6),
+                      child: IgnorePointer(
+                        child: TextFormField(
+                          enabled: false,
+                          decoration: _dropdownDecoration().copyWith(
+                            prefixIcon: const Icon(
+                              LucideIcons.calendar,
+                              size: 16,
+                              color: AppColors.gray400,
+                            ),
+                            prefixIconConstraints: const BoxConstraints(
+                              minWidth: 40,
+                              minHeight: 40,
+                            ),
+                            disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: const BorderSide(color: AppColors.gray200),
+                            ),
+                          ),
+                          controller: TextEditingController(
+                            text:
+                                '${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}',
+                          ),
+                          style: const TextStyle(fontSize: 14, color: AppColors.gray900),
                         ),
                       ),
-                      child: child!,
                     ),
-              );
-              if (picked != null) setState(() => _selectedDate = picked);
-            },
-            borderRadius: BorderRadius.circular(6),
-            child: IgnorePointer(
-              child: TextFormField(
-                enabled: false,
-                decoration: _dropdownDecoration().copyWith(
-                  prefixIcon: const Icon(
-                    LucideIcons.calendar,
-                    size: 16,
-                    color: AppColors.gray400,
-                  ),
-                  prefixIconConstraints: const BoxConstraints(
-                    minWidth: 40,
-                    minHeight: 40,
-                  ),
-                  disabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                    borderSide: const BorderSide(color: AppColors.gray200),
-                  ),
+                  ],
                 ),
-                controller: TextEditingController(
-                  text:
-                      '${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}',
-                ),
-                style: const TextStyle(fontSize: 14, color: AppColors.gray900),
               ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Номер пари',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.gray900,
-              height: 1.0,
-            ),
-          ),
-          const SizedBox(height: 6),
-          if (_isLoadingPeriods)
-            _loadingIndicator()
-          else
-            DropdownButtonFormField<LessonPeriod>(
-              value: _selectedPeriod,
-              hint: const Text(
-                'Оберіть номер пари...',
-                style: TextStyle(fontSize: 14, color: AppColors.gray400),
-              ),
-              decoration: _dropdownDecoration(),
-              style: const TextStyle(fontSize: 14, color: AppColors.gray900),
-              items:
-                  _lessonPeriods
-                      .map(
-                        (p) => DropdownMenuItem(
-                          value: p,
-                          child: Text(
-                            '${p.label} (${p.startTime} – ${p.endTime})',
-                          ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Аудиторія',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.gray900,
+                        height: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    if (_isLoadingClassrooms)
+                      _loadingIndicator()
+                    else
+                      DropdownButtonFormField<Classroom>(
+                        value: _selectedClassroom,
+                        hint: const Text(
+                          'Оберіть...',
+                          style: TextStyle(fontSize: 14, color: AppColors.gray400),
                         ),
-                      )
-                      .toList(),
-              onChanged: (p) => setState(() => _selectedPeriod = p),
-            ),
+                        decoration: _dropdownDecoration(),
+                        style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+                        isExpanded: true,
+                        items: _classrooms
+                            .map((c) => DropdownMenuItem(value: c, child: Text(c.name)))
+                            .toList(),
+                        onChanged: (c) => setState(() => _selectedClassroom = c),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
           const SizedBox(height: 12),
+
           const Text(
-            'Номер аудиторії',
+            'Тема пари',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -326,25 +401,52 @@ class _CreateLessonDialogState extends State<_CreateLessonDialog> {
             ),
           ),
           const SizedBox(height: 6),
-          if (_isLoadingClassrooms)
-            _loadingIndicator()
-          else
-            DropdownButtonFormField<Classroom>(
-              value: _selectedClassroom,
-              hint: const Text(
-                'Оберіть аудиторію...',
-                style: TextStyle(fontSize: 14, color: AppColors.gray400),
-              ),
-              decoration: _dropdownDecoration(),
-              style: const TextStyle(fontSize: 14, color: AppColors.gray900),
-              items:
-                  _classrooms
-                      .map(
-                        (c) => DropdownMenuItem(value: c, child: Text(c.name)),
-                      )
-                      .toList(),
-              onChanged: (p) => setState(() => _selectedClassroom = p),
+          TextFormField(
+            controller: _titleController,
+            decoration: _dropdownDecoration().copyWith(
+              hintText: 'Введіть тему пари...',
+              hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
             ),
+            style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+          ),
+
+          const SizedBox(height: 12),
+          RichText(
+            text: const TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Опис пари ',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.gray900,
+                    height: 1.0,
+                  ),
+                ),
+                TextSpan(
+                  text: '(необов\'язково)',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          TextFormField(
+            controller: _descriptionController,
+            minLines: 3,
+            maxLines: 5,
+            decoration: _dropdownDecoration().copyWith(
+              hintText: 'Введіть опис пари...',
+              hintStyle: const TextStyle(fontSize: 14, color: AppColors.gray400),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            ),
+            style: const TextStyle(fontSize: 14, color: AppColors.gray900),
+          ),
+
           if (_submitError != null) ...[
             const SizedBox(height: 10),
             Text(

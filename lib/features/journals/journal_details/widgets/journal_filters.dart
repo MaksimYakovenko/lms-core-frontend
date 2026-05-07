@@ -89,24 +89,6 @@ class JournalFilters extends StatelessWidget {
           AppButton(
             variant: ButtonVariant.outline,
             size: ButtonSize.lg,
-            onPressed: () {},
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  LucideIcons.download,
-                  size: 20,
-                  color: AppColors.gray900,
-                ),
-                SizedBox(width: 6),
-                Text('Експорт'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          AppButton(
-            variant: ButtonVariant.outline,
-            size: ButtonSize.lg,
             onPressed: () => showCreateLessonDialog(
               context,
               journalId: journal.id,
@@ -133,9 +115,9 @@ class JournalFilters extends StatelessWidget {
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(LucideIcons.save, size: 16),
+                Icon(LucideIcons.download, size: 16),
                 SizedBox(width: 8),
-                Text('Зберегти'),
+                Text('Експорт'),
               ],
             ),
           ),

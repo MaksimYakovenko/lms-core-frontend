@@ -86,6 +86,8 @@ class LessonsService {
     int? classroomId,
     int? lessonNumber,
     required int journalId,
+    String? title,
+    String? description,
   }) async {
     final uri = Uri.parse('$baseUrl/journals/$journalId/lessons');
 
@@ -94,6 +96,8 @@ class LessonsService {
       'lesson_type': lessonType,
       if (classroomId != null) 'classroom_id': classroomId,
       if (lessonNumber != null) 'lesson_number': lessonNumber,
+      if (title != null && title.isNotEmpty) 'title': title,
+      if (description != null && description.isNotEmpty) 'description': description,
     };
 
     final response = await http.post(
@@ -117,6 +121,8 @@ class LessonsService {
     int? lessonNumber,
     required int journalId,
     required int lessonId,
+    String? title,
+    String? description,
   }) async {
     final uri = Uri.parse('$baseUrl/journals/$journalId/lessons/$lessonId');
 
@@ -125,6 +131,8 @@ class LessonsService {
       'lesson_type': lessonType,
       if (classroomId != null) 'classroom_id': classroomId,
       if (lessonNumber != null) 'lesson_number': lessonNumber,
+      if (title != null && title.isNotEmpty) 'title': title,
+      if (description != null && description.isNotEmpty) 'description': description,
     };
 
     final response = await http.put(
