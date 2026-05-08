@@ -12,7 +12,12 @@ class JournalGrade {
   final int? studentId;
   final String? value;
 
-  const JournalGrade({this.id, required this.lessonId, this.studentId, this.value});
+  const JournalGrade({
+    this.id,
+    required this.lessonId,
+    this.studentId,
+    this.value,
+  });
 
   factory JournalGrade.fromJson(Map<String, dynamic> json) {
     return JournalGrade(
@@ -57,7 +62,10 @@ class JournalLesson {
               : null,
       title: json['title']?.toString(),
       description: json['description']?.toString(),
-      classroomId: json['classroom_id'] != null ? (json['classroom_id'] as num).toInt() : null,
+      classroomId:
+          json['classroom_id'] != null
+              ? (json['classroom_id'] as num).toInt()
+              : null,
     );
   }
 
@@ -334,5 +342,20 @@ class JournalDetailsService {
     final detail =
         body['detail'] ?? 'Failed to save grade (${response.statusCode})';
     throw Exception(detail);
+  }
+
+  Future<List<int>> exportToExcel(int journalId) async {
+    final token = await _authService.getToken();
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/journals/$journalId/export'),
+      headers: {if (token != null) 'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    }
+
+    throw Exception('Failed to export journal');
   }
 }

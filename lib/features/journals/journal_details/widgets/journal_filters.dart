@@ -5,9 +5,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../common/constants/colors.dart';
 import '../../lessons/dialogs/create_lesson_dialog.dart';
 import '../journal_details_service.dart';
+import '../utils/excel_download_helper.dart';
 
 class JournalFilters extends StatelessWidget {
-  const JournalFilters({
+  JournalFilters({
     super.key,
     required this.journal,
     this.onRefresh,
@@ -15,6 +16,7 @@ class JournalFilters extends StatelessWidget {
 
   final JournalDetails journal;
   final VoidCallback? onRefresh;
+  final _service = JournalDetailsService();
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +113,13 @@ class JournalFilters extends StatelessWidget {
           AppButton(
             variant: ButtonVariant.black,
             size: ButtonSize.lg,
-            onPressed: () {},
+            onPressed: () async {
+              final bytes = await _service.exportToExcel(journal.id);
+              ExcelDownloadHelper.download(
+                bytes: bytes,
+                fileName: 'journal_${journal.id}.xlsx',
+              );
+            },
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [

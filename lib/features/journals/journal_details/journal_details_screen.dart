@@ -5,7 +5,7 @@ import '../../../common/constants/colors.dart';
 import 'journal_details_service.dart';
 import 'widgets/journal_filters.dart';
 import 'widgets/journal_info_card.dart';
-import 'widgets/journal_legend.dart';
+import 'widgets/journal_lesson_info.dart';
 import 'widgets/quick_stats.dart';
 
 class JournalDetailsScreen extends StatefulWidget {
@@ -122,7 +122,7 @@ class JournalDetailsContent extends StatelessWidget {
               onRefresh: onRefresh,
             ),
             const SizedBox(height: 24),
-            const JournalLegend(),
+            JournalLessonInfo(journal: journal, onRefresh: onRefresh),
             const SizedBox(height: 24),
             QuickStats(journal: journal),
           ],
