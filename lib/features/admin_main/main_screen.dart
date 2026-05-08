@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lms_core_frontend/common/components/app_stat_card.dart';
-import 'package:lms_core_frontend/features/admin_main/widgets/action_item.dart';
-import 'package:lms_core_frontend/features/admin_main/widgets/section_header.dart';
+import 'package:lms_core_frontend/features/admin_main/widgets/journal_status_table.dart';
+import 'package:lms_core_frontend/features/admin_main/widgets/quick_actions.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lms_core_frontend/features/admin_main/main_service.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../common/constants/colors.dart';
+import '../classrooms/classrooms_service.dart';
+import '../classrooms/dialogs/create_classroom_dialog.dart';
+import '../groups/groups_service.dart';
+import '../groups/dialogs/create_group_dialog.dart';
+import '../journals/journals/journals_service.dart';
+import '../journals/journals/dialogs/create_journal_dialog.dart';
+import '../subjects/subjects_service.dart';
+import '../subjects/dialogs/create_subject_dialog.dart';
+import '../teachers/teachers_service.dart';
+import '../teachers/dialogs/create_teacher_dialog.dart';
 import '../../config/routers/view_identifiers.dart';
 
 class AdminMainScreen extends StatefulWidget {
@@ -18,9 +27,13 @@ class AdminMainScreen extends StatefulWidget {
 
 class _AdminMainScreenState extends State<AdminMainScreen> {
   final AdminMainService _service = AdminMainService();
+  final _teachersService = TeachersService();
+  final _groupsService = GroupsService();
+  final _subjectsService = SubjectsService();
+  final _classroomsService = ClassroomsService();
+  final _journalsService = JournalsService();
 
   bool _isLoading = true;
-  String _displayName = '';
   Map<String, int> _totals = {
     'total_teachers': 0,
     'total_students': 0,
@@ -37,10 +50,8 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   Future<void> _load() async {
     setState(() => _isLoading = true);
     try {
-      final name = await _service.fetchDisplayName(context);
       final totals = await _service.fetchTotals(context);
       setState(() {
-        _displayName = name!;
         _totals = totals!;
       });
     } finally {
@@ -51,31 +62,21 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _isLoading
-              ? const SizedBox(
-                height: 28,
-                width: 200,
-                child: LinearProgressIndicator(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  color: Color(0xFF2563EB),
-                  backgroundColor: Color(0xFFE0E7FF),
-                ),
-              )
-              : Text(
-                'Ласкаво просимо, $_displayName 👋!',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-          const SizedBox(height: 10),
+          Text(
+            'Панель адміністратора',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
           const Text(
-            'Керуйте своєю шкільною системою з цієї панелі інструментів',
+            'Управління університетською системою: викладачі, студенти, групи та предмети',
             style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 36),
@@ -115,7 +116,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               children: [
                 Expanded(
                   child: AppStatCard(
-                    title: 'Кількість вчителів',
+                    title: 'Викладачі',
                     value: _totals['total_teachers']!.toString(),
                     icon: LucideIcons.graduationCap,
                     iconBgColor: const Color(0xFFE0E7FF),
@@ -125,9 +126,9 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                 const SizedBox(width: 24),
                 Expanded(
                   child: AppStatCard(
-                    title: 'Кількість студентів',
+                    title: 'Студенти',
                     value: _totals['total_students']!.toString(),
-                    icon: LucideIcons.user,
+                    icon: LucideIcons.users,
                     iconBgColor: const Color(0xFFDCFCE7),
                     iconColor: const Color(0xFF16A34A),
                   ),
@@ -135,7 +136,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                 const SizedBox(width: 24),
                 Expanded(
                   child: AppStatCard(
-                    title: 'Кількість груп',
+                    title: 'Групи',
                     value: _totals['total_groups']!.toString(),
                     icon: LucideIcons.layers,
                     iconBgColor: const Color(0xFFF3E8FF),
@@ -145,74 +146,19 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                 const SizedBox(width: 24),
                 Expanded(
                   child: AppStatCard(
-                    title: 'Кількість предметів',
+                    title: 'Предмети',
                     value: _totals['total_subjects']!.toString(),
-                    icon: LucideIcons.library,
+                    icon: LucideIcons.bookOpen,
                     iconBgColor: const Color(0xFFFFEDD5),
                     iconColor: const Color(0xFFEA580C),
                   ),
                 ),
               ],
             ),
-
-          const SizedBox(height: 36),
-
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.background1,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            LucideIcons.trendingUp,
-                            size: 20,
-                            color: const Color(0xFF16A34A),
-                          ),
-                          SizedBox(width: 8),
-                          Text('Розподіл учнів за групами'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.background1,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        LucideIcons.graduationCap,
-                        size: 20,
-                        color: const Color(0xFF9333EA),
-                      ),
-                      SizedBox(width: 8),
-                      Text('Розподіл вчителів за предметами'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 36),
-
+          const SizedBox(height: 24),
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppColors.background1,
               borderRadius: BorderRadius.circular(8),
@@ -221,137 +167,89 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionHeader(),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Викладачі',
-                        icon: LucideIcons.graduationCap,
-                        iconColor: Color(0xFF2563EB),
-                        textColor: Color(0xFF2563EB),
-                        onAdd:
-                            () => context.goNamed(
-                              ViewIdentifiers.teacherQuickAdd.name,
-                            ),
-                        onViewAll:
-                            () =>
-                                context.goNamed(ViewIdentifiers.teachers.name),
-                      ),
-                    ),
-                    SizedBox(width: 24),
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Студенти',
-                        icon: LucideIcons.user,
-                        iconColor: Color(0xFF16A34A),
-                        textColor: Color(0xFF16A34A),
-                        onViewAll:
-                            () =>
-                                context.goNamed(ViewIdentifiers.students.name),
-                      ),
-                    ),
-                    SizedBox(width: 24),
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Групи',
-                        icon: LucideIcons.layers,
-                        iconColor: Color(0xFF9333EA),
-                        textColor: Color(0xFF9333EA),
-                        onAdd:
-                            () => context.goNamed(
-                              ViewIdentifiers.groupQuickAdd.name,
-                            ),
-                        onViewAll:
-                            () => context.goNamed(ViewIdentifiers.groups.name),
-                      ),
-                    ),
-                    SizedBox(width: 24),
-                    Expanded(
-                      child: _QuickActionCard(
-                        title: 'Предмети',
-                        icon: LucideIcons.library,
-                        iconColor: Color(0xFFEA580C),
-                        textColor: Color(0xFFEA580C),
-                        onAdd:
-                            () => context.goNamed(
-                              ViewIdentifiers.subjectQuickAdd.name,
-                            ),
-                        onViewAll:
-                            () =>
-                                context.goNamed(ViewIdentifiers.subjects.name),
-                      ),
-                    ),
-                  ],
+                const Text(
+                  'Швидкі дії',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final itemWidth = (constraints.maxWidth - 5 * 12) / 6;
+                    return Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: [
+                        QuickActionButton(
+                          icon: LucideIcons.graduationCap,
+                          label: 'Додати викладача',
+                          width: itemWidth,
+                          onTap: () => showCreateTeacherDialog(
+                            context,
+                            service: _teachersService,
+                            onRefresh: _load,
+                          ),
+                        ),
+                        QuickActionButton(
+                          icon: LucideIcons.userPlus,
+                          label: 'Додати студента',
+                          width: itemWidth,
+                          onTap: () => context.go(ViewIdentifiers.students.path),
+                        ),
+                        QuickActionButton(
+                          icon: LucideIcons.users,
+                          label: 'Створити групу',
+                          width: itemWidth,
+                          onTap: () => showCreateGroupDialog(
+                            context,
+                            service: _groupsService,
+                            onRefresh: _load,
+                          ),
+                        ),
+                        QuickActionButton(
+                          icon: LucideIcons.bookOpen,
+                          label: 'Додати предмет',
+                          width: itemWidth,
+                          onTap: () => showCreateSubjectDialog(
+                            context,
+                            service: _subjectsService,
+                            onRefresh: _load,
+                          ),
+                        ),
+                        QuickActionButton(
+                          icon: LucideIcons.building2,
+                          label: 'Додати аудиторію',
+                          width: itemWidth,
+                          onTap: () => showCreateClassroomDialog(
+                            context,
+                            service: _classroomsService,
+                            onRefresh: _load,
+                          ),
+                        ),
+                        QuickActionButton(
+                          icon: LucideIcons.bookMarked,
+                          label: 'Створити журнал',
+                          width: itemWidth,
+                          onTap: () => createJournalDialog(
+                            context,
+                            service: _journalsService,
+                            onRefresh: _load,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
+          const JournalStatusTable(),
         ],
       ),
     );
   }
 }
-
-class _QuickActionCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Color iconColor;
-  final Color? textColor;
-  final VoidCallback? onAdd;
-  final VoidCallback? onViewAll;
-
-  const _QuickActionCard({
-    required this.title,
-    required this.icon,
-    required this.iconColor,
-    this.textColor,
-    this.onAdd,
-    this.onViewAll,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: iconColor, size: 20),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: textColor ?? AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          ActionItem(icon: LucideIcons.plus, label: 'Додати', onTap: onAdd),
-
-          const SizedBox(height: 5),
-
-          ActionItem(
-            icon: LucideIcons.list,
-            label: 'Переглянути список',
-            onTap: onViewAll,
-          ),
-        ],
-      ),
-    );
-  }
-}
-

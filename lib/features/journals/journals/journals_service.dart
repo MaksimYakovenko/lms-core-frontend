@@ -9,12 +9,16 @@ class JournalRef {
   final int groupId;
   final String name;
   final int courseNumber;
+  final String? teacherName;
+  final DateTime? lastUpdated;
 
   const JournalRef({
     required this.journalId,
     required this.groupId,
     required this.name,
     this.courseNumber = 0,
+    this.teacherName,
+    this.lastUpdated,
   });
 
   factory JournalRef.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,10 @@ class JournalRef {
       courseNumber: json['course_number'] != null
           ? (json['course_number'] as num).toInt()
           : 0,
+      teacherName: json['teacher_name']?.toString(),
+      lastUpdated: json['last_updated'] != null
+          ? DateTime.tryParse(json['last_updated'].toString())
+          : null,
     );
   }
 }
