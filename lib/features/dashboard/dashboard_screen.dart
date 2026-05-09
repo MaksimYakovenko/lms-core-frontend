@@ -6,14 +6,7 @@ import 'package:lms_core_frontend/common/components/left_sidebar_component.dart'
 import 'package:lms_core_frontend/config/routers/view_identifiers.dart';
 import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 
-const _studentPathToIndex = {
-  '/dashboard': 0,
-  '/results': 1,
-  '/tests': 2,
-  '/resources': 3,
-  '/news': 4,
-  '/subjects': 5,
-};
+const _teacherPathToIndex = {'/teacher-home': 0, '/teacher-journal': 1, '/news': 2};
 
 const _adminPathToIndex = {
   '/admin-admin_main': 0,
@@ -33,14 +26,7 @@ class DashboardScreen extends StatelessWidget {
 
   const DashboardScreen({super.key, required this.child});
 
-  static const _studentIndexToRoute = [
-    'student-home',
-    'results',
-    'tests',
-    'resources',
-    'news',
-    'subjects',
-  ];
+  static const _teacherIndexToRoute = ['teacher-home', 'teacher-journal', 'news'];
 
   static const _adminIndexToRoute = [
     'admin-admin_main',
@@ -60,8 +46,8 @@ class DashboardScreen extends StatelessWidget {
     final auth = context.watch<AuthProvider>();
     final isAdmin = auth.userRole?.toLowerCase() == 'admin';
 
-    final pathToIndex = isAdmin ? _adminPathToIndex : _studentPathToIndex;
-    final indexToRoute = isAdmin ? _adminIndexToRoute : _studentIndexToRoute;
+    final pathToIndex = isAdmin ? _adminPathToIndex : _teacherPathToIndex;
+    final indexToRoute = isAdmin ? _adminIndexToRoute : _teacherIndexToRoute;
     final location = GoRouterState.of(context).uri.path;
     final selectedIndex = pathToIndex[location] ?? 0;
     final isAuthPage = location == '/login' || location == '/registry';
@@ -100,4 +86,3 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
-

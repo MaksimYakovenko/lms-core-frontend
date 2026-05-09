@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:lms_core_frontend/features/auth/auth_service.dart';
 
@@ -26,13 +27,15 @@ class JournalRef {
       journalId: (json['journal_id'] as num).toInt(),
       groupId: (json['group_id'] as num).toInt(),
       name: (json['name'] ?? '').toString(),
-      courseNumber: json['course_number'] != null
-          ? (json['course_number'] as num).toInt()
-          : 0,
+      courseNumber:
+          json['course_number'] != null
+              ? (json['course_number'] as num).toInt()
+              : 0,
       teacherName: json['teacher_name']?.toString(),
-      lastUpdated: json['last_updated'] != null
-          ? DateTime.tryParse(json['last_updated'].toString())
-          : null,
+      lastUpdated:
+          json['last_updated'] != null
+              ? DateTime.tryParse(json['last_updated'].toString())
+              : null,
     );
   }
 }
@@ -46,9 +49,10 @@ class Journal {
   factory Journal.fromJson(Map<String, dynamic> json) {
     return Journal(
       subject: (json['subject'] ?? '').toString(),
-      groups: (json['groups'] as List<dynamic>? ?? [])
-          .map((e) => JournalRef.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      groups:
+          (json['groups'] as List<dynamic>? ?? [])
+              .map((e) => JournalRef.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 }
@@ -61,6 +65,28 @@ class JournalsService {
 
     final response = await http.get(
       Uri.parse('$baseUrl/journals'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final list = jsonDecode(response.body) as List<dynamic>;
+      return list
+          .map((e) => Journal.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    throw Exception('Failed to fetch groups (${response.statusCode})');
+  }
+
+  Future<List<Journal>> getTeacherJournals() async {
+    final token = await _authService.getToken();
+    final uri = Uri.parse('$baseUrl/journals/my');
+    debugPrint('[JournalsService] getTeacherJournals → $uri');
+    final response = await http.get(
+      uri,
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',

@@ -8,10 +8,27 @@ import 'package:lms_core_frontend/features/auth/auth_provider.dart';
 import 'package:lms_core_frontend/features/not_found_page/not_found_page_screen.dart';
 import 'package:lms_core_frontend/common/constants/colors.dart';
 
-final _router = GoRouter(
-  routes: dashboardRoutes,
-  errorBuilder: (context, state) => const NotFoundPageScreen(),
-);
+GoRouter _createRouter(AuthProvider authProvider) {
+  const publicPaths = {'/login', '/registry'};
+
+  return GoRouter(
+    routes: dashboardRoutes,
+    errorBuilder: (context, state) => const NotFoundPageScreen(),
+    refreshListenable: authProvider,
+    redirect: (context, state) {
+      final isAuthenticated = authProvider.isAuthenticated;
+      final isPublic = publicPaths.contains(state.matchedLocation);
+
+      if (!isAuthenticated && !isPublic) {
+        return '/login';
+      }
+      if (isAuthenticated && isPublic) {
+        return '/dashboard';
+      }
+      return null;
+    },
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +37,15 @@ void main() async {
   runApp(
     ChangeNotifierProvider<AuthProvider>.value(
       value: authProvider,
-      child: const MyApp(),
+      child: MyApp(authProvider: authProvider),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.authProvider});
+
+  final AuthProvider authProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +63,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.background1,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        routerConfig: _router,
+        routerConfig: _createRouter(authProvider),
       ),
     );
   }

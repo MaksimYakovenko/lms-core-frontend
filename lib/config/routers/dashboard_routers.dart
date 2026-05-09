@@ -6,20 +6,18 @@ import 'package:lms_core_frontend/features/auth/login_screen.dart';
 import 'package:lms_core_frontend/features/auth/registry_screen.dart';
 import 'package:lms_core_frontend/features/classrooms/classrooms_screen.dart';
 import 'package:lms_core_frontend/features/dashboard/dashboard_screen.dart';
-import 'package:lms_core_frontend/features/groups/group_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/groups/groups_screen.dart';
 import 'package:lms_core_frontend/features/journals/journals/journals_screen.dart';
 import 'package:lms_core_frontend/features/journals/journal_details/journal_details_screen.dart';
 import 'package:lms_core_frontend/features/news/news_screen.dart';
-import 'package:lms_core_frontend/features/results/results_screen.dart';
 import 'package:lms_core_frontend/features/student_home/student_home_screen.dart';
 import 'package:lms_core_frontend/features/students/students_screen.dart';
-import 'package:lms_core_frontend/features/subjects/subjects_quick_add_screen.dart';
 import 'package:lms_core_frontend/features/subjects/subjects_screen.dart';
+import 'package:lms_core_frontend/features/teacher_journals/teacher_journal_screen.dart';
 import 'package:lms_core_frontend/features/teachers/teachers_screen.dart';
 import 'package:lms_core_frontend/features/tests/tests_screen.dart';
 import '../../features/admin_main/main_screen.dart';
-import '../../features/teachers/teacher_quick_add_screen.dart';
+import '../../features/teacher_main/teacher_main_screen.dart';
 
 final dashboardRoutes = [
   ShellRoute(
@@ -40,27 +38,15 @@ final dashboardRoutes = [
         name: ViewIdentifiers.registry.name,
         builder: (context, state) => const RegistryScreen(),
       ),
-
-      // Student routes
       GoRoute(
         path: '/${ViewIdentifiers.studentHome.path}',
         name: ViewIdentifiers.studentHome.name,
         builder: (context, state) => const StudentHomeScreen(),
       ),
       GoRoute(
-        path: '/${ViewIdentifiers.results.path}',
-        name: ViewIdentifiers.results.name,
-        builder: (context, state) => const ResultsScreen(),
-      ),
-      GoRoute(
         path: '/${ViewIdentifiers.tests.path}',
         name: ViewIdentifiers.tests.name,
         builder: (context, state) => const TestsScreen(),
-      ),
-      GoRoute(
-        path: '/${ViewIdentifiers.resources.path}',
-        name: ViewIdentifiers.resources.name,
-        builder: (context, state) => const ResultsScreen(),
       ),
       // Admin routes
       GoRoute(
@@ -112,21 +98,6 @@ final dashboardRoutes = [
         },
       ),
       GoRoute(
-          path: '/${ViewIdentifiers.teacherQuickAdd.path}',
-          name: ViewIdentifiers.teacherQuickAdd.name,
-          builder: (context, state) => const TeacherQuickAddScreen(),
-      ),
-      GoRoute(
-        path: '/${ViewIdentifiers.groupQuickAdd.path}',
-        name: ViewIdentifiers.groupQuickAdd.name,
-        builder: (context, state) => const GroupQuickAddScreen(),
-      ),
-      GoRoute(
-        path: '/${ViewIdentifiers.subjectQuickAdd.path}',
-        name: ViewIdentifiers.subjectQuickAdd.name,
-        builder: (context, state) => const SubjectsQuickAddScreen(),
-      ),
-      GoRoute(
         path: '/${ViewIdentifiers.appointment.path}',
         name: ViewIdentifiers.appointment.name,
         builder: (context, state) => const AppointmentScreen(),
@@ -136,6 +107,16 @@ final dashboardRoutes = [
         name: ViewIdentifiers.classrooms.name,
         builder: (context, state) => const ClassroomsScreen(),
       ),
+      GoRoute(
+        path: '/${ViewIdentifiers.teacherHome.path}',
+        name: ViewIdentifiers.teacherHome.name,
+        builder: (context, state) => const TeacherMainScreen(),
+      ),
+      GoRoute(
+        path: '/${ViewIdentifiers.teacherJournal.path}',
+        name: ViewIdentifiers.teacherJournal.name,
+        builder: (context, state) => const TeacherJournalScreen(),
+      )
     ],
   ),
 ];

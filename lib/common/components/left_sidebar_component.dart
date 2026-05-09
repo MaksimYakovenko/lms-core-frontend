@@ -29,13 +29,10 @@ class LeftSidebarComponent extends StatefulWidget {
 class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
 
 
-  static const List<_NavItem> _studentNavItems = [
+  static const List<_NavItem> _teacherNavItems = [
     _NavItem(icon: LucideIcons.house, label: 'Головна'),
-    _NavItem(icon: LucideIcons.fileText, label: 'Результати'),
-    _NavItem(icon: LucideIcons.clipboardList, label: 'Тести'),
-    _NavItem(icon: LucideIcons.bookOpen, label: 'Ресурси'),
+    _NavItem(icon: LucideIcons.clipboardCheck, label: 'Журнали'),
     _NavItem(icon: LucideIcons.newspaper, label: 'Новини'),
-    _NavItem(icon: LucideIcons.bookOpen, label: 'Предмети'),
   ];
 
   static const List<_NavItem> _adminNavItems = [
@@ -55,7 +52,7 @@ class _LeftSidebarComponentState extends State<LeftSidebarComponent> {
     if (widget.userRole?.toLowerCase() == 'admin') {
       return _adminNavItems;
     }
-    return _studentNavItems;
+    return _teacherNavItems;
   }
 
   @override

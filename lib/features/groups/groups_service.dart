@@ -43,6 +43,26 @@ class GroupsService {
     throw Exception('Failed to fetch groups (${response.statusCode})');
   }
 
+
+  Future<List<Group>> getTeacherGroups() async {
+    final token = await _authService.getToken();
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/groups/my'),
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final list = jsonDecode(response.body) as List<dynamic>;
+      return list.map((e) => Group.fromJson(e as Map<String, dynamic>)).toList();
+    }
+
+    throw Exception('Failed to fetch teacher groups (${response.statusCode})');
+  }
+
   Future<void> createGroup(String name, int courseNumber) async {
     final token = await _authService.getToken();
 

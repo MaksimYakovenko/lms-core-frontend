@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TeacherQuickAddScreen extends StatelessWidget {
-  const TeacherQuickAddScreen({super.key});
+class TeacherMainScreen extends StatelessWidget {
+  const TeacherMainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'Оплата',
+        'Головна сторінка вчителя',
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     );

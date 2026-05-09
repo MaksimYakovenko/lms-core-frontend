@@ -32,6 +32,12 @@ class ViewIdentifiers {
   static RouteDescriptor payment =
       const RouteDescriptor('payment', path: 'payment');
 
+// --------------------------------- TEACHER ---------------------------------//
+  static RouteDescriptor teacherHome =
+      const RouteDescriptor('teacher-home', path: 'teacher-home');
+  static RouteDescriptor teacherJournal =
+      const RouteDescriptor('teacher-journal', path: 'teacher-journal');
+
 // --------------------------------- ADMIN -----------------------------------//
   static RouteDescriptor teachers =
       const RouteDescriptor('teachers', path: 'teachers');

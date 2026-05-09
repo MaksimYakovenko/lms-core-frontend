@@ -104,4 +104,27 @@ class SubjectsService {
         body['detail'] ?? 'Failed to delete student (${response.statusCode})';
     throw Exception(detail);
   }
+
+  Future<List<Subject>> getTeacherSubject() async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('$baseUrl/subjects/my');
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final list = jsonDecode(response.body) as List<dynamic>;
+      return list
+          .map((e) => Subject.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    throw Exception('Failed to fetch teacher subjects (${response.statusCode})');
+  }
 }
