@@ -7,19 +7,6 @@ import 'package:lms_core_frontend/features/auth/auth_service.dart';
 class AdminMainService {
   final AuthService _authService = AuthService();
 
-  Future<String?> fetchDisplayName(BuildContext context) async {
-    final token = await _authService.getToken();
-
-    if (token == null || token.isEmpty) {
-      return null;
-    }
-
-    final user = await _authService.getMe(token);
-    final name = user.fullName;
-
-    return name.isNotEmpty ? name : 'Test User';
-  }
-
   Future<Map<String, int>?> fetchTotals(BuildContext context) async {
     final token = await _authService.getToken();
 

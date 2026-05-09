@@ -36,7 +36,7 @@ class QuickActionButtonState extends State<QuickActionButton> {
           width: widget.width,
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: _hovered ? AppColors.background1 : Colors.white,
+            color: _hovered ? AppColors.gray200 : Colors.white,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppColors.divider),
           ),

@@ -15,7 +15,6 @@ import 'package:lms_core_frontend/features/students/students_screen.dart';
 import 'package:lms_core_frontend/features/subjects/subjects_screen.dart';
 import 'package:lms_core_frontend/features/teacher_journals/teacher_journal_screen.dart';
 import 'package:lms_core_frontend/features/teachers/teachers_screen.dart';
-import 'package:lms_core_frontend/features/tests/tests_screen.dart';
 import '../../features/admin_main/main_screen.dart';
 import '../../features/teacher_main/teacher_main_screen.dart';
 
@@ -42,11 +41,6 @@ final dashboardRoutes = [
         path: '/${ViewIdentifiers.studentHome.path}',
         name: ViewIdentifiers.studentHome.name,
         builder: (context, state) => const StudentHomeScreen(),
-      ),
-      GoRoute(
-        path: '/${ViewIdentifiers.tests.path}',
-        name: ViewIdentifiers.tests.name,
-        builder: (context, state) => const TestsScreen(),
       ),
       // Admin routes
       GoRoute(
